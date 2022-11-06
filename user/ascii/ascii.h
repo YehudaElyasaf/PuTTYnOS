@@ -2,5 +2,6 @@
 #define _ASCII
 
 void printLargeLogoCentered();
+void printSmallLogo();
 
 #endif
