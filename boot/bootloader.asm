@@ -7,7 +7,7 @@ start:
     mov bx, msg
     call print16
 
-%include "lib.asm"
+%include "boot/lib.asm"
 
 times 510-($-$$) db 0
 dw 0xaa55
