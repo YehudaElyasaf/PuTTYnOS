@@ -21,7 +21,7 @@ start:
 BEGIN_PM:
     jmp $
 
-%include "lib.asm"
+%include "boot/lib.asm"
 %include "boot/gdt.asm"
 
 times 510-($-$$) db 0
