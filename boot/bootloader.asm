@@ -11,10 +11,6 @@ start:
     mov [BOOT_DRIVE], dl
     mov bp, STACK_START
     mov sp, bp
-    
-    mov bx, msg
-    call print16
-    
 
     mov dh, 1
     mov dl, [BOOT_DRIVE]
