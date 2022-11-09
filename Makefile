@@ -1,54 +1,43 @@
-#.PHONY: all clean run
+.PHONY: all clean run
 
-CC=i386-elf-gcc
-CCFLAGS=
+GCC=i386-elf-gcc
+GCCFLAGS=-c -ffreestanding
 LD=i386-elf-ld
-LDFLAGS=
+LDFLAGS= -Ttext 0x1000 --oformat binary
 QEMU=qemu-system-i386
-QEMUFLAGS =  -fda $< -nic model=rtl8139
+QEMUFLAGS=-boot c -nic model=rtl8139
+NASM=nasm
 
-#all: run
-
-#PuTTYn.bin: lib.o PuTTYn.o
-#	@echo "link:"
-
-#%.o: %.c
-#	@echo "compile:"
-#	$(CC) $(CCFLAGS)
-
-#%.o: %.asm
-#	@echo "asm:"
-
-#run: PuTTYn.bin
-#	@echo "run:"
-#	@#$(QEMU) $(QEMUFLAGS)
+C_SOURCES=$(wildcard kernel/*.c)
+HEADERS=$(wildcard kernel/*.h)
+OBJECTS=${C_SOURCES:.c=.o}
 
 
-#clean:
-#	rm -r *.o *.bin
 
-all: run
+all: PuTTYn.img
 
-# Notice how dependencies are built as needed
-kernel.bin: kernelCaller.o PuTTYn.o
-	/usr/local/i386elfgcc/bin/i386-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary
+run: all
+	truncate -s 1440k PuTTYn.img
+	$(QEMU) PuTTYn.img $(QEMUFLAGS)
 
-kernelCaller.o: boot/kernelCaller.asm
-	nasm $< -f elf -o $@
-
-PuTTYn.o: kernel/PuTTYn.c
-	/usr/local/i386elfgcc/bin/i386-elf-gcc -ffreestanding -c $< -o $@
-
-
-bootloader.bin: boot/bootloader.asm
-	nasm $< -f bin -o $@
-
-os-image.bin: bootloader.bin kernel.bin
+PuTTYn.img: bootloader.bin PuTTYn.bin
 	cat $^ > $@
 
-run: os-image.bin
-	truncate -s 1440k $<
-	qemu-system-i386 $< -boot c
+	#auto run image
+	make run
+
+PuTTYn.bin: boot/kernelCaller.o ${OBJECTS}
+	@echo $^
+	$(LD) $^ $(LDFLAGS) -o $@
+
+%.o: %.c ${HEADERS}
+	$(GCC) $< $(GCCFLAGS) -o $@
+
+%.o: %.asm
+	$(NASM) $^ -f elf -o $@
+bootloader.bin: boot/bootloader.asm
+	@clear
+	$(NASM) $^ -f bin -o $@
 
 clean:
-	rm *.bin *.o *.dis
+	@rm -rf *.bin *.o *.img *.iso kernel/*.bin kernel/*.o boot/*.o  boot/*.bin
