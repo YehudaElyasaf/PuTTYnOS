@@ -47,6 +47,7 @@ os-image.bin: bootloader.bin kernel.bin
 	cat $^ > $@
 
 run: os-image.bin
+	truncate -s 1440k $<
 	qemu-system-i386 -fda $<
 
 clean:
