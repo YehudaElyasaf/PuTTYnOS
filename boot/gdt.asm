@@ -31,3 +31,19 @@ gdt_descriptor:
 
 CODE_SEGMENT equ gdt_code_segment - gdt_start
 DATA_SEGMENT equ gdt_data_segment - gdt_start
+
+switch_to_pm:
+    mov ax, CODE_SEGMENT
+    mov cs, ax
+
+    mov ax, DATA_SEGMENT
+    mov ds, ax 
+    mov es, ax 
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    
+    mov ebp, 0x90000
+    mov esp, ebp
+
+    call BEGIN_PM

@@ -2,7 +2,6 @@
 [bits 16]
 jmp start
 
-
 start:
     mov [BOOT_DRIVE], dl
     mov bp, STACK_START
