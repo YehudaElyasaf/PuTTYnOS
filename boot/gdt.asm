@@ -7,7 +7,7 @@ gdt_code_segment:
     db 0         ; part of base adress
     ; access byte. Accessed, ReadableWriteable, Dont conform lower ring access,
     ; Code segment, not system segment, User ring (2 bits), Present
-    db 01011111b
+    db 10011010b
     ; flags and limit (4 bits): Not long(not 64bit), Reserved, Count limit in kibibytes (go up to 4 MiB), 32bit segment
     db 11001111b
     db 0         ; continue of base address
@@ -18,7 +18,7 @@ gdt_data_segment:
     db 0         ; part of base adress
     ; access byte. Accessed, ReadableWriteable, Count from start up,
     ; Data segment, not system segment, User ring (2 bits), Present
-    db 01001111b
+    db 10010010b
     ; flags and limit (4 bits): Not long(not 64bit), Reserved, Count limit in kibibytes (go up to 4 MiB), 32bit segment
     db 11001111b
     db 0         ; continue of base address
@@ -32,10 +32,18 @@ gdt_descriptor:
 CODE_SEGMENT equ gdt_code_segment - gdt_start
 DATA_SEGMENT equ gdt_data_segment - gdt_start
 
+[bits 16]
 switch_to_pm:
-    mov ax, CODE_SEGMENT
-    mov cs, ax
+    cli ; turn off interrupts
+    lgdt [gdt_descriptor] ; load gdt descriptor
+    mov eax, cr0
+    or eax, 0x1 ; set 32 bit mode in cr0
+    mov cr0, eax
+    jmp CODE_SEGMENT:init_pm ; make the jump to handle with the pipelining
 
+
+[bits 32]
+init_pm:
     mov ax, DATA_SEGMENT
     mov ds, ax 
     mov es, ax 
