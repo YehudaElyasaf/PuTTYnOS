@@ -48,23 +48,12 @@ loadKernelFromDisk:
     ; dl is the drive to load from, it's a parameter from caller. 0-1 - floppies, 0x80-81 hdds. 
     ; also, es:bx is a parameter from caller, it's the address to load the data to
 
-    mov al, '0'
-    mov ah, 0eh
-    int 10h
-
     int 013h
     jc diskError
-    mov al, '1'
-    mov ah, 0eh
-    int 10h
 
     pop dx
     cmp dh, al
     jne sectorError
-
-    mov al, '2'
-    mov ah, 0eh
-    int 10h
 
     popa
     ret
@@ -132,9 +121,6 @@ diskError:
     
     mov dh, ah
     call print_hex
-
-    
-    
     jmp diskLoop
 
 sectorError:

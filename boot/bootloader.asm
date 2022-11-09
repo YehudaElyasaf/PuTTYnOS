@@ -21,6 +21,7 @@ start:
 
 [bits 32]
 BEGIN_PM:
+    call KERNEL_START
     jmp $
 
 jmp $
