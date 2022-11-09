@@ -1,8 +1,10 @@
 .PHONY: all clean run
 
-GCC=i386-elf-gcc
+OS-VERSION=PuTTYnOS-i386
+
+GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
 GCCFLAGS=-c -ffreestanding
-LD=i386-elf-ld
+LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000 --oformat binary
 QEMU=qemu-system-i386
 QEMUFLAGS=-boot c -nic model=rtl8139
@@ -12,15 +14,13 @@ C_SOURCES=$(wildcard kernel/*.c)
 HEADERS=$(wildcard kernel/*.h)
 OBJECTS=${C_SOURCES:.c=.o}
 
-
-
-all: PuTTYn.img
+all: $(OS-VERSION).img
 
 run: all
-	truncate -s 1440k PuTTYn.img
-	$(QEMU) PuTTYn.img $(QEMUFLAGS)
+	truncate -s 144k $(OS-VERSION).img
+	$(QEMU) $(OS-VERSION).img $(QEMUFLAGS)
 
-PuTTYn.img: bootloader.bin PuTTYn.bin
+$(OS-VERSION).img: bootloader.bin PuTTYn.bin
 	cat $^ > $@
 
 	#auto run image
