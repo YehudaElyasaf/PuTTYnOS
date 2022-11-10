@@ -1,4 +1,4 @@
-
+sudo apt install make
 
 
 # INSTALL GCC AND BINUTILS
