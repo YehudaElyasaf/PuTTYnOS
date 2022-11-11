@@ -1,6 +1,9 @@
 #pragma once
+#include "types.h"
 
-typedef struct {
+#define PDT_SIZE 1024
+
+typedef struct __attribute__((__packed__)) { // packed so it won't pad the struct
     unsigned present : 1;        // if the page is in the memory at the moment
     // if set, can write. if not, can only read. WP in cr0 controls whether the kernel can write even though this is not set.
     unsigned readWrite : 1;      
@@ -18,3 +21,21 @@ typedef struct {
     unsigned available : 4; // available bits for kernel use if we need
     unsigned address : 12;
 } PageDirectoryEntry;
+
+typedef struct {
+    PageDirectoryEntry entries[PDT_SIZE];
+} PDT;
+
+void initPaging(uint32ptr address) {
+    PDT* table = (PDT*) address;
+
+    // last entry points to the pdt
+    PageDirectoryEntry lastEntry = {(PageDirectoryFlags){1, 1, 0, 1, 1, 0, 0, 0}, 0, (uint32)address>>20};
+    table->entries[PDT_SIZE-1] = lastEntry;
+
+    __asm__("mov %%eax, %0" : "=r" (address));
+    __asm__("mov %cr3, %eax");
+    __asm__("mov %eax, %cr0");
+    __asm__("or %eax, 0x80000001");
+    __asm__("mov %cr0, %eax");
+}
