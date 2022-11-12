@@ -1,10 +1,7 @@
-#ifndef _OUTPUT
-#define _OUTPUT
+#pragma once
 
 void kprint();
 void kprintColored();
 void changeColor();
 
 void tmpPrint42();
-
-#endif

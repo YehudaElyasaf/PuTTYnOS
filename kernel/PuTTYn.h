@@ -1,7 +1,4 @@
-#ifndef _PUTTYN
-#define _PUTTYN
+#pragma once
 
 void initialize();
 void main();
-
-#endif

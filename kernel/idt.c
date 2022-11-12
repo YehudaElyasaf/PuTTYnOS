@@ -15,6 +15,7 @@ void initIdt(){
 
 void initIdtEntry(uint8_t entryNum, uint32_t isrAdress, uint8_t flags){
     IDTEntry* entry = &idt[entryNum];
+    
     entry->offsetLow = (uint16_t)isrAdress;             //casting uses 16 LSBs
     entry->offsetHigh = (uint16_t)(isrAdress >> 16);    //>> 16 = casting uses 16 MSB
     entry->reserved = 0x0;
