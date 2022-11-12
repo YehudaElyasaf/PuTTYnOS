@@ -11,7 +11,8 @@ LOG_COLOR=\033[0;35m
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
 GCCFLAGS=-c -ffreestanding
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
-LDFLAGS= -Ttext 0x1000 --oformat binary
+LDFLAGS= --oformat binary
+# LDFLAGS= -Ttext 0x1000 --oformat binary
 QEMU=qemu-system-i386
 QEMUFLAGS=-boot c -nic model=rtl8139
 NASM=nasm

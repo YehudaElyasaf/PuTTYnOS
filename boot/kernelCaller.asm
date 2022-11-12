@@ -1,5 +1,7 @@
 [bits 32]
 extern main
+global _start
 
-call main
+_start:
+    call main
 jmp $

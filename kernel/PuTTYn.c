@@ -15,4 +15,5 @@ void main(){
     *(video_memory + 4) = *((char*)0xffff0000);
 
     initialize();
+    tmpPrint42();
 }
