@@ -1,9 +1,11 @@
 #include "PuTTYn.h"
 #include "io/output.h"
 #include "PagingHandler.h"
+#include "idt.h"
 
 void initialize(){
     initPaging(0x00000000);
+    initIdt();
 }
 
 void main(){
@@ -13,6 +15,4 @@ void main(){
     *(video_memory + 4) = *((char*)0xffff0000);
 
     initialize();
-    
-    tmpPrint42();
 }
