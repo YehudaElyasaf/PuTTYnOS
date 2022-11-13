@@ -1,4 +1,5 @@
 #include "idt.h"
+#include "asm.h"
 
 #define KERNEL_CODE_SEGMENT     0x8
 
@@ -32,9 +33,14 @@ void initIdt(){
     for(uint8_t i = FIRST_EXCEPTION_ENTRY_INDEX; i <= LAST_EXCEPTION_ENTRY_INDEX; i++)
         //only specific exceptions have an error code
         if(hasErrorCode(i))
-            initIdtEntry(i, DEFAULT_ISR_WITH_ERR, IDT_FLAGS_TRAP_GATE_RING0);
+            initIdtEntry(i, DEFAULT_ISR_WITH_ERR_EXC_HANDLER, IDT_FLAGS_TRAP_GATE_RING0);
         else
-            initIdtEntry(i, DEFAULT_ISR_NO_ERR, IDT_FLAGS_TRAP_GATE_RING0);
+            initIdtEntry(i, DEFAULT_ISR_NO_ERR_EXC_HANDLER, IDT_FLAGS_TRAP_GATE_RING0);
+
+    //ISR 32-255: Interrupts
+    //used uint16_t to avoidbecuase in uint8_t the value after 255 is 0
+    for(uint16_t i = FIRST_INTERRUPT_ENTRY_INDEX; i <= LAST_INTERRUPT_ENTRY_INDEX; i++)
+        initIdtEntry(i, DEFAULT_ISR_NO_ERR_INT_HANDLER, IDT_FLAGS_INTERRUPT_GATE_RING3);
 
     //load IDT
     asm __volatile__ (
@@ -42,4 +48,6 @@ void initIdt(){
         : //no output
         : "r" (&idtr)
     );
+    //enable interrupts
+    //sti();
 }
