@@ -5,14 +5,17 @@
 IDTEntry idt[NUM_OF_IDT_ENTRIES];
 IDTR idtr = {sizeof(idt) - 1, idt};
 
-void initIdt(){
-    asm __volatile__ (
-        "lidt (%0);"
-        : //no output
-        : "r" (&idtr)
-    );
+bool hasErrorCode(uint8_t entryNum){
+    //all the following entries have an error code
+    return entryNum == 8 ||
+        entryNum == 10 ||
+        entryNum == 11 ||
+        entryNum == 12 ||
+        entryNum == 13 ||
+        entryNum == 14 ||
+        entryNum == 17 ||
+        entryNum == 21;
 }
-
 void initIdtEntry(uint8_t entryNum, uint32_t isrAdress, uint8_t flags){
     IDTEntry* entry = &idt[entryNum];
     
@@ -21,4 +24,22 @@ void initIdtEntry(uint8_t entryNum, uint32_t isrAdress, uint8_t flags){
     entry->reserved = 0x0;
     entry->segmentSelector = KERNEL_CODE_SEGMENT;
     entry->flags = flags;
+}
+
+void initIdt(){
+    //init all IDT entries
+    //ISR 0-31: CPU exceptions
+    for(uint8_t i = FIRST_EXCEPTION_ENTRY_INDEX; i <= LAST_EXCEPTION_ENTRY_INDEX; i++)
+        //only specific exceptions have an error code
+        if(hasErrorCode(i))
+            initIdtEntry(i, DEFAULT_ISR_WITH_ERR, IDT_FLAGS_TRAP_GATE_RING0);
+        else
+            initIdtEntry(i, DEFAULT_ISR_NO_ERR, IDT_FLAGS_TRAP_GATE_RING0);
+
+    //load IDT
+    asm __volatile__ (
+        "lidt (%0);"
+        : //no output
+        : "r" (&idtr)
+    );
 }
