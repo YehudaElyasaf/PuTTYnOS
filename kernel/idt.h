@@ -2,9 +2,6 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-
-#define NUM_OF_IDT_ENTRIES      256
-
 /*
     FLAGS (MSB to LSB):
         present                 1 bit   always 1
@@ -18,8 +15,11 @@
 #define IDT_FLAGS_INTERRUPT_GATE_RING3  0b11101110
 #define IDT_FLAGS_TRAP_GATE_RING3       0b11101111
 
+#define NUM_OF_IDT_ENTRIES          256
 #define FIRST_EXCEPTION_ENTRY_INDEX 0
 #define  LAST_EXCEPTION_ENTRY_INDEX 31
+#define FIRST_INTERRUPT_ENTRY_INDEX LAST_EXCEPTION_ENTRY_INDEX + 1
+#define  LAST_INTERRUPT_ENTRY_INDEX NUM_OF_IDT_ENTRIES - 1
 
 typedef struct
 {
