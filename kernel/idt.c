@@ -48,4 +48,7 @@ void initIdt(){
         : //no output
         : "r" (&idtr)
     );
+    
+    //enable some interrupts???
+    //sti();
 }
