@@ -1,4 +1,5 @@
 #include "idt.h"
+#include "asm.h"
 
 #define KERNEL_CODE_SEGMENT     0x8
 
@@ -46,4 +47,6 @@ void initIdt(){
         : //no output
         : "r" (&idtr)
     );
+    //enable interrupts
+    sti();
 }
