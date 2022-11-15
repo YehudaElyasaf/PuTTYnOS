@@ -7,3 +7,8 @@ void tmpPrint42(){
     *(video_memory + 4) = '2';
     *(video_memory + 6) = ' ';
 }
+
+void tmpPrint(char ch){
+    char* video_memory = (char*) 0xb8000;
+    *(video_memory + 0) = ch;
+}

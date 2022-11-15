@@ -2,5 +2,7 @@
 
 //Set interrup flag
 void sti();
-//Clearinterrup flag
+//Clear interrup flag
 void cli();
+//Do nothing until next interrupt
+void hlt();

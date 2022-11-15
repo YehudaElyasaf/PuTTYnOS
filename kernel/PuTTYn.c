@@ -10,10 +10,10 @@ void initialize(){
 
 void main(){
 
-    char* video_memory = (char*) 0xb8000;
-
-    *(video_memory + 4) = *((char*)0xffff0000);
-
     initialize();
+
+    //special divide by zero
+    //volatile int i = 1 / 0;
+    
     tmpPrint42();
 }
