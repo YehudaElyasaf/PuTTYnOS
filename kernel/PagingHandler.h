@@ -1,6 +1,5 @@
 #pragma once
-#include "../lib/types.h"
-
+#include <stdint.h>
 #define PDT_SIZE 1024
 
 typedef struct __attribute__((__packed__)) { // packed so it won't pad the struct
@@ -26,11 +25,13 @@ typedef struct {
     PageDirectoryEntry entries[PDT_SIZE];
 } PDT;
 
-void initPaging(uint32ptr address) {
-    PDT* table = (PDT*) address;
+void initPaging(uint32_t address) {
+    PDT* table = (PDT*)address;
+
+    table->entries[0] = (PageDirectoryEntry){(PageDirectoryFlags){0}, 0, 0xFcF}; // test whether does it work... it doesnt
 
     // last entry points to the pdt
-    PageDirectoryEntry lastEntry = {(PageDirectoryFlags){1, 1, 0, 1, 1, 0, 0, 0}, 0, (uint32)address>>20};
+    PageDirectoryEntry lastEntry = {(PageDirectoryFlags){1, 1, 0, 1, 1, 0, 0, 0}, 0, (uint32_t)address>>20};
     table->entries[PDT_SIZE-1] = lastEntry;
 
     __asm__("mov %%eax, %0" : "=r" (address));
