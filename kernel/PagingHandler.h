@@ -17,9 +17,9 @@ typedef struct __attribute__((__packed__)) { // packed so it won't pad the struc
 } PageDirectoryFlags;
 
 typedef struct {
-    PageDirectoryFlags flags;
+    unsigned address : 24;
     unsigned available : 4; // available bits for kernel use if we need
-    unsigned address : 12;
+    PageDirectoryFlags flags;
 } PageDirectoryEntry;
 
 typedef struct {
@@ -30,12 +30,12 @@ void initPaging(uint32ptr address) {
     PDT* table = (PDT*) address;
 
     // last entry points to the pdt
-    PageDirectoryEntry lastEntry = {(PageDirectoryFlags){1, 1, 0, 1, 1, 0, 0, 0}, 0, (uint32)address>>20};
+    PageDirectoryEntry lastEntry = {(uint32)address<<12, 0, (PageDirectoryFlags){1, 1, 0, 1, 1, 0, 0, 0}};
     table->entries[PDT_SIZE-1] = lastEntry;
 
-    __asm__("mov %%eax, %0" : "=r" (address));
-    __asm__("mov %cr3, %eax");
-    __asm__("mov %eax, %cr0");
-    __asm__("or %eax, 0x80000001");
+    __asm__("mov %0, %%eax" : "=r"(address) : "0"(address));
+    __asm__("mov %eax, %cr3");
     __asm__("mov %cr0, %eax");
+    __asm__("or 0x80000001, %eax");
+    __asm__("mov %eax, %cr0");
 }

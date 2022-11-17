@@ -3,7 +3,7 @@
 OS-VERSION=PuTTYnOS-i386
 
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
-GCCFLAGS=-c -ffreestanding
+GCCFLAGS=-c -ffreestanding -g
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000 --oformat binary
 QEMU=qemu-system-i386
