@@ -4,7 +4,7 @@
 #include "idt.h"
 
 void initialize(){
-    initPaging(0x00000000);
+    //initPaging(0x00000000);
     initIdt();
 }
 
@@ -13,7 +13,7 @@ void main(){
     initialize();
 
     //special divide by zero
-    //volatile int i = 1 / 0;
+    volatile int i = 1 / 0;
     
     tmpPrint42();
 }

@@ -6,17 +6,6 @@
 
 IDTEntry idt[NUM_OF_IDT_ENTRIES];
 
-bool hasErrorCode(uint8_t entryNum){
-    //all the following entries have an error code
-    return entryNum == 8 ||     //
-        entryNum == 10 ||       //
-        entryNum == 11 ||       //
-        entryNum == 12 ||       //
-        entryNum == 13 ||       //
-        entryNum == 14 ||       //
-        entryNum == 17 ||       //
-        entryNum == 21;         //
-}
 void initIdtEntry(uint8_t entryNum, void* isrAdress, uint8_t flags){
     IDTEntry* entry = &idt[entryNum];
     
@@ -27,32 +16,33 @@ void initIdtEntry(uint8_t entryNum, void* isrAdress, uint8_t flags){
     entry->flags = flags;
 }
 
-__attribute__((interrupt))
-void exceptionHandler(IsrFrame* isrFrame){
-    while (true);
-}
+//__attribute__((interrupt))
+//void exceptionHandler(IsrFrame* isrFrame){
+//    tmpPrint('a');
+//    cli();
+//    hlt();
+//}
+//
+//__attribute__((interrupt))
+//void exceptionHandlerWithErrorCode(IsrFrame* isrFrame, uint32_t errCode){
+//    tmpPrint('e');
+//    cli();
+//    hlt();
+//}
 
-__attribute__((interrupt))
-void exceptionHandlerWithErrorCode(IsrFrame* isrFrame, uint32_t errCode){
-    
-}
-
+extern void* isrTable[];
 void initIdt(){
     IDTR idtr = {sizeof(idt) - 1, idt};
 
     //init all IDT entries
     //ISR 0-31: CPU exceptions
     for(uint8_t i = FIRST_EXCEPTION_ENTRY_INDEX; i <= LAST_EXCEPTION_ENTRY_INDEX; i++)
-        //only specific exceptions have an error code
-        if(hasErrorCode(i))
-            initIdtEntry(i, exceptionHandlerWithErrorCode, IDT_FLAGS_TRAP_GATE_RING0);
-        else
-            initIdtEntry(i, exceptionHandler, IDT_FLAGS_TRAP_GATE_RING0);
+        initIdtEntry(i, isrTable[i], IDT_FLAGS_TRAP_GATE_RING0);
 
     //ISR 32-255: Interrupts
     //used uint16_t to avoidbecuase in uint8_t the value after 255 is 0
-    for(uint16_t i = FIRST_INTERRUPT_ENTRY_INDEX; i <= LAST_INTERRUPT_ENTRY_INDEX; i++)
-        initIdtEntry(i, exceptionHandler, IDT_FLAGS_INTERRUPT_GATE_RING3);
+    //for(uint16_t i = FIRST_INTERRUPT_ENTRY_INDEX; i <= LAST_INTERRUPT_ENTRY_INDEX; i++)
+    //    initIdtEntry(i, exceptionHandler, IDT_FLAGS_INTERRUPT_GATE_RING3);
 
     //load IDT
     asm __volatile__ (

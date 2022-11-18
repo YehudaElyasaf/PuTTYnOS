@@ -16,6 +16,7 @@ LDFLAGS= --oformat binary
 QEMU=qemu-system-i386
 QEMUFLAGS=-boot c -nic model=rtl8139
 NASM=nasm
+PY=python3
 
 C_FILES=$(shell find -name "*.c")
 # C_HEADER_FILES=$(C_FILES:.c=.h)
@@ -27,15 +28,13 @@ ASM_FILES_EXCLUDING_BOOTLOADER=${ASM_FILES:./boot/bootloader.asm=}
 ASM_OBJECT_FILES=${ASM_FILES_EXCLUDING_BOOTLOADER:.asm=.o}
 #kernelCaller.o MUST be linked first, so it's added before all dependencies separately
 ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER=${ASM_OBJECT_FILES:./boot/kernelCaller.o=}
+AUTO_GENERATED_FILES=kernel/isr.asm
 
 
 all: $(OS_VERSION).img
 
 run: all
 	@truncate -s 144k $(OS_VERSION).img
-
-	@# auto clean build files
-	@make --no-print-directory clean
 
 	@echo "${SUCESS_COLOR}\nRUNNING PuTTYnOS!${DEFAULT_COLOR}"
 	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS)
@@ -60,15 +59,19 @@ PuTTYn.bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_
 %.o: %.asm
 	@ $(NASM) $^ -f elf -o $@
 
-bootloader.bin: boot/bootloader.asm
+bootloader.bin: boot/bootloader.asm  kernel/isr.asm
 	@echo "${LOG_COLOR}\nCOMPILING...${DEFAULT_COLOR}"
- 	# @clear
-	@ $(NASM) $^ -f bin -o $@
+	@ $(NASM) $< -f bin -o $@
+
+kernel/isr.asm: kernel/generateIsrTable.py #auto_generated_files
+	@echo "${LOG_COLOR}\nGENERATING FILES...${DEFAULT_COLOR}"
+	@ $(PY) $^
 
 clean:
 	@echo "${LOG_COLOR}\nCLEANING BUILD FILES...${DEFAULT_COLOR}"
 	@rm -f $(shell find -name "*.o")
 	@rm -f $(shell find -name "*.bin")
+	@rm -f $(AUTO_GENERATED_FILES)
 
 	@echo "${SUCESS_COLOR}\c"
 	@echo "Successfully cleaned!\n${DEFAULT_COLOR}"
