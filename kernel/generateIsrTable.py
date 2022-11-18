@@ -1,8 +1,9 @@
 ISRS_WITH_ERROR_CODE = [8, 10, 11, 12, 13, 14, 17, 21]
 NUMBER_OF_ISRS = 32
-GENERATED_FILE_PATH = 'kernel/isr.asm'
+GENERATED_FILE_PATH = 'kernel/isrs.asm'
 
-file_beginning = '''
+file_beginning = '''; AUTO GENERATED FILE
+
 KERNEL_DATA_SEGMENT equ 0x10
 
 global isrTable
@@ -72,4 +73,4 @@ with open(GENERATED_FILE_PATH, 'w') as generated_file:
     for isr_number in range(NUMBER_OF_ISRS):
         generated_file.write(f'\tdd isr{isr_number}\n')
 
-print(f'file {GENERATED_FILE_PATH} generated')
+print(f'file {GENERATED_FILE_PATH} generated successfully!')

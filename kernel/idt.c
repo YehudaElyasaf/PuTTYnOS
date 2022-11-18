@@ -30,8 +30,9 @@ void initIdtEntry(uint8_t entryNum, void* isrAdress, uint8_t flags){
 //    hlt();
 //}
 
-extern void* isrTable[];
 void initIdt(){
+    extern void* isrTable[];
+    
     IDTR idtr = {sizeof(idt) - 1, idt};
 
     //init all IDT entries
