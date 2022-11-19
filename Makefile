@@ -7,7 +7,7 @@ GCCFLAGS=-c -ffreestanding -g
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000 --oformat binary
 QEMU=qemu-system-i386
-QEMUFLAGS=-boot c -nic model=rtl8139
+QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G
 NASM=nasm
 
 C_SOURCES=$(wildcard kernel/*.c)
