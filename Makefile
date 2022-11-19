@@ -9,12 +9,12 @@ DEFAULT_COLOR=\033[0;37m
 LOG_COLOR=\033[0;35m
 
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
-GCCFLAGS=-c -ffreestanding -mgeneral-regs-only
+GCCFLAGS=-c -ffreestanding -mgeneral-regs-only -g
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= --oformat binary
 # LDFLAGS= -Ttext 0x1000 --oformat binary
 QEMU=qemu-system-i386
-QEMUFLAGS=-boot c -nic model=rtl8139
+QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G
 NASM=nasm
 PY=python3
 

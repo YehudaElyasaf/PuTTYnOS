@@ -4,17 +4,19 @@
 #include "idt.h"
 
 void initialize(){
-    //initPaging(0x00000000);
-    initIdt();
+    initPaging(0x0FF00000);
 }
 
 void main(){
-    tmpPrint('a');
+
+    *((char*)0x00001000) = '0';
+
+    char* video_memory = (char*) 0x000b8000;
+
+    *(video_memory + 0) = *((char*)0x00001000);
 
     initialize();
-
-    //special divide by zero
-    //volatile int i = 1 / 0;
-    //asm __volatile__("int $3");
-    //tmpPrint('c');
+    
+    *(video_memory + 2) = *((char*)0x00001000);
+    
 }
