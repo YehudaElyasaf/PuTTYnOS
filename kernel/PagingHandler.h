@@ -35,9 +35,9 @@ void initPaging(uint32_t address) {
     PageDirectoryEntry lastEntry = {address<<12, 0, (PageDirectoryFlags){0, 0, 0, 1, 1, 0, 1, 1}};
     table->entries[PDT_SIZE-1] = lastEntry;
 
-    __asm__("mov %0, %%eax" :: "i"(address));
+    __asm__("mov %0, %%eax" :: "r"(address));
     __asm__("mov %eax, %cr3");
     __asm__("mov %cr0, %eax");
-    __asm__("or %0, %%eax" :: "r"(0x80000001));
+    __asm__("or %0, %%eax" :: "i"(0x80000001));
     __asm__("mov %eax, %cr0");
 }
