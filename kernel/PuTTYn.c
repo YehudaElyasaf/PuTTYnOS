@@ -1,6 +1,6 @@
 #include "PuTTYn.h"
 #include "io/output.h"
-#include "PagingHandler.h"
+#include "memory/pagingHandler.h"
 #include "idt.h"
 
 void initialize(){

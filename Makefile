@@ -51,7 +51,7 @@ $(OS_VERSION).img: boot/bootloader.bin PuTTYn.bin
 
 PuTTYn.bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
 	@echo "${LOG_COLOR}\nLINKING...${DEFAULT_COLOR}"
-	 $(LD) $^ $(LDFLAGS) -o $@
+	@ $(LD) $^ $(LDFLAGS) -o $@
 
 %.o: %.c
 	@ $(GCC) $< $(GCCFLAGS) -o $@
