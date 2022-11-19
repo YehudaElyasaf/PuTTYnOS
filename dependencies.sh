@@ -1,5 +1,5 @@
-
-
+sudo apt install make
+sudo apt install python3
 
 # INSTALL GCC AND BINUTILS
 # SOURCE: https://github.com/mell-o-tron/MellOs/blob/main/A_Setup/setup-gcc-debian.sh

@@ -1,8 +1,8 @@
 [org 7c00h]
 [bits 16]
-jmp start
+jmp _start
 
-start:
+_start:
     mov [BOOT_DRIVE], dl
     mov bp, STACK_START
     mov sp, bp
@@ -24,8 +24,8 @@ STACK_START equ 0x9000
 KERNEL_START equ 0x1000
 BOOT_DRIVE db 0
 
-%include "boot/lib.asm"
-%include "boot/gdt.asm"
+%include "boot/lib.inc"
+%include "boot/gdt.inc"
 
 times 510-($-$$) db 0
 dw 0xaa55

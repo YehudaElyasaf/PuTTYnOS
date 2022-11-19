@@ -1,7 +1,4 @@
-#ifndef _SCREEN
-#define _SCREEN
+#pragma once
 
 void clearScreen();
 void scroll();
-
-#endif

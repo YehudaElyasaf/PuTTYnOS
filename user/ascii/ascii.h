@@ -1,7 +1,4 @@
-#ifndef _ASCII
-#define _ASCII
+#pragma once
 
 void printLargeLogoCentered();
 void printSmallLogo();
-
-#endif

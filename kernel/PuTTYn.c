@@ -1,5 +1,7 @@
 #include "PuTTYn.h"
+#include "io/output.h"
 #include "PagingHandler.h"
+#include "idt.h"
 
 void initialize(){
     initPaging(0x0FF00000);

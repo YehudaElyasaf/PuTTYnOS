@@ -1,7 +1,4 @@
-#ifndef _CONVERT
-#define _CONVERT
+#pragma once
 
 char* itoa(int n);
 int atoi(char* str);
-
-#endif

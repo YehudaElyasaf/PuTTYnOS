@@ -3,4 +3,7 @@
 *.img
 *.iso
 *build/
-.vscode
+*.vscode*
+
+#auto generated files
+kernel/isrs.asm
