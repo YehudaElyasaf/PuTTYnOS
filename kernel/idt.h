@@ -35,7 +35,7 @@ typedef struct
 {
     uint16_t idtSize;
     IDTEntry* idtAdress;
-} __attribute__((packed)) IDTR;
+} __attribute__((packed)) IDTRegister;
 
 
 //typedef struct IsrFrame
@@ -52,5 +52,5 @@ typedef struct
 
 //check if entry's ISR has an error code
 bool hasErrorCode(uint8_t entryNum);
-void initIdtEntry(uint8_t entryNum, void* isrAdress, uint8_t flags);
+void initIdtEntry(uint8_t entryNum, uint32_t isrAdress, uint8_t flags);
 void initIdt();

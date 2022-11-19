@@ -41,7 +41,7 @@ run: all
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
-$(OS_VERSION).img: bootloader.bin PuTTYn.bin
+$(OS_VERSION).img: boot/bootloader.bin PuTTYn.bin
 	@echo "${LOG_COLOR}\nCREATING DISK IMAGE...${DEFAULT_COLOR}"
 	@cat $^ > $@
 	@echo
@@ -51,7 +51,7 @@ $(OS_VERSION).img: bootloader.bin PuTTYn.bin
 
 PuTTYn.bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
 	@echo "${LOG_COLOR}\nLINKING...${DEFAULT_COLOR}"
-	@ $(LD) $^ $(LDFLAGS) -o $@
+	 $(LD) $^ $(LDFLAGS) -o $@
 
 %.o: %.c
 	@ $(GCC) $< $(GCCFLAGS) -o $@
@@ -59,7 +59,7 @@ PuTTYn.bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_
 %.o: %.asm
 	@ $(NASM) $^ -f elf -o $@
 
-bootloader.bin: boot/bootloader.asm  $(AUTO_GENERATED_ASM_FILE)
+boot/bootloader.bin: boot/bootloader.asm  $(AUTO_GENERATED_ASM_FILE)
 	@echo "${LOG_COLOR}\nCOMPILING...${DEFAULT_COLOR}"
 	@ $(NASM) $< -f bin -o $@
 

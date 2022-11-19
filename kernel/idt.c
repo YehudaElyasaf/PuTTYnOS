@@ -4,13 +4,13 @@
 
 #define KERNEL_CODE_SEGMENT_START     0x8
 
-IDTEntry idt[NUM_OF_IDT_ENTRIES];
+static IDTEntry idt[NUM_OF_IDT_ENTRIES];
 
-void initIdtEntry(uint8_t entryNum, void* isrAdress, uint8_t flags){
+void initIdtEntry(uint8_t entryNum, uint32_t isrAdress, uint8_t flags){
     IDTEntry* entry = &idt[entryNum];
     
-    entry->offsetLow = (uint16_t)isrAdress;             //casting uses 16 LSBs
-    entry->offsetHigh = (uint16_t)((uint16_t)isrAdress >> 16);    //>> 16 = casting uses 16 MSB
+    entry->offsetLow = (uint16_t) isrAdress;                         //casting uses 16 LSBs
+    entry->offsetHigh = (uint16_t)(isrAdress >> 16);      //>> 16 = casting uses 16 MSB
     entry->reserved = 0x0;
     entry->segmentSelector = KERNEL_CODE_SEGMENT_START;
     entry->flags = flags;
@@ -31,9 +31,10 @@ void initIdtEntry(uint8_t entryNum, void* isrAdress, uint8_t flags){
 //}
 
 void initIdt(){
-    extern void* isrTable[];
+    extern uint32_t* isrTable;
+    tmpPrint('A' + isrTable[10]);
     
-    IDTR idtr = {sizeof(idt) - 1, idt};
+    IDTRegister idtr = {NUM_OF_IDT_ENTRIES * sizeof(IDTEntry) - 1, idt};
 
     //init all IDT entries
     //ISR 0-31: CPU exceptions
@@ -41,7 +42,7 @@ void initIdt(){
         initIdtEntry(i, isrTable[i], IDT_FLAGS_TRAP_GATE_RING0);
 
     //ISR 32-255: Interrupts
-    //used uint16_t to avoidbecuase in uint8_t the value after 255 is 0
+    //used uint16_t becuase in uint8_t the value after 255 is 0
     //for(uint16_t i = FIRST_INTERRUPT_ENTRY_INDEX; i <= LAST_INTERRUPT_ENTRY_INDEX; i++)
     //    initIdtEntry(i, exceptionHandler, IDT_FLAGS_INTERRUPT_GATE_RING3);
 
@@ -52,5 +53,5 @@ void initIdt(){
         : "r" (&idtr)
     );
     //enable some interrupts???
-    sti();
+    //sti();
 }
