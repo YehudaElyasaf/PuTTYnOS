@@ -13,8 +13,8 @@ void main(){
     initialize();
     
     //special divide by zero
-    volatile int i = 1 / 0;
-    asm __volatile__("int $3");
+    //volatile int i = 1 / 0;
+    //asm __volatile__("int $3");
 
 
     //tmpPrint('c');
