@@ -9,7 +9,7 @@ static IDTEntry idt[NUM_OF_IDT_ENTRIES];
 void initIdtEntry(uint8_t entryNum, uint32_t isrAdress, uint8_t flags){
     IDTEntry* entry = &idt[entryNum];
     
-    entry->offsetLow = (uint16_t) isrAdress;                         //casting uses 16 LSBs
+    entry->offsetLow = (uint16_t) isrAdress;              //casting uses 16 LSBs
     entry->offsetHigh = (uint16_t)(isrAdress >> 16);      //>> 16 = casting uses 16 MSB
     entry->reserved = 0x0;
     entry->segmentSelector = KERNEL_CODE_SEGMENT_START;
@@ -30,11 +30,11 @@ void initIdtEntry(uint8_t entryNum, uint32_t isrAdress, uint8_t flags){
 //    hlt();
 //}
 
+extern uint32_t* isrTable;
 void initIdt(){
-    extern uint32_t* isrTable;
-    tmpPrint('A' + isrTable[10]);
-    
-    IDTRegister idtr = {NUM_OF_IDT_ENTRIES * sizeof(IDTEntry) - 1, idt};
+    tmpPrint('A' + isrTable[9]);
+
+    IDTRegister idtr = {sizeof(idt) - 1, idt};
 
     //init all IDT entries
     //ISR 0-31: CPU exceptions
@@ -53,5 +53,5 @@ void initIdt(){
         : "r" (&idtr)
     );
     //enable some interrupts???
-    //sti();
+    sti();
 }

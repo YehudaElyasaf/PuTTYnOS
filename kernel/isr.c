@@ -2,7 +2,7 @@
 #include "asm.h"
 #include "io/output.h"
 
-void isrHandler(void){
+void isrHandler(){
     tmpPrint('b');
     cli();
     hlt();
