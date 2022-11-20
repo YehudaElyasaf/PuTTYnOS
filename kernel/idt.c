@@ -1,6 +1,6 @@
 #include "idt.h"
 #include "asm.h"
-#include "io/output.h"
+#include "io/print.h"
 
 #define KERNEL_CODE_SEGMENT_START     0x8
 
@@ -32,8 +32,6 @@ void initIdtEntry(uint8_t entryNum, uint32_t isrAdress, uint8_t flags){
 
 extern uint32_t* isrTable;
 void initIdt(){
-    tmpPrint('A' + isrTable[9]);
-
     IDTRegister idtr = {sizeof(idt) - 1, idt};
 
     //init all IDT entries
@@ -48,10 +46,10 @@ void initIdt(){
 
     //load IDT
     asm __volatile__ (
-        "lidt (%0);"
+        "lidt (%0)"
         : //no output
         : "r" (&idtr)
     );
     //enable some interrupts???
-    sti();
+    //sti();
 }
