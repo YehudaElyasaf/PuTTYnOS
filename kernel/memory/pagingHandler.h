@@ -2,6 +2,8 @@
 #include <stdint.h>
 #define PDT_SIZE 1024
 
+extern startVirtualMode(uint32_t address);
+
 typedef struct __attribute__((__packed__)) { // packed so it won't pad the struct
     unsigned pageSize : 1;       // page size, 0 is for 4 Kib (32-bit), 1 is for 4 Mib (64-bit)
     unsigned available : 1;      // empty bit for kernel use if we need
@@ -26,18 +28,14 @@ typedef struct {
 } PDT;
 
 void initPaging(uint32_t address) {
-    PDT* table = (PDT*)address;
+    //PDT* table = (PDT*)address;
 
     //PageDirectoryEntry firstEntry = {0x00001, 0, (PageDirectoryFlags){0, 0, 1, 1, 1, 1, 1, 1}};
-    //*(table->entries) = firstEntry;
+    //table->entries[1] = firstEntry;
 
     // last entry points to the pdt
-    PageDirectoryEntry lastEntry = {address<<12, 0, (PageDirectoryFlags){0, 0, 0, 1, 1, 0, 1, 1}};
-    table->entries[PDT_SIZE-1] = lastEntry;
+    //PageDirectoryEntry lastEntry = {address<<12, 0, (PageDirectoryFlags){0, 0, 0, 1, 1, 0, 1, 1}};
+    //table->entries[PDT_SIZE-1] = lastEntry;
 
-    __asm__("mov %0, %%eax" :: "r"(address));
-    __asm__("mov %eax, %cr3");
-    __asm__("mov %cr0, %eax");
-    __asm__("or %0, %%eax" :: "i"(0x80000001));
-    __asm__("mov %eax, %cr0");
+    startVirtualMode(address);
 }

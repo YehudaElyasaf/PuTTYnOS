@@ -1,4 +1,4 @@
 #pragma once
 
 void initialize();
-void main();
+int main();
