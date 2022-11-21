@@ -2,7 +2,7 @@
 #include <stdint.h>
 #define PDT_SIZE 1024
 
-extern startVirtualMode(uint32_t address);
+extern void startVirtualMode(uint32_t address);
 
 typedef struct __attribute__((__packed__)) { // packed so it won't pad the struct
     unsigned pageSize : 1;       // page size, 0 is for 4 Kib (32-bit), 1 is for 4 Mib (64-bit)
