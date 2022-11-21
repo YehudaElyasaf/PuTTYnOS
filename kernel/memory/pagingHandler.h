@@ -27,15 +27,13 @@ typedef struct {
     PageDirectoryEntry entries[PDT_SIZE];
 } PDT;
 
-void initPaging(uint32_t address) {
-    //PDT* table = (PDT*)address;
+void initPDT(uint32_t address) {
+    PDT* table = (PDT*)address;
 
-    //PageDirectoryEntry firstEntry = {0x00001, 0, (PageDirectoryFlags){0, 0, 1, 1, 1, 1, 1, 1}};
-    //table->entries[1] = firstEntry;
+    PageDirectoryEntry firstEntry = {0x00001, 0, (PageDirectoryFlags){0, 0, 0, 1, 0, 1, 1, 1}};
+    table->entries[1] = firstEntry;
 
     // last entry points to the pdt
-    //PageDirectoryEntry lastEntry = {address<<12, 0, (PageDirectoryFlags){0, 0, 0, 1, 1, 0, 1, 1}};
-    //table->entries[PDT_SIZE-1] = lastEntry;
-
-    startVirtualMode(address);
+    PageDirectoryEntry lastEntry = {address<<12, 0, (PageDirectoryFlags){0, 0, 0, 1, 0, 1, 1, 1}};
+    table->entries[PDT_SIZE-1] = lastEntry;
 }

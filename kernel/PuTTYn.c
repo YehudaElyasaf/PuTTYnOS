@@ -4,7 +4,8 @@
 #include "idt.h"
 
 void initialize(){
-    initPaging(0x0FF00000);
+    initPDT(0x0FF00000);
+    startVirtualMode(0x0FF00000);
 }
 
 int main() {
