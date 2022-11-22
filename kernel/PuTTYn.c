@@ -9,7 +9,6 @@ void initialize(){
 }
 
 void main(){
-    tmpPrint('a');
     initialize();
     
     //special divide by zero
