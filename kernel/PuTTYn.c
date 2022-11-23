@@ -5,7 +5,7 @@
 
 void initialize(){
     initPDT(0x0FF00000);
-    startVirtualMode(0x0FF00000);
+    //startVirtualMode(0x0FF00000);
 }
 
 void main(){
