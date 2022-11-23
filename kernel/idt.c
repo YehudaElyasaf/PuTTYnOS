@@ -32,7 +32,6 @@ void initIdtEntry(uint8_t entryNum, uint32_t isrAdress, uint8_t flags){
 
 extern uint32_t* isrTable;
 void initIdt(){
-    tmpPrint('0' + isrTable[5]);
     IDTRegister idtr = {sizeof(idt) - 1, idt};
 
     //init all IDT entries
@@ -52,5 +51,5 @@ void initIdt(){
         : "r" (&idtr)
     );
     //enable some interrupts???
-    //sti();
+    sti();
 }
