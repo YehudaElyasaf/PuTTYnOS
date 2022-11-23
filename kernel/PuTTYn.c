@@ -8,7 +8,8 @@ void initialize(){
     startVirtualMode(0x0FF00000);
 }
 
-int main() {
+void main(){
+
     *((char*)0x00001000) = '0';
 
     char* video_memory = (char*) 0x000b8000;
@@ -18,5 +19,5 @@ int main() {
     initialize();
     
     *(video_memory + 2) = *((char*)0x00001000);
-    return 0;
+    
 }
