@@ -72,6 +72,6 @@ with open(GENERATED_FILE_PATH, 'w') as generated_file:
     generated_file.write('\nglobal isrTable\n')
     generated_file.write('isrTable:\n')
     for isr_number in range(NUMBER_OF_ISRS):
-        generated_file.write(f'\tdd 0x3\n')
+        generated_file.write(f'\tdd isr{isr_number}\n')
 
 print(f'file {GENERATED_FILE_PATH} generated successfully!')
