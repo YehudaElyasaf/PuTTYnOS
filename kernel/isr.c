@@ -3,7 +3,7 @@
 #include "io/print.h"
 
 void isrHandler(){
-    tmpPrint('b');
+    //tmpPrint('b');
     cli();
     hlt();
 }

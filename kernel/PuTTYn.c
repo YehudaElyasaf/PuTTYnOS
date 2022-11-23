@@ -16,5 +16,5 @@ void main(){
     //volatile int i = 1 / 0;
     //asm __volatile__("int $3");
 
-    printChar('b', (LIGHT_PURPLE << 4) + PURPLE, 7, 79);
+    kcprint("artf", COLOR_RED, COLOR_BLACK);
 }
