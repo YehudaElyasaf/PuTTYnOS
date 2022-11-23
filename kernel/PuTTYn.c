@@ -13,7 +13,7 @@ void main(){
     
     //special divide by zero
     //volatile int i = 1 / 0;
-    asm __volatile__("int $3");
+    //asm __volatile__("int $3");
 
     tmpPrint('c');
 }
