@@ -36,6 +36,4 @@ void initPDT(uint32_t address) {
     // last entry points to the pdt
     PageDirectoryEntry lastEntry = {address<<12, 0, (PageDirectoryFlags){0, 0, 0, 1, 0, 1, 1, 1}};
     table->entries[PDT_SIZE-1] = lastEntry;
-
-    tmpPrint('1');
 }
