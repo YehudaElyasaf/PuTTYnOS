@@ -9,7 +9,7 @@ void initialize(){
 }
 
 void main(){
-
+    
     *((char*)0x00001000) = '0';
 
     char* video_memory = (char*) 0x000b8000;
