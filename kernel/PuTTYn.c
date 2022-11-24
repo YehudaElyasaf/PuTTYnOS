@@ -16,11 +16,13 @@ void main(){
     //special divide by zero
     //volatile int i = 1 / 0;
     //asm __volatile__("int $3");
-    //setCursorOffset(0);
 
-    //char str1[] = "Hello\n ";
-    char str1[] = "Hello\n";
-    kcprint(str1, RED, DARK_GRAY);
-    kprint(str1);
-    kcprinth(0x424242, RED, LIGHT_BLUE);
+    int d=  102;
+    for(int i=1; i< d; i++){
+        kprinti(i);
+        kprinti(i);
+        kprinti(i);
+        kprinti(i);
+        kprintc('\n');
+    }
 }

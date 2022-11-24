@@ -3,10 +3,8 @@
 #include "screen.h"
 #include "../../lib/convert.h"
 
-#define ATTRIBUTE_SIZE 2
-#define VIDEO_MEMORY_ADDRESS 0xb8000
 #define TAB_INDENT 4
-#define MAX_LONG_LENGTH 20 //2^64 has 20 digits
+#define MAX_LONG_ASCII_LENGTH 20 //2^64 has 20 digits
 
 enum CHARS{
     STRING_TERMINATOR_ASCII =     '\0',
@@ -42,15 +40,14 @@ void kcprintc(char ch, uint8_t color, uint8_t backgroundColor){
 }
 
 void kcprinti(int num, uint8_t color, uint8_t backgroundColor){
-    char buffer[MAX_LONG_LENGTH] = { 0 };
+    char buffer[MAX_LONG_ASCII_LENGTH] = { 0 };
     
     itoa(num, buffer);
     kcprint(buffer, color, backgroundColor);
 }
 
 void kcprinth(int num, uint8_t color, uint8_t backgroundColor){
-    char buffer[MAX_LONG_LENGTH] = { 0 };
-
+    char buffer[MAX_LONG_ASCII_LENGTH] = { 0 };
     itoh(num, buffer);
     kcprint(buffer, color, backgroundColor);
 }
@@ -73,6 +70,10 @@ void printChar(unsigned char ch, uint8_t attribute, uint16_t offset){
         pVideoMemory[ATTRIBUTE_SIZE * (offset) + 1] = attribute;
         incCursorOffset();
     }
+
+    if(getCursorRow() > NUMBER_OF_ROWS - 3)
+        //close to end of the screen
+        scrollScreen(1);
 }
 
 uint16_t getCursorOffset(){

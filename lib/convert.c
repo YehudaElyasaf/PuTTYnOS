@@ -1,4 +1,5 @@
 #include "convert.h"
+#include "string.h"
 
 #define BASE10 10
 #define BASE16 0x10
@@ -13,7 +14,6 @@ void itoa(long n, char* buffer){
         start = 1;
         n *= -1;
     }
-    n = reverseNum(n, BASE10);
     
     for(int i = start; n != 0; i++){
         buffer[i] = '0' + (n % BASE10);
@@ -23,6 +23,8 @@ void itoa(long n, char* buffer){
     if(buffer[0] == 0)
         //n is zero
         buffer[0] = '0';
+
+    strrev(&buffer[start]);
 }
 
 void itoh(unsigned long n, char* buffer){
@@ -34,7 +36,6 @@ void itoh(unsigned long n, char* buffer){
     buffer[1] = 'x';
     start++;
 
-    n = reverseNum(n, BASE16);
     for(int i = start; n != 0; i++){
         int digit = n % BASE16;
 
@@ -48,18 +49,5 @@ void itoh(unsigned long n, char* buffer){
         n /= BASE16;
     }
 
-}
-
-long reverseNum(long n, int base){
-    int result = 0;
-    
-    for(int i = 0; n != 0; i++){
-        result += n % base;
-        n /= base;
-
-        if(n != 0)
-            result *= base;
-    }
-
-    return result;
+    strrev(&buffer[start]); //reverse string from start
 }
