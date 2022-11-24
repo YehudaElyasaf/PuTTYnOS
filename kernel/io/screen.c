@@ -1,5 +1,6 @@
 #include "screen.h"
 #include "print.h"
+#include "../../lib/memory.h"
 
 static uint8_t defaultColor;
 static uint8_t defaultBackgroundColor;
@@ -34,6 +35,14 @@ void clearScreen(){
     
     setCursorOffset(0);
 }
-void scrollLines(unsigned int linesToScroll){
-    for(int i = 0; i < linesToScroll; );
+void scrollScreen(unsigned short linesToScroll){
+    for(int i = 0; i < linesToScroll; i++){ //start from 1, copy line 1 to 0, 2 to 1, etc.
+        //scroll line by line
+        for (int row = 1; row < NUMBER_OF_ROWS; row++){
+            uint8_t* src = VIDEO_MEMORY_ADDRESS + (row * NUMBER_OF_COLS * ATTRIBUTE_SIZE);
+            uint8_t* dst = VIDEO_MEMORY_ADDRESS + ((row - 1) * NUMBER_OF_COLS * ATTRIBUTE_SIZE);
+            memcpy(src, dst, NUMBER_OF_COLS);
+        }
+        setCursorRow(getCursorRow() - 1); //scroll cursor offset too
+    }
 }

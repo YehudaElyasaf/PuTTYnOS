@@ -21,6 +21,8 @@ enum COLORS{
     WHITE
 };
 
+#define VIDEO_MEMORY_ADDRESS 0xb8000
+
 #define SCREEN_CONTROL_REGISTER_ADRESS  0x3d4
 #define SCREEN_DATA_REGISTER_ADRESS     0x3d5
 #define CURSOR_OFFSET_LOW               15
@@ -29,6 +31,7 @@ enum COLORS{
 
 #define NUMBER_OF_ROWS 25
 #define NUMBER_OF_COLS 80
+#define ATTRIBUTE_SIZE 2
 
 //print string
 void kprint(char* str);
