@@ -4,9 +4,9 @@
 static uint8_t defaultColor;
 static uint8_t defaultBackgroundColor;
 
-void initScreen(){
-    defaultColor = WHITE;
-    defaultBackgroundColor = RED;
+void initScreen(uint8_t color, uint8_t backgroundColor){
+    defaultColor = color;
+    defaultBackgroundColor = backgroundColor;
 
     clearScreen();
 }

@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-void initScreen();
+void initScreen(uint8_t color, uint8_t backgroundColor);
 void clearScreen();
 void scrollLines(unsigned int linesToScroll); //TODO
 

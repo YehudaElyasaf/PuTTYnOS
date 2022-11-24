@@ -30,6 +30,15 @@ enum COLORS{
 #define NUMBER_OF_ROWS 25
 #define NUMBER_OF_COLS 80
 
+//print string
+void kprint(char* str);
+//print char
+void kprintc(char ch);
+//print int
+void kprinti(int num);
+//print hex
+void kprinth(int num);
+
 //print colored string
 void kcprint(char* str, uint8_t color, uint8_t backgroundColor);
 //print colored char
@@ -38,6 +47,7 @@ void kcprintc(char ch, uint8_t color, uint8_t backgroundColor);
 void kcprinti(int num, uint8_t color, uint8_t backgroundColor);
 //print colored hex
 void kcprinth(int num, uint8_t color, uint8_t backgroundColor);
+
 
 uint16_t getCursorOffset();
 void setCursorOffset(uint16_t offset);
