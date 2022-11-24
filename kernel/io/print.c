@@ -5,14 +5,16 @@
 #define NUMBER_OF_ROWS 25
 #define NUMBER_OF_COLS 80
 #define VIDEO_MEMORY_ADDRESS 0xb8000
+#define TAB_INDENT 4
 
 enum CHARS{
-    STRING_TERMINATOR_CHAR =     '\0',
-    NEWLINE_CHAR =               '\n'
+    STRING_TERMINATOR_ASCII =     '\0',
+    NEWLINE_ASCII =               '\n',
+    TAB_ASCII =                   '\t'
 };
 
 void kcprint(char* str, uint8_t color, uint8_t backgroundColor){
-    for(int i = 0; str[i] != STRING_TERMINATOR_CHAR; i++){
+    for(int i = 0; str[i] != STRING_TERMINATOR_ASCII; i++){
         kcprintc(str[i], color, backgroundColor);
     }
 }
@@ -24,10 +26,15 @@ void kcprintc(char ch, uint8_t color, uint8_t backgroundColor){
 
 //private function. no declaration in print.h
 void printChar(unsigned char ch, uint8_t attribute, uint16_t offset){
-    if(ch == NEWLINE_CHAR){
+    if(ch == NEWLINE_ASCII){
         //print newline
         setCursorCol(0);
         setCursorRow(getCursorRow() + 1);
+    }
+    else if(ch == TAB_ASCII){
+        //print tab
+        incCursorOffset();
+        setCursorCol(getCursorCol() + (TAB_INDENT - (getCursorCol() % TAB_INDENT)));
     }
     else{
         uint8_t* pVideoMemory = (uint8_t*)VIDEO_MEMORY_ADDRESS;
