@@ -2,6 +2,7 @@
 
 #define BASE10 10
 #define BASE16 0x10
+#define LAST_DIGIT 9
 
 void itoa(long n, char* buffer){
     int start = 0;
@@ -15,8 +16,8 @@ void itoa(long n, char* buffer){
     n = reverseNum(n, BASE10);
     
     for(int i = start; n != 0; i++){
-        buffer[i] = '0' + (n % 10);
-        n /= 10;
+        buffer[i] = '0' + (n % BASE10);
+        n /= BASE10;
     }
 
     if(buffer[0] == 0)
@@ -24,8 +25,29 @@ void itoa(long n, char* buffer){
         buffer[0] = '0';
 }
 
-void itoh(long n, char* buffer){
-    //TODO
+void itoh(unsigned long n, char* buffer){
+    int start = 0;
+
+    //write 0x
+    buffer[start] = '0';
+    start++;
+    buffer[1] = 'x';
+    start++;
+
+    n = reverseNum(n, BASE16);
+    for(int i = start; n != 0; i++){
+        int digit = n % BASE16;
+
+        if(digit <= LAST_DIGIT)
+            //digit is 0-9
+            buffer[i] = '0' + digit;
+        else
+            //digit is A-F
+            buffer[i] = 'A' + digit;
+        
+        n /= BASE16;
+    }
+
 }
 
 long reverseNum(long n, int base){

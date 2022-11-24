@@ -22,6 +22,5 @@ void main(){
     char str1[] = "Hello";
     kcprint(str1, RED, DARK_GRAY);
     kprint(str1);
-    kcprinti(424242, WHITE, LIGHT_BLUE);
-    kprinti(424242);
+    kcprinth(0x424242, RED, LIGHT_BLUE);
 }
