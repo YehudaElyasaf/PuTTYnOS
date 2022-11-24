@@ -30,8 +30,8 @@ enum COLORS{
 #define NUMBER_OF_ROWS 25
 #define NUMBER_OF_COLS 80
 
-static uint8_t defaultColor;
-static uint8_t defaultBackgroundColor;
+uint8_t defaultColor;
+uint8_t defaultBackgroundColor;
 
 //print colored string
 void kcprint(char* str, uint8_t color, uint8_t backgroundColor);
