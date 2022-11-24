@@ -17,7 +17,7 @@ void main(){
     //asm __volatile__("int $3");
     //setCursorOffset(0);
 
-    char str1[] = "12\n34";
+    char str1[] = "12\n\t34";
     char* str2 = "5678";
     kcprint(str1, BLACK, RED);
     kcprint(str2, BLACK, RED);
