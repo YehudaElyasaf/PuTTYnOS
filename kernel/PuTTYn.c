@@ -1,5 +1,6 @@
 #include "PuTTYn.h"
 #include "io/print.h"
+#include "io/screen.h"
 #include "memory/pagingHandler.h"
 #include "idt.h"
 

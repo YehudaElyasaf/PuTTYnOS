@@ -73,5 +73,3 @@ with open(GENERATED_FILE_PATH, 'w') as generated_file:
     generated_file.write('isrTable:\n')
     for isr_number in range(NUMBER_OF_ISRS):
         generated_file.write(f'\tdd isr{isr_number}\n')
-
-print(f'file {GENERATED_FILE_PATH} generated successfully!')

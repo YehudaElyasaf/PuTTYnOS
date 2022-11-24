@@ -11,6 +11,9 @@ enum CHARS{
     TAB_ASCII =                   '\t'
 };
 
+//private function. no declaration in print.h
+void printChar(unsigned char ch, uint8_t attribute, uint16_t offset);
+
 void kcprint(char* str, uint8_t color, uint8_t backgroundColor){
     for(int i = 0; str[i] != STRING_TERMINATOR_ASCII; i++){
         kcprintc(str[i], color, backgroundColor);
