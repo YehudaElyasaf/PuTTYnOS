@@ -7,7 +7,7 @@
 void initialize(){
     //initPaging(0x0FF00000);
     //initIdt();
-    clearScreen();
+    initScreen();
 }
 
 void main(){
@@ -18,9 +18,11 @@ void main(){
     //asm __volatile__("int $3");
     //setCursorOffset(0);
 
-    char str1[] = "12\n3";
+    //char str1[] = "Hello\n ";
+    char str1[] = "Hello";
     char* str2 = "5678";
-    kcprint(str1, BLACK, RED);
-    kcprint(str2, BLACK, RED);
-    kcprint("90", BLACK, RED);
+    kcprint(str1, WHITE, LIGHT_BLUE);
+    kcprint(str2, WHITE, LIGHT_BLUE);
+    kcprint("42", WHITE, LIGHT_BLUE);
+    kcprinti(123, WHITE, LIGHT_BLUE);
 }

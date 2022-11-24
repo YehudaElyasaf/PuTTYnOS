@@ -5,6 +5,7 @@
 #define ATTRIBUTE_SIZE 2
 #define VIDEO_MEMORY_ADDRESS 0xb8000
 #define TAB_INDENT 4
+#define MAX_LONG_LENGTH 20 //2^64 has 20 digits
 
 enum CHARS{
     STRING_TERMINATOR_ASCII =     '\0',
@@ -27,11 +28,17 @@ void kcprintc(char ch, uint8_t color, uint8_t backgroundColor){
 }
 
 void kcprinti(int num, uint8_t color, uint8_t backgroundColor){
-    kcprint(itoa(num), color, backgroundColor);
+    char buffer[MAX_LONG_LENGTH] = { 0 };
+    
+    itoa(num, buffer);
+    kcprint(buffer, color, backgroundColor);
 }
 
 void kcprinth(int num, uint8_t color, uint8_t backgroundColor){
-    kcprint(itoh(num), color, backgroundColor);
+    char buffer[MAX_LONG_LENGTH] = { 0 };
+
+    itoh(num, buffer);
+    kcprint(buffer, color, backgroundColor);
 }
 
 //private function. no declaration in print.h
