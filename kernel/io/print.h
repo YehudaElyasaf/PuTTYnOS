@@ -37,9 +37,9 @@ void kcprint(char* str, uint8_t color, uint8_t backgroundColor);
 //print colored char
 void kcprintc(char ch, uint8_t color, uint8_t backgroundColor);
 //print colored int
-//void kcprinti(int num, uint8_t color, uint8_t backgroundColor);
+void kcprinti(int num, uint8_t color, uint8_t backgroundColor);
 //print colored hex
-//void kcprinth(int integerNum, uint8_t color, uint8_t backgroundColor);
+void kcprinth(int num, uint8_t color, uint8_t backgroundColor);
 
 uint16_t getCursorOffset();
 void setCursorOffset(uint16_t offset);

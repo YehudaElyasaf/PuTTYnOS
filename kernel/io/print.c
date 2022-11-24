@@ -1,5 +1,6 @@
 #include "print.h"
 #include "ports.h"
+#include "../../lib/convert.h"
 
 #define ATTRIBUTE_SIZE 2
 #define VIDEO_MEMORY_ADDRESS 0xb8000
@@ -23,6 +24,14 @@ void kcprint(char* str, uint8_t color, uint8_t backgroundColor){
 void kcprintc(char ch, uint8_t color, uint8_t backgroundColor){
     uint8_t attribute = (backgroundColor << 4) + color;
     printChar(ch, attribute, getCursorOffset());
+}
+
+void kcprinti(int num, uint8_t color, uint8_t backgroundColor){
+    kcprint(itoa(num), color, backgroundColor);
+}
+
+void kcprinth(int num, uint8_t color, uint8_t backgroundColor){
+    kcprint(itoh(num), color, backgroundColor);
 }
 
 //private function. no declaration in print.h
