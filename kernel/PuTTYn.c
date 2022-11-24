@@ -15,6 +15,11 @@ void main(){
     //special divide by zero
     //volatile int i = 1 / 0;
     //asm __volatile__("int $3");
+    //setCursorOffset(0);
 
-    kcprint("artf", COLOR_RED, COLOR_BLACK);
+    char str1[] = "12\n34";
+    char* str2 = "5678";
+    kcprint(str1, BLACK, RED);
+    kcprint(str2, BLACK, RED);
+    kcprint("90", BLACK, RED);
 }

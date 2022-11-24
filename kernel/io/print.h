@@ -1,28 +1,44 @@
 #include <stdint.h>
 
 enum COLORS{
-    COLOR_BLACK = 0,
-    COLOR_BLUE,
-    COLOR_GREEN,
-    COLOR_CYAN,
-    COLOR_RED,
-    COLOR_PURPLE,
-    COLOR_BROWN,
-    COLOR_GRAY,
-    COLOR_DARK_GRAY,
-    COLOR_LIGHT_BLUE,
-    COLOR_LIGHT_GREEN,
-    COLOR_LIGHT_CYAN,
-    COLOR_LIGHT_RED,
-    COLOR_LIGHT_PURPLE,
-    COLOR_YELLOW,
-    COLOR_WHITE
+    BLACK = 0,
+    BLUE,
+    GREEN,
+    CYAN,
+    RED,
+    PURPLE,
+    BROWN,
+    GRAY,
+    DARK_GRAY,
+    LIGHT_BLUE,
+    LIGHT_GREEN,
+    LIGHT_CYAN,
+    LIGHT_RED,
+    LIGHT_PURPLE,
+    YELLOW,
+    WHITE
 };
 
-void kcprint(char* str, uint8_t color, uint8_t backgroundColor);
-void kcprintc(char ch, uint8_t color, uint8_t backgroundColor);
-//void kcprinti(int num, uint8_t color, uint8_t backgroundColor);
-//void kcprinth(int hexNum, uint8_t color, uint8_t backgroundColor);
+#define SCREEN_CONTROL_REGISTER_ADRESS  0x3d4
+#define SCREEN_DATA_REGISTER_ADRESS     0x3d5
+#define CURSOR_OFFSET_LOW               15
+#define CURSOR_OFFSET_HIGH              14
+#define CURSOR_OFFSET_LENGTH            16
 
-uint16_t getCursorOffset(); //TODO
-//void setCursorOffset(uint16_t offset);
+//print colored string
+void kcprint(char* str, uint8_t color, uint8_t backgroundColor);
+//print colored char
+void kcprintc(char ch, uint8_t color, uint8_t backgroundColor);
+//print colored int
+//void kcprinti(int num, uint8_t color, uint8_t backgroundColor);
+//print colored hex
+//void kcprinth(int integerNum, uint8_t color, uint8_t backgroundColor);
+
+uint16_t getCursorOffset();
+void setCursorOffset(uint16_t offset);
+uint16_t incCursorOffset();
+
+uint16_t getCursorCol();
+uint16_t getCursorRow();
+void setCursorCol(uint16_t col);
+void setCursorRow(uint16_t row);
