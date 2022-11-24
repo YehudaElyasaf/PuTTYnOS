@@ -19,7 +19,7 @@ void main(){
     //setCursorOffset(0);
 
     //char str1[] = "Hello\n ";
-    char str1[] = "Hello";
+    char str1[] = "Hello\n";
     kcprint(str1, RED, DARK_GRAY);
     kprint(str1);
     kcprinth(0x424242, RED, LIGHT_BLUE);

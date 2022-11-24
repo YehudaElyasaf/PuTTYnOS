@@ -9,7 +9,7 @@ DEFAULT_COLOR=\033[0;37m
 LOG_COLOR=\033[0;35m
 
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
-GCCFLAGS=-c -ffreestanding -mgeneral-regs-only -g
+GCCFLAGS=-c -ffreestanding -g
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= --oformat binary
 # LDFLAGS= -Ttext 0x1000 --oformat binary
