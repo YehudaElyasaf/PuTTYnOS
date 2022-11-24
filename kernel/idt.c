@@ -1,7 +1,7 @@
 #include "idt.h"
 #include "asm.h"
-#include "io/output.h"
 #include "isr.h"
+#include "io/print.h"
 
 #define KERNEL_CODE_SEGMENT_START     0x8
 
@@ -46,10 +46,10 @@ void initIdt(){
 
     //load IDT
     asm __volatile__ (
-        "lidt (%0);"
+        "lidt (%0)"
         : //no output
         : "r" (&idtr)
     );
     //enable some interrupts???
-    sti();
+    //sti();
 }

@@ -71,6 +71,7 @@ clean:
 	@echo "${LOG_COLOR}\nCLEANING BUILD FILES...${DEFAULT_COLOR}"
 	@rm -f $(shell find -name "*.o")
 	@rm -f $(shell find -name "*.bin")
+	@rm -f $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto gfile
 	@rm -f $(AUTO_GENERATED_ASM_FILE)
 
 	@echo "${SUCESS_COLOR}\c"

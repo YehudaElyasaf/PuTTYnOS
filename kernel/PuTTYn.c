@@ -1,23 +1,27 @@
 #include "PuTTYn.h"
-#include "io/output.h"
+#include "io/print.h"
+#include "io/screen.h"
 #include "memory/pagingHandler.h"
 #include "idt.h"
 
 void initialize(){
-    initPDT(0x0FF00000);
-    //startVirtualMode(0x0FF00000);
+    //initPaging(0x0FF00000);
+    //initIdt();
+    initScreen(WHITE, BLACK);
 }
 
 void main(){
-    
-    *((char*)0x00001000) = '0';
-
-    char* video_memory = (char*) 0x000b8000;
-
-    *(video_memory + 0) = *((char*)0x00001000);
-
     initialize();
     
-    *(video_memory + 2) = *((char*)0x00001000);
-    
+    //special divide by zero
+    //volatile int i = 1 / 0;
+    //asm __volatile__("int $3");
+    //setCursorOffset(0);
+
+    //char str1[] = "Hello\n ";
+    char str1[] = "Hello";
+    kcprint(str1, RED, DARK_GRAY);
+    kprint(str1);
+    kcprinti(424242, WHITE, LIGHT_BLUE);
+    kprinti(424242);
 }
