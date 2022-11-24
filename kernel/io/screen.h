@@ -1,8 +1,4 @@
 #pragma once
 
-void clearScreen(){
-    
-}
-void scroll(unsigned int linesToScroll){
-    for(int i = 0; i < linesToScroll; );
-}
+void clearScreen();
+void scrollLines(unsigned int linesToScroll);

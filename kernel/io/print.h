@@ -18,12 +18,17 @@ enum COLORS{
     YELLOW,
     WHITE
 };
+#define DEFAULT_COLOR WHITE
+#define DEFAULT_BACKGROUND_COLOR BLACK
 
 #define SCREEN_CONTROL_REGISTER_ADRESS  0x3d4
 #define SCREEN_DATA_REGISTER_ADRESS     0x3d5
 #define CURSOR_OFFSET_LOW               15
 #define CURSOR_OFFSET_HIGH              14
 #define CURSOR_OFFSET_LENGTH            16
+
+#define NUMBER_OF_ROWS 25
+#define NUMBER_OF_COLS 80
 
 //print colored string
 void kcprint(char* str, uint8_t color, uint8_t backgroundColor);

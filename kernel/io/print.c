@@ -2,8 +2,6 @@
 #include "ports.h"
 
 #define ATTRIBUTE_SIZE 2
-#define NUMBER_OF_ROWS 25
-#define NUMBER_OF_COLS 80
 #define VIDEO_MEMORY_ADDRESS 0xb8000
 #define TAB_INDENT 4
 

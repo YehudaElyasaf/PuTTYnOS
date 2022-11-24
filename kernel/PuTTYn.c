@@ -10,8 +10,7 @@ void initialize(){
 }
 
 void main(){
-    //tmpPrint('a');
-    //initialize();
+    initialize();
     
     //special divide by zero
     //volatile int i = 1 / 0;
