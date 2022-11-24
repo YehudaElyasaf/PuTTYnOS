@@ -1,4 +1,4 @@
-.PHONY: all clean run
+.PHONY: all clean run build
 
 OS_VERSION=PuTTYnOS-i386
 #32m = green
@@ -31,23 +31,20 @@ ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER=${ASM_OBJECT_FILES:./boot/kernelCaller.
 AUTO_GENERATED_ASM_FILE=kernel/isrs.asm
 
 
-all: $(OS_VERSION).img
 
 run: all
-	@truncate -s 144k $(OS_VERSION).img
-
 	@echo "${SUCESS_COLOR}\nRUNNING PuTTYnOS!${DEFAULT_COLOR}"
 	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS)
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
+build: $(OS_VERSION).img
+	@truncate -s 144k $(OS_VERSION).img
+
 $(OS_VERSION).img: boot/bootloader.bin PuTTYn.bin
 	@echo "${LOG_COLOR}\nCREATING DISK IMAGE...${DEFAULT_COLOR}"
 	@cat $^ > $@
 	@echo
-
-	@# auto run image
-	@make --no-print-directory run
 
 PuTTYn.bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
 	@echo "${LOG_COLOR}\nLINKING...${DEFAULT_COLOR}"
@@ -76,3 +73,4 @@ clean:
 
 	@echo "${SUCESS_COLOR}\c"
 	@echo "Successfully cleaned!\n${DEFAULT_COLOR}"
+
