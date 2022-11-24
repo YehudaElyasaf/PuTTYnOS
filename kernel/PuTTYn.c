@@ -24,5 +24,7 @@ void main(){
     kcprint(str1, WHITE, LIGHT_BLUE);
     kcprint(str2, WHITE, LIGHT_BLUE);
     kcprint("42", WHITE, LIGHT_BLUE);
-    kcprinti(123, WHITE, LIGHT_BLUE);
+    setDefaultBackgroundColor(GRAY);
+    clearScreen();
+    kcprinti(getDefaultBackgroundColor, WHITE, LIGHT_BLUE);
 }
