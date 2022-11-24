@@ -6,6 +6,7 @@
 void initialize(){
     //initPaging(0x0FF00000);
     //initIdt();
+    clearScreen();
 }
 
 void main(){
