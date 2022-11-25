@@ -41,7 +41,7 @@ void scrollScreen(unsigned short linesToScroll){
         for (int row = 1; row < NUMBER_OF_ROWS; row++){
             uint8_t* src = (uint8_t*)VIDEO_MEMORY_ADDRESS + (row * NUMBER_OF_COLS * ATTRIBUTE_SIZE);
             uint8_t* dst = (uint8_t*)VIDEO_MEMORY_ADDRESS + ((row - 1) * NUMBER_OF_COLS * ATTRIBUTE_SIZE);
-            memcpy(src, dst, NUMBER_OF_COLS);
+            memcpy(src, dst, NUMBER_OF_COLS * ATTRIBUTE_SIZE);
         }
         setCursorRow(getCursorRow() - 1); //scroll cursor offset too
     }

@@ -17,12 +17,12 @@ void main(){
     //volatile int i = 1 / 0;
     //asm __volatile__("int $3");
 
-    int d=  102;
+    int d=  100;
     for(int i=1; i< d; i++){
-        kprinti(i);
-        kprinti(i);
-        kprinti(i);
+        kcprintc('\t', BLACK, LIGHT_GREEN);
         kprinti(i);
         kprintc('\n');
     }
+    char str[] = "1234";
+    kprint(str);
 }

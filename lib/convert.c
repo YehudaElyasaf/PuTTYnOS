@@ -20,9 +20,11 @@ void itoa(long n, char* buffer){
         n /= BASE10;
     }
 
-    if(buffer[0] == 0)
+    if(buffer[start] == STRING_TERMINATOR){
         //n is zero
-        buffer[0] = '0';
+        buffer[start] = '0';
+        buffer[start + 1] = STRING_TERMINATOR;
+    }
 
     strrev(&buffer[start]);
 }
@@ -47,6 +49,11 @@ void itoh(unsigned long n, char* buffer){
             buffer[i] = 'A' + digit;
         
         n /= BASE16;
+    }
+
+    if(buffer[start] == STRING_TERMINATOR){
+        buffer[start] = '0';
+        buffer[start + 1] = STRING_TERMINATOR;
     }
 
     strrev(&buffer[start]); //reverse string from start

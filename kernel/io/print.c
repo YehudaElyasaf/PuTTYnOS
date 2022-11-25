@@ -61,8 +61,9 @@ void printChar(unsigned char ch, uint8_t attribute, uint16_t offset){
     }
     else if(ch == TAB_ASCII){
         //print tab
-        incCursorOffset();
-        setCursorCol(getCursorCol() + (TAB_INDENT - (getCursorCol() % TAB_INDENT)));
+        int numOfSpaces = (TAB_INDENT - ((getCursorCol()) % TAB_INDENT));
+        for(int i = 0; i < numOfSpaces; i++)
+            printChar(' ', attribute, offset + i);
     }
     else{
         uint8_t* pVideoMemory = (uint8_t*)VIDEO_MEMORY_ADDRESS;
