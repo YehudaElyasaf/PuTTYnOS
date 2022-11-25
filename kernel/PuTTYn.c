@@ -5,14 +5,13 @@
 #include "idt.h"
 
 void initialize(){
-    //initPaging(0x0FF00000);
+    initPDT(0x0FF00000);
     //initIdt();
     initScreen(WHITE, BLACK);
 }
 
 void main(){
     initialize();
-    
     //special divide by zero
     //volatile int i = 1 / 0;
     //asm __volatile__("int $3");
@@ -25,4 +24,5 @@ void main(){
     }
     char str[] = "1234";
     kprint(str);
+startVirtualMode(0x0FF00000);
 }
