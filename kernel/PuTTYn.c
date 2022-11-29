@@ -2,7 +2,7 @@
 #include "io/print.h"
 #include "io/screen.h"
 #include "memory/pagingHandler.h"
-#include "idt.h"
+#include "cpu/idt.h"
 
 void initialize(){
     initIdt();
@@ -11,10 +11,11 @@ void initialize(){
 
 void main(){
     initialize();
-    kprint("\n\n\n");
+    //call 3 ints
     //special divide by zero
-    //volatile int i = 1 / 0;
-    asm __volatile__("int $3");
+    volatile int i = 1 / 0;
+    asm __volatile__("int $7");
+    asm __volatile__("int $8");
     
     kprint("\n\nend!");
 }

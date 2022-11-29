@@ -26,7 +26,7 @@ ASM_FILES_EXCLUDING_BOOTLOADER=${ASM_FILES:./boot/bootloader.asm=}
 ASM_OBJECT_FILES=${ASM_FILES_EXCLUDING_BOOTLOADER:.asm=.o}
 #kernelCaller.o MUST be linked first, so it's added before all dependencies separately
 ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER=${ASM_OBJECT_FILES:./boot/kernelCaller.o=}
-AUTO_GENERATED_ASM_FILE=kernel/isrs.asm
+AUTO_GENERATED_ASM_FILE=kernel/cpu/isrs.asm
 
 all: build
 
@@ -58,7 +58,7 @@ boot/bootloader.bin: boot/bootloader.asm  $(AUTO_GENERATED_ASM_FILE)
 	@echo "${LOG_COLOR}\nCOMPILING...${DEFAULT_COLOR}"
 	@ $(NASM) $< -f bin -o $@
 
-$(AUTO_GENERATED_ASM_FILE): kernel/generateIsrTable.py #auto_generated_files
+$(AUTO_GENERATED_ASM_FILE): kernel/cpu/generateIsrTable.py #auto_generated_files
 	@echo "${LOG_COLOR}\nGENERATING FILES...${DEFAULT_COLOR}"
 	@ $(PY) $^
 
