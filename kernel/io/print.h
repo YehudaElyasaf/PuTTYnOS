@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "screen.h"
 
 enum COLORS{
     BLACK = 0,

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "print.h"
 
 void initScreen(uint8_t color, uint8_t backgroundColor);
 void clearScreen();

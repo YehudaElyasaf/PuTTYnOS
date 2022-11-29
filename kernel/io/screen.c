@@ -1,5 +1,4 @@
 #include "screen.h"
-#include "print.h"
 #include "../../lib/memory.h"
 
 static uint8_t defaultColor;

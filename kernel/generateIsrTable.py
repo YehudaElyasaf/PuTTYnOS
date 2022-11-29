@@ -20,7 +20,6 @@ callIsrHandler:
 	mov fs, ax
 	mov gs, ax
     
-    ;TODO: push isr number
     call isrHandler
 
     ;return to kernel segment
@@ -33,7 +32,7 @@ callIsrHandler:
     popa
     add esp, 4; pop isr number
     add esp, 4; pop error code
-    ;sti; re-enble interrupts
+    sti; re-enble interrupts
     iret
 '''
 

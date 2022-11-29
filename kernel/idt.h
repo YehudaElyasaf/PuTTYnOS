@@ -38,19 +38,5 @@ typedef struct
 } __attribute__((packed)) IDTRegister;
 
 
-//typedef struct IsrFrame
-//{
-//    uint32_t ip;
-//    uint32_t cs;
-//    uint32_t flags;
-//    uint32_t sp;
-//    uint32_t ss;
-//} __attribute__((packed)) IsrFrame;
- 
-//__attribute__((interrupt)) void exceptionHandler(IsrFrame* isrFrame);
-//__attribute__((interrupt)) void exceptionHandlerWithErrorCode(IsrFrame* isrFrame, uint32_t errCode);
-
-//check if entry's ISR has an error code
-bool hasErrorCode(uint8_t entryNum);
-void initIdtEntry(uint8_t entryNum, uint32_t isrAdress, uint8_t flags);
+void initIdtEntry(uint8_t entryNum, void* isrAdress, uint8_t flags);
 void initIdt();

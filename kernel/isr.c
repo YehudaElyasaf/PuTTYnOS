@@ -2,8 +2,7 @@
 #include "asm.h"
 #include "io/print.h"
 
-void isrHandler(){
-    //tmpPrint('b');
-    cli();
-    hlt();
+
+void isrHandler(registers_t r){
+    kcprint("An isr was called!\n", RED, getDefaultBackgroundColor());
 }
