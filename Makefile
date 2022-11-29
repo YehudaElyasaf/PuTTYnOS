@@ -11,15 +11,13 @@ LOG_COLOR=\033[0;35m
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
 GCCFLAGS=-c -ffreestanding -g
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
-LDFLAGS= --oformat binary
-# LDFLAGS= -Ttext 0x1000 --oformat binary
+LDFLAGS= -Ttext 0x1000 --oformat binary
 QEMU=qemu-system-i386 -fda
 QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G
 NASM=nasm
 PY=python3
 
 C_FILES=$(shell find -name "*.c")
-# C_HEADER_FILES=$(C_FILES:.c=.h)
 C_OBJECT_FILES=${C_FILES:.c=.o}
 
 ASM_FILES=$(shell find -name "*.asm") $(AUTO_GENERATED_ASM_FILE)
