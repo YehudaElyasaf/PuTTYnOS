@@ -27,6 +27,7 @@ ASM_OBJECT_FILES=${ASM_FILES_EXCLUDING_BOOTLOADER:.asm=.o}
 #kernelCaller.o MUST be linked first, so it's added before all dependencies separately
 ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER=${ASM_OBJECT_FILES:./boot/kernelCaller.o=}
 AUTO_GENERATED_ASM_FILE=kernel/cpu/isrs.asm
+AUTO_GENERATED_H_FILE=kernel/cpu/isrs.h
 
 all: build
 
@@ -58,16 +59,16 @@ boot/bootloader.bin: boot/bootloader.asm  $(AUTO_GENERATED_ASM_FILE)
 	@echo "${LOG_COLOR}\nCOMPILING...${DEFAULT_COLOR}"
 	@ $(NASM) $< -f bin -o $@
 
-$(AUTO_GENERATED_ASM_FILE): kernel/cpu/generateIsrTable.py #auto_generated_files
+$(AUTO_GENERATED_ASM_FILE): kernel/cpu/generateIsrsAsm.py kernel/cpu/generateIsrsH.py #auto_generated_files
 	@echo "${LOG_COLOR}\nGENERATING FILES...${DEFAULT_COLOR}"
-	@ $(PY) $^
+	@ $(foreach pyFile, $^, $(PY) $(pyFile);)
 
 clean:
 	@echo "${LOG_COLOR}\nCLEANING BUILD FILES...${DEFAULT_COLOR}"
 	@rm -f $(shell find -name "*.o")
 	@rm -f $(shell find -name "*.bin")
 	@rm -f $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto gfile
-	@rm -f $(AUTO_GENERATED_ASM_FILE)
+	@rm -f $(AUTO_GENERATED_ASM_FILE) $(AUTO_GENERATED_H_FILE)
 
 	@echo "${SUCESS_COLOR}\c"
 	@echo "Successfully cleaned!\n${DEFAULT_COLOR}"

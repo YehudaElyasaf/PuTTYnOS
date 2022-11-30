@@ -13,10 +13,12 @@ void main(){
     initialize();
     //call 3 ints
     //special divide by zero
-    volatile int i = 1 / 0;
-    asm __volatile__("int $7");
-    asm __volatile__("int $8");
+    //volatile int i = 1 / 0;
+    //asm __volatile__("int $7");
+    asm __volatile__("int $4");
+    asm __volatile__("int $4");
+    asm __volatile__("int $6");
     
-    kprint("\n\nend!");
+    //kprint("\n\nend!");
 }
 
