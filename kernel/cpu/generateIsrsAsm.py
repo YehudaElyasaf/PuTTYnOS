@@ -32,7 +32,7 @@ callIsrHandler:
     popa
     add esp, 4; pop isr number
     add esp, 4; pop error code
-    sti; re-enble interrupts
+    sti; re-enble irqs
     iret
 '''
 
@@ -54,7 +54,7 @@ isr{isr_number}:
     {push_error_code_asm}
     push byte {isr_number}; isr number
     jmp callIsrHandler
-    '''
+'''
 
 with open(GENERATED_FILE_PATH, 'w') as generated_file:
     generated_file.write(file_beginning)

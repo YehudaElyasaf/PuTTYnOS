@@ -15,8 +15,7 @@ void main(){
     //special divide by zero
     //int i = 1 / 0;
     
-    kprint("text\nhere!!!");
-    asm __volatile__("int $4");
-    
-    kprint("\n\nend!");
+    kprint("text here!!!");
+    kprint("\n\nend!");   
+    asm volatile("sti");
 }

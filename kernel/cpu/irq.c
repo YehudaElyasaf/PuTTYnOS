@@ -25,4 +25,6 @@ void initIrq(){
 
 void irqHandler(IsrFrame isrFrame){
     kcprint("\nIRQ\n", LIGHT_RED, getBackgroundColor());
+    kcprinti(isrFrame.isrNumber, LIGHT_RED, getBackgroundColor());
+    hlt();
 }

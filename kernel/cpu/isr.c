@@ -29,6 +29,7 @@ char* isrNames[] = {
    "SIMD Floating Point Exception",
    //20
    "Virtualization Exception",
+   "Control Protection Exception",
    "Reserved",
    "Reserved",
    "Reserved",

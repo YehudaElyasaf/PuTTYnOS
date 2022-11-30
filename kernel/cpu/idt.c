@@ -19,7 +19,7 @@ void initIdtEntry(uint8_t entryNum, uint32_t* isrAdress, uint8_t flags){
 }
 
 void initIdt(){
-    //disable interrupts
+    //disable irqs
     cli();
     
     IDTRegister idtr = {sizeof(idt) - 1, idt};
@@ -37,4 +37,7 @@ void initIdt(){
         : //no output
         : "r" (&idtr)
     );
+
+    //enable irqs
+    sti();
 }
