@@ -1,5 +1,4 @@
 #include "isr.h"
-#include "idt.h"
 #include "../asm.h"
 #include "../io/print.h"
 #include "isrs.h" //auto generated
@@ -50,9 +49,9 @@ static inline void exit(){
 void isrHandler(IsrFrame isrFrame){
     kcprint("\nERROR!\n", LIGHT_RED, getBackgroundColor());
     kprint("\tIRQ ");
-    kprinti(isrFrame.isrNumber);
+    kprinti(isrFrame.isrIndex);
     kprint(": ");
-    kprint(isrNames[isrFrame.isrNumber]);
+    kprint(isrNames[isrFrame.isrIndex]);
     kprint(" Error");
     if(isrFrame.errorCode != 0){
         //print error code

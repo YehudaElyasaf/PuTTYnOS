@@ -1,4 +1,5 @@
 NUMBER_OF_IRQS = 16
+FIRST_IRQ_INDEX = 32
 GENERATED_FILE_PATH = 'kernel/cpu/irqs.asm'
 
 file_beginning = '''; AUTO GENERATED FILE
@@ -22,15 +23,15 @@ callIrqHandler:
     call irqHandler
 
     ;return to kernel segment
-    pop eax
-    mov ds, ax
-	mov es, ax
-	mov fs, ax
-	mov gs, ax
+    pop ebx
+    mov ds, bx
+	mov es, bx
+	mov fs, bx
+	mov gs, bx
 
     popa
     add esp, 4; pop irq number
-    add esp, 4; pop error code
+    add esp, 4; pop irq index in IDT
     sti; re-enble irqs
     iret
 '''
@@ -42,8 +43,8 @@ def specific_irq_genereate(irq_number):
 global irq{irq_number}
 irq{irq_number}:
     cli
-    {push_error_code_asm}
     push byte {irq_number}; irq number
+    push byte {irq_number + FIRST_IRQ_INDEX}; irq index int IDT
     jmp callIrqHandler
 '''
 

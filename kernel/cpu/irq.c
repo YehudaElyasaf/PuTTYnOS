@@ -1,8 +1,11 @@
 #include "irq.h"
+#include "isr.h"
 #include "idt.h"
 #include "../ports.h"
 #include "irqs.h" //auto generated
 #include "../io/print.h"
+
+void (*irqHandlers[NUM_OF_IDT_ENTRIES])(IsrFrame) = {0};
 
 void initIrq(){
     //TODO: change order?
@@ -21,10 +24,42 @@ void initIrq(){
 
     for(int irqNumber = 0; irqNumber < NUM_OF_IRQS; irqNumber++) //not <=
         initIdtEntry(FIRST_IRQ_MASTER_ENTRY_INDEX + irqNumber, getIrq(irqNumber), IDT_FLAGS_INTERRUPT_GATE_RING3);
+
+    //install irq handlers
+    irqInstallHandler(IRQ0_TIMER,            defaultIrqHandler);
+    irqInstallHandler(IRQ1_KEYBOARD,         defaultIrqHandler);
+    irqInstallHandler(IRQ2_PIC2,             defaultIrqHandler);
+    irqInstallHandler(IRQ3_COM2,             defaultIrqHandler);
+    irqInstallHandler(IRQ4_COM1,             defaultIrqHandler);
+    irqInstallHandler(IRQ5_LPT2,             defaultIrqHandler);
+    irqInstallHandler(IRQ6_FLOPPY_DISK,      defaultIrqHandler);
+    irqInstallHandler(IRQ7_LPT1,             defaultIrqHandler);
+    irqInstallHandler(IRQ8_REAL_TIME_CLOCK,  defaultIrqHandler);
+    irqInstallHandler(IRQ9_GENERAL_IO,       defaultIrqHandler);
+    irqInstallHandler(IRQ10_GENERAL_IO,      defaultIrqHandler);
+    irqInstallHandler(IRQ11_GENERAL_IO,      defaultIrqHandler);
+    irqInstallHandler(IRQ12_GENERAL_IO,      defaultIrqHandler);
+    irqInstallHandler(IRQ13_COMPRESSOR,      defaultIrqHandler);
+    irqInstallHandler(IRQ14_IDE_BUS,         defaultIrqHandler);
+    irqInstallHandler(IRQ15_IDE_BUS,         defaultIrqHandler);
 }
 
 void irqHandler(IsrFrame isrFrame){
-    kcprint("\nIRQ\n", LIGHT_RED, getBackgroundColor());
-    kcprinti(isrFrame.isrNumber, LIGHT_RED, getBackgroundColor());
-    hlt();
+    if(isrFrame.irqIndex >= FIRST_IRQ_SLAVE_ENTRY_INDEX)
+        out8bit(PIC_SLAVE_CONTROL_REGISTER, PIC_EOI_CMD);
+    out8bit(PIC_MASTER_CONTROL_REGISTER, PIC_EOI_CMD);
+
+    if(irqHandlers[isrFrame.irqIndex])
+        irqHandlers[isrFrame.irqIndex](isrFrame);
+}
+
+void irqInstallHandler(uint8_t irqNumber, uint32_t* adress){
+    irqHandlers[irqNumber + FIRST_IRQ_MASTER_ENTRY_INDEX] = adress;
+}
+
+void defaultIrqHandler(IsrFrame isrFrame){
+    kcprint("\nError!\n", LIGHT_RED, getBackgroundColor());
+    kprint("IRQ ");
+    kprinti(isrFrame.irqNumber);
+    kprint(" was called. This IRQ is not yet supported.\n");
 }

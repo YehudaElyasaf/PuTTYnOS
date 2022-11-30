@@ -38,6 +38,6 @@ void initIdt(){
         : "r" (&idtr)
     );
 
-    //enable irqs
-    sti();
+    //TODO: enable irqs
+    //sti();
 }

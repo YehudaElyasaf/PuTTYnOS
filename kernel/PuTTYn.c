@@ -17,5 +17,6 @@ void main(){
     
     kprint("text here!!!");
     kprint("\n\nend!");   
-    asm volatile("sti");
+    
+    sti();
 }
