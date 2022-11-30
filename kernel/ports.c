@@ -1,10 +1,11 @@
 #include "ports.h"
 
 #define GARBAGE_PORT 0x80
+#define GARBAGE_VALUE 0
 
 //write to garbage port, to wait a bit
-inline void portWait(){
-    out8bit(GARBAGE_PORT, 0);
+static inline void portWait(){
+    asm("out %%al, %%dx" : : "a"(GARBAGE_VALUE), "d"(GARBAGE_PORT));
 }
 uint8_t in8bit(uint16_t port){
     uint8_t buffer;
