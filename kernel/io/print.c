@@ -15,16 +15,16 @@ enum CHARS{
 void printChar(unsigned char ch, uint8_t attribute, uint16_t offset);
 
 void kprint(char* str){
-    kcprint(str, getDefaultColor(), getDefaultBackgroundColor());
+    kcprint(str, getColor(), getBackgroundColor());
 }
 void kprintc(char ch){
-    kcprintc(ch, getDefaultColor(), getDefaultBackgroundColor());
+    kcprintc(ch, getColor(), getBackgroundColor());
 }
 void kprinti(int num){
-    kcprinti(num, getDefaultColor(), getDefaultBackgroundColor());
+    kcprinti(num, getColor(), getBackgroundColor());
 }
 void kprinth(int num){
-    kcprinth(num, getDefaultColor(), getDefaultBackgroundColor());
+    kcprinth(num, getColor(), getBackgroundColor());
 }
 
 void kcprint(char* str, uint8_t color, uint8_t backgroundColor){

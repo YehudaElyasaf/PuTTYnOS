@@ -6,4 +6,5 @@
 *.vscode*
 
 #auto generated files
-kernel/isrs.asm
+kernel/cpu/isrs.asm
+kernel/cpu/isrs.h

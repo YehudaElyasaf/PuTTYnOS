@@ -10,19 +10,19 @@ void initScreen(uint8_t color, uint8_t backgroundColor){
 
     clearScreen();
 }
-uint8_t getDefaultColor(){
+uint8_t getColor(){
     return defaultColor;
 }
 
-uint8_t getDefaultBackgroundColor(){
+uint8_t getBackgroundColor(){
     return defaultBackgroundColor;
 }
 
-void setDefaultColor(uint8_t color){
+void setColor(uint8_t color){
     defaultColor = color;
 }
 
-void setDefaultBackgroundColor(uint8_t color){
+void setdColor(uint8_t color){
     defaultBackgroundColor = color;
 }
 

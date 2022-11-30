@@ -1,7 +1,8 @@
 #include "idt.h"
-#include "asm.h"
+#include "../asm.h"
 #include "isr.h"
 #include "../io/print.h"
+#include "isrs.h" //auto generated
 
 #define KERNEL_CODE_SEGMENT_START     0x8
 
@@ -25,7 +26,7 @@ void initIdt(){
     //init all IDT entries
     //ISR 0-31: CPU exceptions
     for(uint8_t isrNumber = FIRST_EXCEPTION_ENTRY_INDEX; isrNumber <= LAST_EXCEPTION_ENTRY_INDEX; isrNumber++)
-        initIdtEntry(isrNumber, getIsr(isrNumber), IDT_FLAGS_INTERRUPT_GATE_RING0);
+        initIdtEntry(isrNumber, getIsr(isrNumber), IDT_FLAGS_INTERRUPT_GATE_RING3);
 
     //ISR 32-255: Interrupts
     //used uint16_t becuase in uint8_t the value after 255 is 0
@@ -38,7 +39,4 @@ void initIdt(){
         : //no output
         : "r" (&idtr)
     );
-    
-    //enable interrupts
-    //sti();
 }
