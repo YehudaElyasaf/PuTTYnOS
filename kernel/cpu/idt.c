@@ -1,8 +1,8 @@
 #include "idt.h"
 #include "../asm.h"
-#include "isr.h"
 #include "../io/print.h"
-#include "isrs.h" //auto generated
+#include "isr.h"
+#include "irq.h"
 
 #define KERNEL_CODE_SEGMENT_START 0x8
 
@@ -23,9 +23,8 @@ void initIdt(){
     cli();
     
     IDTRegister idtr = {sizeof(idt) - 1, idt};
+    
     //create IDT entries
-
-
     //0-31: CPU exceptions
     initIsr();
 

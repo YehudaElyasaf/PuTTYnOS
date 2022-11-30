@@ -1,6 +1,8 @@
 #include "irq.h"
 #include "idt.h"
 #include "../ports.h"
+#include "irqs.h" //auto generated
+#include "../io/print.h"
 
 void initIrq(){
     //TODO: change order?
@@ -19,4 +21,8 @@ void initIrq(){
 
     for(int irqNumber = 0; irqNumber < NUM_OF_IRQS; irqNumber++) //not <=
         initIdtEntry(FIRST_IRQ_MASTER_ENTRY_INDEX + irqNumber, getIrq(irqNumber), IDT_FLAGS_INTERRUPT_GATE_RING3);
+}
+
+void irqHandler(IsrFrame isrFrame){
+    kcprint("\nIRQ\n", LIGHT_RED, getBackgroundColor());
 }

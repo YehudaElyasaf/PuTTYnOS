@@ -11,5 +11,4 @@ typedef struct {
 } IsrFrame;
 
 void isrHandler(IsrFrame isrFrame);
-void exit();
 void initIsr();

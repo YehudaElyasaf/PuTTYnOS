@@ -47,7 +47,7 @@ def specific_isr_genereate(isr_number):
     else:
         push_error_code_asm = 'push byte 0; dummy error code'
     
-    isr = f'''
+    return f'''
 global isr{isr_number}
 isr{isr_number}:
     cli
@@ -55,7 +55,6 @@ isr{isr_number}:
     push byte {isr_number}; isr number
     jmp callIsrHandler
     '''
-    return isr
 
 with open(GENERATED_FILE_PATH, 'w') as generated_file:
     generated_file.write(file_beginning)

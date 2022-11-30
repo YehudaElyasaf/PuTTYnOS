@@ -2,6 +2,7 @@
 #include "idt.h"
 #include "../asm.h"
 #include "../io/print.h"
+#include "isrs.h" //auto generated
 
 char* isrNames[] = {
    //0
@@ -41,6 +42,10 @@ char* isrNames[] = {
    "Reserved"
 };
 
+static inline void exit(){
+    cli();
+    hlt();
+}
 void isrHandler(IsrFrame isrFrame){
     kcprint("\nERROR!\n", LIGHT_RED, getBackgroundColor());
     kprint("\tIRQ ");
@@ -56,11 +61,6 @@ void isrHandler(IsrFrame isrFrame){
     kprintc('\n');
     
     exit();
-}
-
-void exit(){
-    cli();
-    hlt();
 }
 
 void initIsr(){
