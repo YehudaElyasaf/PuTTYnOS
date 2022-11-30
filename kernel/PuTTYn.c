@@ -14,8 +14,8 @@ void main(){
     //call 3 ints
     //special divide by zero
     //int i = 1 / 0;
+    
     kprint("text\nhere!!!");
-    asm __volatile__("int $8");
     asm __volatile__("int $4");
     
     kprint("\n\nend!");

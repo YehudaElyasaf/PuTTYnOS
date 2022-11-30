@@ -1,5 +1,5 @@
 #include "print.h"
-#include "ports.h"
+#include "../ports.h"
 #include "../../lib/convert.h"
 
 #define TAB_INDENT 4
@@ -79,21 +79,21 @@ void printChar(unsigned char ch, uint8_t attribute, uint16_t offset){
 uint16_t getCursorOffset(){
     uint16_t offset;
 
-    out8bit(SCREEN_CONTROL_REGISTER_ADRESS, CURSOR_OFFSET_LOW);
-    uint8_t lowOffset = in8bit(SCREEN_DATA_REGISTER_ADRESS);
+    out8bit(SCREEN_CONTROL_REGISTER, CURSOR_OFFSET_LOW);
+    uint8_t lowOffset = in8bit(SCREEN_DATA_REGISTER);
 
-    out8bit(SCREEN_CONTROL_REGISTER_ADRESS, CURSOR_OFFSET_HIGH);
-    uint8_t highOffset = (in8bit(SCREEN_DATA_REGISTER_ADRESS)); //half of the offset is shifted to the left
+    out8bit(SCREEN_CONTROL_REGISTER, CURSOR_OFFSET_HIGH);
+    uint8_t highOffset = (in8bit(SCREEN_DATA_REGISTER)); //half of the offset is shifted to the left
 
     return ((uint16_t)highOffset << (CURSOR_OFFSET_LENGTH / 2)) + lowOffset;;
 }
 
 void setCursorOffset(uint16_t offset){
-    out8bit(SCREEN_CONTROL_REGISTER_ADRESS, CURSOR_OFFSET_LOW);
-    out8bit(SCREEN_DATA_REGISTER_ADRESS, (uint8_t)(offset));
+    out8bit(SCREEN_CONTROL_REGISTER, CURSOR_OFFSET_LOW);
+    out8bit(SCREEN_DATA_REGISTER, (uint8_t)(offset));
 
-    out8bit(SCREEN_CONTROL_REGISTER_ADRESS, CURSOR_OFFSET_HIGH);
-    out8bit(SCREEN_DATA_REGISTER_ADRESS, (uint8_t)(offset >> (CURSOR_OFFSET_LENGTH / 2)));
+    out8bit(SCREEN_CONTROL_REGISTER, CURSOR_OFFSET_HIGH);
+    out8bit(SCREEN_DATA_REGISTER, (uint8_t)(offset >> (CURSOR_OFFSET_LENGTH / 2)));
 }
 
 uint16_t incCursorOffset(){

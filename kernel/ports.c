@@ -1,5 +1,7 @@
 #include "ports.h"
 
+#define GARBAGE_PORT 0x80
+
 uint8_t in8bit(uint16_t port){
     uint8_t buffer;
     //syntax: IN    port, accumulator
@@ -13,4 +15,8 @@ void out8bit(uint16_t port, uint8_t buffer){
     //syntax: OUT   accumulator. port
     //write from al to port stored in dx
     asm("out %%al, %%dx" : : "a"(buffer), "d"(port));
+}
+
+void portWait(){
+    out8bit(GARBAGE_PORT, 0);
 }
