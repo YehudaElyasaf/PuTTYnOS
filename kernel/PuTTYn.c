@@ -17,7 +17,7 @@ void initialize(){
     printDone();
     
     kprint("Initializing PDT...    ");
-    //initPDT();
+    //initPDT(/*params*/);
     printDone();
     
     kprint("Initializing keyboard...    ");
