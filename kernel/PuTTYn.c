@@ -5,6 +5,7 @@
 #include "cpu/idt.h"
 #include "io/keyboard.h"
 #include "../lib/string.h"
+#include "../user/shell.h"
 
 static inline void printDone(){
     setCursorCol(NUMBER_OF_COLS / 2);
@@ -24,11 +25,12 @@ void initialize(){
     initKeyboard();
     printDone();
     
-
     setColor(WHITE);
-    kprintc('\n');
 }
 
 void main(){
     initialize();
+
+    kprint("\nRunning shell!\n");
+    shellMain();
 }
