@@ -53,7 +53,7 @@ void irqHandler(IsrFrame isrFrame){
         irqHandlers[isrFrame.irqIndex](isrFrame);
 }
 
-void irqInstallHandler(uint8_t irqNumber, uint32_t* adress){
+void irqInstallHandler(uint8_t irqNumber, void(*adress)(IsrFrame)){
     irqHandlers[irqNumber + FIRST_IRQ_MASTER_ENTRY_INDEX] = adress;
 }
 

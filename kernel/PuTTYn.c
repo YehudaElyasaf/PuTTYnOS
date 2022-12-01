@@ -16,7 +16,5 @@ void main(){
     //int i = 1 / 0;
     
     kprint("text here!!!");
-    kprint("\n\nend!");   
-    
-    sti();
+    kprint("\n\nend!");
 }
