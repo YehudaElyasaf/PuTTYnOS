@@ -13,7 +13,7 @@ GCCFLAGS=-c -ffreestanding -g
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000 --oformat binary
 QEMU=qemu-system-i386 -fda
-QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QEMU_ADD_FLAGS)
+QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF)
 NASM=nasm
 PY=python3
 

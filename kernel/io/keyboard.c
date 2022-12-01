@@ -43,6 +43,7 @@ static void keyboardHandler(IsrFrame reg) {
     uint8_t scancode = in8bit(0x60);
 
     kprinth(scancode);
+    kprintc('\n');
     pushStack(scancode);
 }
 
