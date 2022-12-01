@@ -5,15 +5,18 @@
 #include "cpu/idt.h"
 
 void initialize(){
+    initScreen(GRAY, BLACK);
+    kprint("Initializing IDT...    ");
     initIdt();
-    initScreen(WHITE, BLACK);
+    kcprint("Done!\n\n", GREEN, getBackgroundColor());
+
+    
+
+    setColor(WHITE);
 }
 
 void main(){
     initialize();
-    //call 3 ints
-    //special divide by zero
-    //int i = 1 / 0;
     
     kprint("text here!!!");
     kprint("\n\nend!");
