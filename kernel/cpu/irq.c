@@ -4,6 +4,7 @@
 #include "../ports.h"
 #include "irqs.h" //auto generated
 #include "../io/print.h"
+#include "../timer.h"
 
 void (*irqHandlers[NUM_OF_IDT_ENTRIES])(IsrFrame) = {0};
 
@@ -26,7 +27,7 @@ void initIrq(){
         initIdtEntry(FIRST_IRQ_MASTER_ENTRY_INDEX + irqNumber, getIrq(irqNumber), IDT_FLAGS_INTERRUPT_GATE_RING3);
 
     //install irq handlers
-    irqInstallHandler(IRQ0_TIMER,            defaultIrqHandler);
+    irqInstallHandler(IRQ0_TIMER,            timerIrqHandler);
     irqInstallHandler(IRQ1_KEYBOARD,         defaultIrqHandler);
     irqInstallHandler(IRQ2_PIC2,             defaultIrqHandler);
     irqInstallHandler(IRQ3_COM2,             defaultIrqHandler);
