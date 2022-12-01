@@ -8,16 +8,17 @@ void initialize(){
     initScreen(GRAY, BLACK);
     kprint("Initializing IDT...    ");
     initIdt();
-    kcprint("Done!\n\n", GREEN, getBackgroundColor());
-
+    kcprint("Done!\n", GREEN, getBackgroundColor());
+    
+    kprint("Initializing PDT...    ");
+    //initPDT();
+    kcprint("Done!\n", GREEN, getBackgroundColor());
     
 
     setColor(WHITE);
+    kprintc('\n');
 }
 
 void main(){
     initialize();
-    
-    kprint("text here!!!");
-    kprint("\n\nend!");
 }
