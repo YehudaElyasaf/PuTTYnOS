@@ -39,6 +39,8 @@ char kgetc() {
 static void keyboardHandler(IsrFrame reg) {
     uint8_t scancode = in8bit(0x60);
 
+    if (scancode >= 0x80) return;
+
     kprinth(scancode);
     kprintc('\n');
     pushQueue(scancode);
