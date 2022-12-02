@@ -14,15 +14,16 @@ static uint16_t buffer_ptr = 0;
 void pushQueue(char ch) {
     int len = strlen(key_buffer + buffer_ptr);
     if (len >= KEY_BUFFER_LEN) return;
-    if (len = 0) {
+    if (len == 0) {
         buffer_ptr = 0;
     }
     else if (buffer_ptr + len + 1 > KEY_BUFFER_LEN) {
         memcpy(key_buffer + buffer_ptr, key_buffer, len);
         buffer_ptr = 0;
     }
+
     key_buffer[buffer_ptr + len] = ch;
-    key_buffer[buffer_ptr + len + 1] = 0;
+    key_buffer[buffer_ptr + len+1] = 0;
 }
 
 char popQueue() {
