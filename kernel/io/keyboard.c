@@ -11,32 +11,29 @@
 static uint8_t key_buffer[KEY_BUFFER_LEN];
 static uint16_t buffer_ptr = 0;
 
-void pushStack(char ch) {
+void pushQueue(char ch) {
     int len = strlen(key_buffer + buffer_ptr);
+    if (len >= KEY_BUFFER_LEN) return;
     if (len = 0) {
         buffer_ptr = 0;
     }
     else if (buffer_ptr + len + 1 > KEY_BUFFER_LEN) {
-        memcpy(key_buffer + len, key_buffer, len);
+        memcpy(key_buffer + buffer_ptr, key_buffer, len);
         buffer_ptr = 0;
     }
     key_buffer[buffer_ptr + len] = ch;
     key_buffer[buffer_ptr + len + 1] = 0;
 }
 
-char popStack() {
-    int len = strlen(key_buffer + buffer_ptr);
-    if (len = 0) {
-        buffer_ptr = 0;
-        return 0;
-    }
-    char ret = key_buffer[len + buffer_ptr];
-    key_buffer[len + buffer_ptr] = 0;
+char popQueue() {
+    char ret = key_buffer[buffer_ptr];
+    key_buffer[buffer_ptr] = 0;
+    buffer_ptr++;
     return ret;
 }
 
 char kgetc() {
-    return popStack();
+    return popQueue();
 }
 
 static void keyboardHandler(IsrFrame reg) {
@@ -44,7 +41,7 @@ static void keyboardHandler(IsrFrame reg) {
 
     kprinth(scancode);
     kprintc('\n');
-    pushStack(scancode);
+    pushQueue(scancode);
 }
 
 void initKeyboard() {
