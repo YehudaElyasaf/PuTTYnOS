@@ -1,7 +1,7 @@
 #include "irq.h"
 #include "isr.h"
 #include "idt.h"
-#include "../ports.h"
+#include "../asm.h"
 #include "irqs.h" //auto generated
 #include "../io/print.h"
 #include "../timer.h"

@@ -1,7 +1,7 @@
 #include "keyboard.h"
 #include <stdint.h>
 #include "../cpu/irq.h"
-#include "../ports.h"
+#include "../asm.h"
 #include "../../lib/string.h"
 #include "../../lib/memory.h"
 #include "print.h"
@@ -40,6 +40,7 @@ static void keyboardHandler(IsrFrame reg) {
     uint8_t scancode = in8bit(0x60);
 
     kprinth(scancode);
+    kprintc('\n');
     pushQueue(scancode);
 }
 

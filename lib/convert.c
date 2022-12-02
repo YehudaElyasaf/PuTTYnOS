@@ -29,6 +29,7 @@ void itoa(long n, char* buffer){
     strrev(&buffer[start]);
 }
 
+#include "../kernel/io/print.h"
 void itoh(unsigned long n, char* buffer){
     int start = 0;
 
@@ -46,7 +47,7 @@ void itoh(unsigned long n, char* buffer){
             buffer[i] = '0' + digit;
         else
             //digit is A-F
-            buffer[i] = 'A' + digit;
+            buffer[i] = 'A' - BASE10 + digit;
         
         n /= BASE16;
     }

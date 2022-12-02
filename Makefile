@@ -13,7 +13,7 @@ GCCFLAGS=-c -ffreestanding -g
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000 --oformat binary
 QEMU=qemu-system-i386 -fda
-QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G
+QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF)
 NASM=nasm
 PY=python3
 
@@ -67,6 +67,8 @@ clean:
 	@echo "${LOG_COLOR}\nCLEANING BUILD FILES...${DEFAULT_COLOR}"
 	@rm -f $(shell find -name "*.o")
 	@rm -f $(shell find -name "*.bin")
+	@rm -f $(shell find -name "*.img")
+	@rm -f $(shell find -name "*.iso")
 	@rm -f $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto gfile
 	@rm -f $(AUTO_GENERATED_ASM_FILES) $(AUTO_GENERATED_H_FILES)
 
