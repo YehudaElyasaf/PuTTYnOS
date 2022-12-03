@@ -1,4 +1,5 @@
-NUMBER_OF_ISRS = 32
+from generateIsrsAsm import NUMBER_OF_ISRS
+
 GENERATED_FILE_PATH = 'kernel/cpu/isrs.h'
 
 file_beginning = '''// AUTO GENERATED FILE

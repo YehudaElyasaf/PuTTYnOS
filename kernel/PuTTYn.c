@@ -37,7 +37,9 @@ void initialize(){
 void main(){
     initialize();
 
-    asm("int $0x9");
+    asm(".intel_syntax noprefix");
+    asm("int 0x42");
+    asm(".att_syntax prefix");
 
     kprint("\nRunning shell!\n");
     shellMain();

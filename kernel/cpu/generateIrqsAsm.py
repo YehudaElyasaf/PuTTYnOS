@@ -1,5 +1,7 @@
 NUMBER_OF_IRQS = 16
 FIRST_IRQ_INDEX = 32
+SYSCALL_IRQ_NUMBER = 0x42 - FIRST_IRQ_INDEX
+
 GENERATED_FILE_PATH = 'kernel/cpu/irqs.asm'
 
 file_beginning = '''; AUTO GENERATED FILE
@@ -36,9 +38,7 @@ callIrqHandler:
     iret
 '''
 
-def specific_irq_genereate(irq_number):    
-    push_error_code_asm = ''
-    
+def specific_irq_genereate(irq_number):
     return f'''
 global irq{irq_number}
 irq{irq_number}:
@@ -53,3 +53,6 @@ with open(GENERATED_FILE_PATH, 'w') as generated_file:
 
     for irq_number in range(NUMBER_OF_IRQS):
         generated_file.write(specific_irq_genereate(irq_number))
+    
+    generated_file.write('\n\n;syscall irq')
+    generated_file.write(specific_irq_genereate(SYSCALL_IRQ_NUMBER))
