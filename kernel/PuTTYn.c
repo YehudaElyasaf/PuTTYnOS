@@ -7,6 +7,7 @@
 #include "io/keyboard.h"
 #include "../lib/string.h"
 #include "../user/shell.h"
+#include "../lib/syscall.h"
 
 static inline void printDone(){
     setCursorCol(NUMBER_OF_COLS / 2);
@@ -37,16 +38,8 @@ void initialize(){
 void main(){
     initialize();
 
-    asm(".intel_syntax noprefix");
-    asm("mov esi, 0");
-    asm("mov eax, 1");
-    asm("mov ebx, 2");
-    asm("mov ecx, 3");
-    asm("mov edx, 4");
-    asm("int 0x42");
-    asm(".att_syntax prefix");
-    asm("int $66");
-
+    syscall(SYSCALL_PRINT, 1, 2, 3, 4);
+    
     kprint("\nRunning shell!\n");
     shellMain();
 }

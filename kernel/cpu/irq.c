@@ -5,6 +5,7 @@
 #include "irqs.h" //auto generated
 #include "../io/print.h"
 #include "../timer.h"
+#include "../cpu/syscall.h"
 
 void (*irqHandlers[NUM_OF_IDT_ENTRIES- FIRST_IRQ_MASTER_ENTRY_INDEX])(IsrFrame) = {0};
 
@@ -35,13 +36,18 @@ void initIrq(){
     irqInstallHandler(IRQ0_TIMER, timerIrqHandler);
 }
 
-void irqHandler(IsrFrame isrFrame){
-    if(isrFrame.irqIndex >= FIRST_IRQ_SLAVE_ENTRY_INDEX)
+void irqHandler(IrqFrame irqFrame){
+    uint32_t index = irqFrame.irqIndex;
+    if(index >= FIRST_IRQ_MASTER_ENTRY_INDEX && index <= LAST_IRQ_MASTER_ENTRY_INDEX)
+        out8bit(PIC_MASTER_CONTROL_REGISTER, PIC_EOI_CMD);
+    else if(index >= FIRST_IRQ_SLAVE_ENTRY_INDEX && index <= LAST_IRQ_SLAVE_ENTRY_INDEX)
         out8bit(PIC_SLAVE_CONTROL_REGISTER, PIC_EOI_CMD);
-    out8bit(PIC_MASTER_CONTROL_REGISTER, PIC_EOI_CMD);
-
-    if(irqHandlers[isrFrame.irqIndex]);
-        irqHandlers[isrFrame.irqIndex](isrFrame);
+    else if(index == SYSCALL_IDT_INDEX)
+        //syscall
+        irqHandlers[index](irqFrame);
+    else{
+        
+    }
 }
 
 void irqInstallHandler(uint8_t irqNumber, void(*handler)(IsrFrame)){

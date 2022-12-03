@@ -8,10 +8,10 @@ void initSyscalls(){
     irqInstallHandler(SYSCALL_IDT_INDEX - FIRST_IRQ_MASTER_ENTRY_INDEX, syscallIrqHandler);
 
     for(int syscallIndex = 0; syscallIndex < NUMBER_OF_SYSCALLS; syscallIndex++)
-        syscallHandlers[syscallIndex] = nop;
+        syscallHandlers[syscallIndex] = notImplementedSyscallHandler;
 
-    syscallHandlers[4] = printSyscallHandler;
-    //syscallHandlers[PRINT] = printSyscallHandler;
+    //Add handlers here:
+    syscallHandlers[SYSCALL_PRINT]      = printSyscallHandler;
 }
 
 void syscallIrqHandler(IrqFrame irqFrame){
@@ -21,35 +21,32 @@ void syscallIrqHandler(IrqFrame irqFrame){
     uint32_t param3 =       irqFrame.regs.ecx;
     uint32_t param4 =       irqFrame.regs.edx;
 
-    kprint("syscall\n");
-    kprint("\n");
     if(syscallIndex >= NUMBER_OF_SYSCALLS){
         kcprint("Error!\n", RED, getBackgroundColor());
         kprint("\tInvalid syscall index\n");
         return;
     }
-    else if(syscallHandlers[syscallIndex] == nop){
+    else if(syscallHandlers[syscallIndex] == notImplementedSyscallHandler){
         //kcprint("Error!\n", RED, getBackgroundColor());
         //kprint("\tSyscall doing nothing\n");
         //return;
     }
     
-    uint32_t ret = 32323;
-    uint32_t(*sysHndl)(uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4) = syscallHandlers[syscallIndex];
+    uint32_t(*handler)(uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4) = syscallHandlers[syscallIndex];
     __asm__ volatile("\
         push %1; \
         push %2; \
         push %3; \
         push %4; \
-        call %5; \
+        call *%5; \
         add %6, %%esp;" //clean stack
 
-    : "=a"(irqFrame.regs.eax)
+    : "=r"(irqFrame.regs.eax)
 
     : "d"(param4), "c"(param3), "b"(param2), "a"(param1),
-    "r"(sysHndl), "r"(NUMBER_OF_SYSCALLS_PARAMETERS * sizeof(uint32_t))
+        "r"(handler), "r"(NUMBER_OF_SYSCALLS_PARAMETERS * sizeof(uint32_t))
     );
+    kprintc('\n');
     kprinti(irqFrame.regs.eax);
     kprintc('\n');
-    asm("mov %0, %%eax"::"r"(5));
 }
