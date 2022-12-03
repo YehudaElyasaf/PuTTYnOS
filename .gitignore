@@ -1,0 +1,12 @@
+*.o
+*.bin
+*.img
+*.iso
+*build/
+*.vscode*
+
+#auto generated files
+kernel/cpu/isrs.asm
+kernel/cpu/isrs.h
+kernel/cpu/irqs.asm
+kernel/cpu/irqs.h
