@@ -37,7 +37,7 @@ void initialize(){
 void main(){
     initialize();
 
-    asm("int $9");
+    asm("int $0x9");
 
     kprint("\nRunning shell!\n");
     shellMain();
