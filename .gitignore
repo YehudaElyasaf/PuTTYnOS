@@ -4,6 +4,7 @@
 *.iso
 *build/
 *.vscode*
+*__pycache__
 
 #auto generated files
 kernel/cpu/isrs.asm
