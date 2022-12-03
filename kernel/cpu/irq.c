@@ -29,23 +29,12 @@ void initIrq(){
     for(int irqNumber = 0; irqNumber < NUM_OF_IRQS; irqNumber++) //not <=
         initIdtEntry(FIRST_IRQ_MASTER_ENTRY_INDEX + irqNumber, getIrq(irqNumber), IDT_FLAGS_INTERRUPT_GATE_RING3);
 
-    //install irq handlers
-    irqInstallHandler(IRQ0_TIMER,            timerIrqHandler);
-    irqInstallHandler(IRQ1_KEYBOARD,         defaultIrqHandler);
-    irqInstallHandler(IRQ2_PIC2,             defaultIrqHandler);
-    irqInstallHandler(IRQ3_COM2,             defaultIrqHandler);
-    irqInstallHandler(IRQ4_COM1,             defaultIrqHandler);
-    irqInstallHandler(IRQ5_LPT2,             defaultIrqHandler);
-    irqInstallHandler(IRQ6_FLOPPY_DISK,      defaultIrqHandler);
-    irqInstallHandler(IRQ7_LPT1,             defaultIrqHandler);
-    irqInstallHandler(IRQ8_REAL_TIME_CLOCK,  defaultIrqHandler);
-    irqInstallHandler(IRQ9_GENERAL_IO,       defaultIrqHandler);
-    irqInstallHandler(IRQ10_GENERAL_IO,      defaultIrqHandler);
-    irqInstallHandler(IRQ11_GENERAL_IO,      defaultIrqHandler);
-    irqInstallHandler(IRQ12_GENERAL_IO,      defaultIrqHandler);
-    irqInstallHandler(IRQ13_COMPRESSOR,      defaultIrqHandler);
-    irqInstallHandler(IRQ14_IDE_BUS,         defaultIrqHandler);
-    irqInstallHandler(IRQ15_IDE_BUS,         defaultIrqHandler);
+    //install default irq handlers to all
+    for(int irqNumber = IRQ0_TIMER; irqNumber <= IRQ15_IDE_BUS; irqNumber++)
+        irqInstallHandler(irqNumber, defaultIrqHandler);    
+    
+    //TODO: di this in timer.c
+    irqInstallHandler(IRQ0_TIMER, timerIrqHandler);
 }
 
 void irqHandler(IsrFrame isrFrame){

@@ -37,7 +37,7 @@ char kgetc() {
     return popQueue();
 }
 
-static void keyboardHandler(IsrFrame reg) {
+static void keyboardIrqHandler(IsrFrame reg) {
     uint8_t scancode = in8bit(0x60);
 
     if (scancode >= 0x80) return;
@@ -48,5 +48,5 @@ static void keyboardHandler(IsrFrame reg) {
 }
 
 void initKeyboard() {
-    irqInstallHandler(IRQ1_KEYBOARD, keyboardHandler);
+    irqInstallHandler(IRQ1_KEYBOARD, keyboardIrqHandler);
 }
