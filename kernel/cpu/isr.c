@@ -72,7 +72,8 @@ void isrHandler(IsrFrame isrFrame){
 }
 
 void initIsr(){
+    initIsrExceptionMassages();
+    
     for(uint8_t isrNumber = FIRST_ISR_ENTRY_INDEX; isrNumber <= LAST_ISR_ENTRY_INDEX; isrNumber++)
         initIdtEntry(isrNumber, getIsr(isrNumber), IDT_FLAGS_INTERRUPT_GATE_RING3);
-    initIsrExceptionMassages();
 }
