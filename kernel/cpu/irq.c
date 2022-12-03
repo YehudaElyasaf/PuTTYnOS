@@ -33,7 +33,6 @@ void initIrq(){
     
     //TODO: di this in timer.c
     irqInstallHandler(IRQ0_TIMER, timerIrqHandler);
-    irqInstallHandler(34, timerIrqHandler);
 }
 
 void irqHandler(IsrFrame isrFrame){

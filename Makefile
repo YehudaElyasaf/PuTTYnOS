@@ -65,12 +65,13 @@ $(AUTO_GENERATED_ASM_FILES): kernel/cpu/generateIsrsAsm.py kernel/cpu/generateIs
 
 clean:
 	@echo "${LOG_COLOR}\nCLEANING BUILD FILES...${DEFAULT_COLOR}"
-	@rm -f $(shell find -name "*.o")
-	@rm -f $(shell find -name "*.bin")
-	@rm -f $(shell find -name "*.img")
-	@rm -f $(shell find -name "*.iso")
-	@rm -f $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto gfile
-	@rm -f $(AUTO_GENERATED_ASM_FILES) $(AUTO_GENERATED_H_FILES)
+	@rm -f -r $(shell find -name "*.o")
+	@rm -f -r $(shell find -name "*.bin")
+	@rm -f -r $(shell find -name "*.img")
+	@rm -f -r $(shell find -name "*.iso")
+	@rm -f -r $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto g file
+	@rm -f -r $(shell find -name "*__pycache__")
+	@rm -f -r $(AUTO_GENERATED_ASM_FILES) $(AUTO_GENERATED_H_FILES)
 
 	@echo "${SUCESS_COLOR}\c"
 	@echo "Successfully cleaned!\n${DEFAULT_COLOR}"

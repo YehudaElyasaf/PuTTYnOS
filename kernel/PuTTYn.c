@@ -38,8 +38,14 @@ void main(){
     initialize();
 
     asm(".intel_syntax noprefix");
+    asm("mov esi, 0");
+    asm("mov eax, 1");
+    asm("mov ebx, 2");
+    asm("mov ecx, 3");
+    asm("mov edx, 4");
     asm("int 0x42");
     asm(".att_syntax prefix");
+    asm("int $66");
 
     kprint("\nRunning shell!\n");
     shellMain();
