@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+//no operation - do nothing
+void nop();
 //Set interrup flag
 void sti();
 //Clear interrup flag
