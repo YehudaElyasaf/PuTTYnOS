@@ -1,6 +1,6 @@
 #include "ascii.h"
-#include "../../kernel/io/print.h"
-#include "../../kernel/io/screen.h"
+#include "../kernel/io/print.h"
+#include "../kernel/io/screen.h"
 
 //some characters in word PuTTYnOS are in the same column,
 //therefore I manually change their color
