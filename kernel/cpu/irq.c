@@ -9,8 +9,6 @@
 void (*irqHandlers[NUM_OF_IDT_ENTRIES])(IsrFrame) = {0};
 
 void initIrq(){
-    //TODO: change order?
-
     //remap PIC, to avoid overriding isrs
     //remap PIC 1
     out8bit(PIC_MASTER_CONTROL_REGISTER, PIC_INIT_CMD);
@@ -46,8 +44,8 @@ void irqHandler(IsrFrame isrFrame){
         irqHandlers[isrFrame.irqIndex](isrFrame);
 }
 
-void irqInstallHandler(uint8_t irqNumber, void(*adress)(IsrFrame)){
-    irqHandlers[irqNumber + FIRST_IRQ_MASTER_ENTRY_INDEX] = adress;
+void irqInstallHandler(uint8_t irqNumber, void(*handler)(IsrFrame)){
+    irqHandlers[irqNumber + FIRST_IRQ_MASTER_ENTRY_INDEX] = handler;
 }
 
 void defaultIrqHandler(IsrFrame isrFrame){

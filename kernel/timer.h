@@ -1,3 +1,5 @@
 #pragma once
 
-void timerIrqHandler();
+#include "cpu/irq.h"
+
+void timerIrqHandler(IrqFrame irqFrame);

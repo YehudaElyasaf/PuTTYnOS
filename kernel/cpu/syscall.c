@@ -1,10 +1,10 @@
 #include "syscall.h"
-#include "irq.h"
-
-void syscallIrqHandler(){
-
-}
+#include "../io/print.h"
 
 void initSyscalls(){
     irqInstallHandler(SYSCALL_IRQ, syscallIrqHandler);
+}
+
+void syscallIrqHandler(IrqFrame irqFrame){
+    kprint("syscall\n");
 }

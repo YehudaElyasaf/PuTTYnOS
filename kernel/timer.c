@@ -1,5 +1,5 @@
 #include "timer.h"
 
-void timerIrqHandler(){
+void timerIrqHandler(IrqFrame irqFrame){
 
 }

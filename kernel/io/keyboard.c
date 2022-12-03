@@ -37,7 +37,7 @@ char kgetc() {
     return popQueue();
 }
 
-static void keyboardIrqHandler(IsrFrame reg) {
+static void keyboardIrqHandler(IrqFrame reg) {
     uint8_t scancode = in8bit(0x60);
 
     if (scancode >= 0x80) return;

@@ -31,5 +31,5 @@ enum IRQS{
 
 void initIrq();
 void irqHandler(IsrFrame isrFrame);
-void irqInstallHandler(uint8_t irqNumber, void(*adress)(IsrFrame));
+void irqInstallHandler(uint8_t irqNumber, void(*handler)(IsrFrame));
 void defaultIrqHandler(IsrFrame isrFrame);

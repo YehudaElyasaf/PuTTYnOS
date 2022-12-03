@@ -3,6 +3,7 @@
 #include "io/screen.h"
 #include "memory/pagingHandler.h"
 #include "cpu/idt.h"
+#include "cpu/syscall.h"
 #include "io/keyboard.h"
 #include "../lib/string.h"
 #include "../user/shell.h"
@@ -13,16 +14,21 @@ static inline void printDone(){
 }
 void initialize(){
     initScreen(GRAY, BLACK);
+    
     kprint("Initializing IDT...");
     initIdt();
     printDone();
-    
-    kprint("Initializing PDT...    ");
-    //initPDT(/*params*/);
+
+    kprint("Initializing syscalls...");
+    initSyscalls();
     printDone();
     
-    kprint("Initializing keyboard...    ");
+    kprint("Initializing keyboard...");
     initKeyboard();
+    printDone();
+
+    kprint("Initializing PDT...");
+    //initPDT(/*params*/);
     printDone();
     
     setColor(WHITE);
@@ -30,6 +36,8 @@ void initialize(){
 
 void main(){
     initialize();
+
+    asm("int $9");
 
     kprint("\nRunning shell!\n");
     shellMain();
