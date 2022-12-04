@@ -1,6 +1,4 @@
 #include "print.h"
-#include "syscall.h"
-#include "../kernel/io/print.h"
 
 int putchar(char ch){
     return cputchar(ch, DEFAULT_COLOR, DEFAULT_COLOR);

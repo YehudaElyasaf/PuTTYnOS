@@ -57,5 +57,6 @@ void main(){
 
     printf("%Caaaaa\nsaadsda", RED, DEFAULT_COLOR);
     printf("%C\taaaaa\nsaadsda", DEFAULT_COLOR, GREEN);
+    shellMain();
 }
 #endif
