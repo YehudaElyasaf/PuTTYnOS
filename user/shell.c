@@ -3,7 +3,6 @@
 #include "../kernel/io/screen.h"
 
 void shellMain(){
-    //TODO: clear screen hear
-    
+    clearScreen();
     printPuTTYnOS(0);
 }

@@ -3,7 +3,8 @@
 #include "../kernel/io/screen.h"
 
 uint32_t syscall(uint32_t syscallIndex, uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4){
-    uint32_t ret = 32323;
+    uint32_t ret;
+
     asm("\
         mov %0, %%esi; \
         mov %1, %%eax; \
@@ -15,8 +16,8 @@ uint32_t syscall(uint32_t syscallIndex, uint32_t param1, uint32_t param2, uint32
         : "r"(syscallIndex), "a"(param1), "b"(param2), "c"(param3), "d"(param4),
             "g"(SYSCALL_IDT_INDEX)
         );
+        
+    //get return value from eax
     asm("mov %%eax, %0" : "=a"(ret):);
-    kprinti(ret);
-
     return ret;
 }

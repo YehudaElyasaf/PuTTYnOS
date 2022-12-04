@@ -28,6 +28,12 @@ void syscallIrqHandler(IrqFrame irqFrame){
     }
     
     uint32_t(*handler)(uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4) = syscallHandlers[syscallIndex];
+
+    if(handler == notImplementedSyscallHandler){
+        //syscall nnot implemented, move syscall number in param1 (eax)
+        param1 = syscallIndex;
+    }
+
     __asm__ volatile("\
         push %1; \
         push %2; \
@@ -41,9 +47,7 @@ void syscallIrqHandler(IrqFrame irqFrame){
     : "d"(param4), "c"(param3), "b"(param2), "a"(param1),
         "r"(handler), "r"(NUMBER_OF_SYSCALLS_PARAMETERS * sizeof(uint32_t))
     );
-    kprintc('\n');
-    kprinti(irqFrame.regs.eax);
-    kprintc('\n');
     
+    //return with eax
     asm("mov %0, %%eax" : :"r"(irqFrame.regs.eax));
 }
