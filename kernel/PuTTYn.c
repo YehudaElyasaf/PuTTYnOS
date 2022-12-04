@@ -11,7 +11,7 @@
 #include "../lib/print.h"
 
 
-#define _DEBUG
+//#define _DEBUG
 
 static inline void printDone(){
     #ifndef _DEBUG
