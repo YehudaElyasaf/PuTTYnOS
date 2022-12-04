@@ -19,7 +19,9 @@ enum COLORS{
     LIGHT_RED,
     LIGHT_PURPLE,
     YELLOW,
-    WHITE
+    WHITE,
+
+    DEFAULT_COLOR
 };
 
 #define VIDEO_MEMORY_ADDRESS 0xb8000

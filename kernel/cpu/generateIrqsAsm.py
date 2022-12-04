@@ -39,7 +39,7 @@ callIrqHandler:
 	mov fs, bx
 	mov gs, bx
 
-    mov eax, 5
+    ;mov eax, 5
 
     ;popa except eax
     pop edi

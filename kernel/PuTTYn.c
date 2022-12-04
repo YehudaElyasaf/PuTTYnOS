@@ -8,6 +8,10 @@
 #include "../lib/string.h"
 #include "../user/shell.h"
 #include "../lib/syscall.h"
+#include "../lib/print.h"
+
+
+#define _DEBUG
 
 static inline void printDone(){
     #ifndef _DEBUG
@@ -47,14 +51,11 @@ void main(){
    
     shellMain();
 }
-#endif
-
-
-#ifdef _DEBUG
+#else
 void main(){
     initialize();
 
-    kprinti(syscall(SYSCALL_PRINT, 1, 2, 3, 4));
-    shellMain();
+    printf("%Caaaaa\nsaadsda", RED, DEFAULT_COLOR);
+    printf("%C\taaaaa\nsaadsda", DEFAULT_COLOR, GREEN);
 }
 #endif

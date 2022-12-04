@@ -3,6 +3,7 @@
 *.img
 *.iso
 *build/
+*power*
 *.vscode*
 *__pycache__
 

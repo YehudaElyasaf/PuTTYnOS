@@ -11,7 +11,7 @@ void initSyscalls(){
         syscallHandlers[syscallIndex] = notImplementedSyscallHandler;
 
     //Add handlers here:
-    syscallHandlers[SYSCALL_PRINT]      = printSyscallHandler;
+    syscallHandlers[SYSCALL_PUTCHAR]      = putcharSyscallHandler;
 }
 
 void syscallIrqHandler(IrqFrame irqFrame){

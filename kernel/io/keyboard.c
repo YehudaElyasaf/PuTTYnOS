@@ -49,4 +49,5 @@ static void keyboardIrqHandler(IrqFrame reg) {
 
 void initKeyboard() {
     irqInstallHandler(IRQ1_KEYBOARD, keyboardIrqHandler);
+    in8bit(0x60); //clean port 0x60
 }
