@@ -1,6 +1,5 @@
 #include "ascii.h"
-#include "../kernel/io/print.h"
-#include "../kernel/io/screen.h"
+#include "print.h"
 
 //some characters in word PuTTYnOS are in the same column,
 //therefore I manually change their color
@@ -37,7 +36,7 @@ enum PuTTYnOSIndexes{
 static void inline cprintPuTTYnOSLine(char* line, int lineIndex, int indent){
     //print indent spaces
     for(int j = 0; j < indent; j++)
-    kprintc(' ');
+    putchar(' ');
 
     int color;
     for(int i = 0; line[i] != '\0'; i++){
@@ -56,7 +55,7 @@ static void inline cprintPuTTYnOSLine(char* line, int lineIndex, int indent){
         color = getSpecificCharacterColor(color, lineIndex, i);
         
         //print character
-        kcprintc(line[i], color, getBackgroundColor());
+        cputchar(line[i], color, DEFAULT_COLOR);
     }
 }
 void printPuTTYnOS(int indent){
