@@ -38,21 +38,19 @@ void initIrq(){
 
 void irqHandler(IrqFrame irqFrame){
     uint32_t index = irqFrame.irqIndex;
-    irqHandlers[index](irqFrame);
     
     if(index >= FIRST_IRQ_MASTER_ENTRY_INDEX && index <= LAST_IRQ_MASTER_ENTRY_INDEX)
         out8bit(PIC_MASTER_CONTROL_REGISTER, PIC_EOI_CMD);
     else if(index >= FIRST_IRQ_SLAVE_ENTRY_INDEX && index <= LAST_IRQ_SLAVE_ENTRY_INDEX)
         out8bit(PIC_SLAVE_CONTROL_REGISTER, PIC_EOI_CMD);
-    else if(index == SYSCALL_IDT_INDEX){
+    
+    irqHandlers[index](irqFrame);
+    if(index == SYSCALL_IDT_INDEX){
         //syscall
         int i = 3;
         asm("mov %%eax, %0" :"=r"(i):);
         kprinti(i);
         kprintc('\n');
-    }
-    else{
-        
     }
 }
 
