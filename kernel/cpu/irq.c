@@ -45,13 +45,6 @@ void irqHandler(IrqFrame irqFrame){
         out8bit(PIC_SLAVE_CONTROL_REGISTER, PIC_EOI_CMD);
     
     irqHandlers[index](irqFrame);
-    if(index == SYSCALL_IDT_INDEX){
-        //syscall
-        int i = 3;
-        asm("mov %%eax, %0" :"=r"(i):);
-        kprinti(i);
-        kprintc('\n');
-    }
 }
 
 void irqInstallHandler(uint8_t irqNumber, void(*handler)(IsrFrame)){
