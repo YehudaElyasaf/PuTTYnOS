@@ -26,11 +26,6 @@ void syscallIrqHandler(IrqFrame irqFrame){
         kprint("\tInvalid syscall index\n");
         return;
     }
-    else if(syscallHandlers[syscallIndex] == notImplementedSyscallHandler){
-        //kcprint("Error!\n", RED, getBackgroundColor());
-        //kprint("\tSyscall doing nothing\n");
-        //return;
-    }
     
     uint32_t(*handler)(uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4) = syscallHandlers[syscallIndex];
     __asm__ volatile("\
@@ -49,4 +44,6 @@ void syscallIrqHandler(IrqFrame irqFrame){
     kprintc('\n');
     kprinti(irqFrame.regs.eax);
     kprintc('\n');
+    
+    asm("mov %0, %%eax" : :"r"(irqFrame.regs.eax));
 }
