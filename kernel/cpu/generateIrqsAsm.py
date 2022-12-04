@@ -11,7 +11,15 @@ KERNEL_DATA_SEGMENT equ 0x10
 extern irqHandler
 
 callIrqHandler:
-    pusha
+    ;my pusha
+    push eax
+    push ecx
+    push edx
+    push ebx
+    push esp
+    push ebp
+    push esi
+    push edi
     
     ;save segment in stack, (in user mode)
     mov ax, ds
@@ -31,7 +39,18 @@ callIrqHandler:
 	mov fs, bx
 	mov gs, bx
 
-    popa
+    mov eax, 5
+
+    ;popa except eax
+    pop edi
+    pop esi
+    pop ebp
+    pop esp
+    pop ebx
+    pop edx
+    pop ecx
+    add esp, 4; instead of pop eax, because syscalls returns with eax
+    
     add esp, 4; pop irq number
     add esp, 4; pop irq index in IDT
     sti; re-enble irqs
