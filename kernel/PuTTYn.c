@@ -55,7 +55,6 @@ void main(){
 void main(){
     initialize();
 
-    printf("%Caaaaa\nsadsda", RED, DEFAULT_COLOR);
-    printf("%C\ta%%e%saaa\naaa%X%s%c%d%xbbb", DEFAULT_COLOR, GREEN, "SAVTASCHEM", 0xaa11, "\n1 - \t\t\t", '1', 234567, 0x789ABCDEF);
+    printf("%C\ta%%e%saaa\naaa%X%s%c%d%xbbb%c", CYAN, DEFAULT_COLOR, "SAVTASCHEM", 0xaa11, "\n1 - \t\t\t", '1', 234567, 0x789ABCDE, '\n');
 }
 #endif
