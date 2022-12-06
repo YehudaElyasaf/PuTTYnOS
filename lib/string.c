@@ -18,3 +18,21 @@ int strlen(char* str){
     for(len; str[len] != STRING_TERMINATOR; len++);
     return len;
 }
+
+void tolower(char* str){
+    while(*str != STRING_TERMINATOR){
+        if(*str >= 'A' && *str <= 'Z')
+            (*str) += ('a' - 'A'); //convert char to lowercase
+
+        str++;
+    }
+}
+
+void toupper(char* str){
+    while(*str != STRING_TERMINATOR){
+        if(*str >= 'a' && *str <= 'z')
+            (*str) += ('A' - 'a'); //convert char to UPPERCASE
+
+        str++;
+    }
+}

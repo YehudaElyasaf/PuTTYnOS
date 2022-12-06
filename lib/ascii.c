@@ -1,5 +1,5 @@
 #include "ascii.h"
-#include "print.h"
+#include "printf.h"
 
 //some characters in word PuTTYnOS are in the same column,
 //therefore I manually change their color

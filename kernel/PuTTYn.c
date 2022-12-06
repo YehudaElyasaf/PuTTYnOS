@@ -8,7 +8,7 @@
 #include "../lib/string.h"
 #include "../user/shell.h"
 #include "../lib/syscall.h"
-#include "../lib/print.h"
+#include "../lib/printf.h"
 
 
 #define _DEBUG
@@ -55,8 +55,7 @@ void main(){
 void main(){
     initialize();
 
-    printf("%Caaaaa\nsaadsda", RED, DEFAULT_COLOR);
-    printf("%C\taaaaa\nsaadsda", DEFAULT_COLOR, GREEN);
-    shellMain();
+    printf("%Caaaaa\nsadsda", RED, DEFAULT_COLOR);
+    printf("%C\ta%%e%saaa\naaa%X%s%c%d%xbbb", DEFAULT_COLOR, GREEN, "SAVTASCHEM", 0xaa11, "\n1 - \t\t\t", '1', 234567, 0x789ABCDEF);
 }
 #endif
