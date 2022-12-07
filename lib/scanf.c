@@ -5,13 +5,38 @@
 
 #define BUFFER_LEN 512
 
+#define RELEASE_SC 0x80
+#define LSHIFT_SC 0x2a
+#define RSHIFT_SC 0x36
+#define CAPSLOCK_SC 0x3a
+
+uint32_t capsl = 0;
+uint32_t caps = 0;
+
+
 char getchar() {
-    return syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
+    uint8_t scancode = syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
+
+    if (sc_ascii[scancode] == '?' || scancode == LSHIFT_SC + RELEASE_SC || scancode == RSHIFT_SC + RELEASE_SC) {
+        if (scancode == LSHIFT_SC || scancode == RSHIFT_SC) {
+            caps = 1;
+        }
+        else if (scancode == LSHIFT_SC + RELEASE_SC || scancode == RSHIFT_SC + RELEASE_SC) {
+            caps = capsl;
+        }
+        else if (scancode == CAPSLOCK_SC) {
+            capsl != capsl;
+            caps = capsl ? capsl : caps;
+        }
+    }
+    else {
+        return caps ? sc_shift_ascii[scancode] : sc_ascii[scancode];
+    }
 }
 
 __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ...) {
-    int** pArgumnet = (int**)(&format); //point to the first argument, which is A POINTER!!!
-    pArgumnet++; //point to the first OPTIONAL argument
+    int** pArgument = (int**)(&format); //point to the first argument, which is A POINTER!!!
+    pArgument++; //point to the first OPTIONAL argument
 
     char conversionBuffer[BUFFER_LEN] = { 0 }; //to store converted numbers
     char tmp = 0;
@@ -30,8 +55,8 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             switch (*format)
             {
             case PRINTF_SPECIFIER_CHAR:
-                **pArgumnet = getchar();
-                pArgumnet++;
+                **pArgument = getchar();
+                pArgument++;
                 break;
 
             case PRINTF_SPECIFIER_DECIMAL:
@@ -43,7 +68,7 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
                 
                 **pArgument = stoi(conversionBuffer);
 
-                pArgumnet++;
+                pArgument++;
                 break;
             
             //4 different hex types
@@ -59,20 +84,19 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
                 
                 **pArgument = stoh(conversionBuffer);
 
-                pArgumnet++;
+                pArgument++;
                 break;
 
             case PRINTF_SPECIFIER_STRING:
-                int i = 0;
                 format++; // point to the stopping character
-                for(; i < strLength && conversionBuffer[i-1] != *format; i++) {
+                for (int i = 0; i < strLength && conversionBuffer[i-1] != *format; i++) {
                     conversionBuffer[i] = getchar();
                     putchar(conversionBuffer[i]);
                 }
-                conversionBuffer[--i] = 0;
+                conversionBuffer[strlen(conversionBuffer)-2] = 0;
 
-                memcpy(conversionBuffer, *pArgumnet, i);
-                pArgumnet++;
+                memcpy(conversionBuffer, *pArgument, strlen(conversionBuffer)-2);
+                pArgument++;
                 break;
 
             case PRINTF_SPECIFIER:

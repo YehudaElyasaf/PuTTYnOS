@@ -1,6 +1,7 @@
 #include "syscallHandlers.h"
 #include "syscall.h"
 #include "../io/screen.h"
+#include "../io/keyboard.h"
 
 uint32_t notImplementedSyscallHandler(uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4){
     kcprint("\nError!\n", RED, getBackgroundColor());
@@ -27,4 +28,8 @@ uint32_t putcharSyscallHandler(uint32_t ch, uint32_t color, uint32_t backgroundC
     kcprintc(ch, (uint8_t)color, (uint8_t)backgroundColor);
     
     return 0;
+}
+
+uint32_t getcharSyscallHandler(uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4) {
+    return kgetc();
 }

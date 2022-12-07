@@ -12,6 +12,7 @@ void initSyscalls(){
 
     //Add handlers here:
     syscallHandlers[SYSCALL_PUTCHAR]      = putcharSyscallHandler;
+    syscallHandlers[SYSCALL_GETCHAR]      = getcharSyscallHandler;
 }
 
 void syscallIrqHandler(IrqFrame irqFrame){

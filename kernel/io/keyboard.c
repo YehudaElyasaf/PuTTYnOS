@@ -34,7 +34,9 @@ char popQueue() {
 }
 
 char kgetc() {
-    return popQueue();
+    char tmp = popQueue();
+    kprinth(tmp);
+    return tmp;
 }
 
 static void keyboardIrqHandler(IrqFrame reg) {
