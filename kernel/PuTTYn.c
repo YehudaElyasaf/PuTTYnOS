@@ -12,7 +12,7 @@
 #include "../lib/scanf.h"
 
 
-//#define _DEBUG
+#define _DEBUG
 
 static inline void printDone(){
     #ifndef _DEBUG
@@ -53,14 +53,18 @@ void main(){
     shellMain();
 }
 #else
+#define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
 void main(){
     initialize();
 
     //printf("%C\ta%%e%saaa\naaa%X%s%c%d%xbbb%c", CYAN, DEFAULT_COLOR, "SAVTASCHEM", 0xaa11, "\n1 - \t\t\t", '1', 234567, 0x789ABCDE, '\n');
 
     int a = 0;
-    scanf("%x", &a);
+    scanf("%x ", &a);
 
     putchar('\n');
+
+    PRINTN(a);
+    //printf("%d %x", a, a);
 }
 #endif
