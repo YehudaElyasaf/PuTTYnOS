@@ -87,7 +87,7 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
                 }
                 
                 **pArgument = stoi(conversionBuffer);
-
+                
                 pArgument++;
                 break;
             

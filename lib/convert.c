@@ -88,8 +88,8 @@ int stoi(char* buffer) {
     int out = 0;
     
     for (; between(*buffer, '0', '9'); buffer++) {
+        out *= BASE10;
         out += *buffer - '0';
-        out *= 10;
     }
     return out;
 }
