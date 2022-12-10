@@ -100,13 +100,14 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             case PRINTF_SPECIFIER_HEXADECIMAL_LOWERCASE_NOPREFIX:
             case PRINTF_SPECIFIER_HEXADECIMAL_UPPERCASE_NOPREFIX:
                 format++; // point to the stopping character
-                for (int i = 0; i < BUFFER_LEN && NEQ_FMT(conversionBuffer[i-1], format); i++) {
-                    conversionBuffer[i] = getchar();
-                    putchar(conversionBuffer[i]);
+                tmp = 0;
+                for (int i = 0; i < BUFFER_LEN && NEQ_FMT(tmp, format); i++) {
+                    tmp = getchar();
+                    conversionBuffer[i] = tmp;
+                    putchar(tmp);
                 }
                 
                 **pArgument = stoh(conversionBuffer);
-
                 pArgument++;
                 break;
 

@@ -5,6 +5,8 @@
 #define BASE16 0x10
 #define LAST_DIGIT 9
 
+#define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
+
 void itoa(long n, char* buffer){
     int start = 0;
     
@@ -70,6 +72,7 @@ int stoh(char* buffer) {
         buffer += 2;
     
     for (; between(*buffer, '0', '9') || between(*buffer, 'a', 'f') || between(*buffer, 'A', 'F'); buffer++) {
+        out *= 0x10;
         if (between(*buffer, '0', '9')) {
             out += *buffer - '0';
         }
@@ -79,7 +82,6 @@ int stoh(char* buffer) {
         else {
             out += *buffer - 'A' + 10;
         }
-        out *= 0x10;
     }
     return out;
 }
