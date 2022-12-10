@@ -9,7 +9,7 @@
 #define LSHIFT_SC 0x2a
 #define RSHIFT_SC 0x36
 #define CAPSLOCK_SC 0x3a
-#define NEQ_FMT(a, fmt) (*fmt && a != fmt) || a != '\n'
+#define NEQ_FMT(a, fmt) (*fmt && a != fmt) || (a != '\n' && !*fmt)
 const char *scancode_name[] = { "ERROR", "Esc", "1", "2", "3", "4", "5", "6", 
     "7", "8", "9", "0", "-", "=", "Backspace", "Tab", "Q", "W", "E", 
         "R", "T", "Y", "U", "I", "O", "P", "[", "]", "Enter", "LCtrl", 
@@ -30,13 +30,13 @@ const char scancode_caps_ascii[] = { '?', '?', '!', '@', '#', '$', '%', '^',
         'B', 'N', 'M', '<', '>', '?', '?', '?', '?', ' '};
 
 
-uint32_t capsl = 0;
-uint32_t caps = 0;
+uint8_t capsl = 0;
+uint8_t caps = 0;
 
 char getchar() {
     uint8_t scancode = syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
     
-    while (!scancode || scancode == 1 || scancode == 100 || scancode == 90 || scancode_ascii[scancode] == '?' || scancode == LSHIFT_SC + RELEASE_SC || scancode == RSHIFT_SC + RELEASE_SC) {
+    while (!scancode || scancode == 1 || scancode >= sizeof(scancode_ascii) || scancode_ascii[scancode] == '?') {
         if (scancode == LSHIFT_SC || scancode == RSHIFT_SC) {
             caps = 1;
         }
@@ -44,7 +44,7 @@ char getchar() {
             caps = capsl;
         }
         else if (scancode == CAPSLOCK_SC) {
-            capsl != capsl;
+            capsl = capsl ? 0 : 1;
             caps = capsl ? capsl : caps;
         }
         scancode = syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
@@ -97,7 +97,7 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             case PRINTF_SPECIFIER_HEXADECIMAL_LOWERCASE_NOPREFIX:
             case PRINTF_SPECIFIER_HEXADECIMAL_UPPERCASE_NOPREFIX:
                 format++; // point to the stopping character
-                for (int i = 0; i < BUFFER_LEN && conversionBuffer[i-1] != *format; i++) {
+                for (int i = 0; i < BUFFER_LEN && NEQ_FMT(conversionBuffer[i-1], format); i++) {
                     conversionBuffer[i] = getchar();
                     putchar(conversionBuffer[i]);
                 }
@@ -109,7 +109,7 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
 
             case PRINTF_SPECIFIER_STRING:
                 format++; // point to the stopping character
-                for (int i = 0; i < strLength && conversionBuffer[i-1] != *format; i++) {
+                for (int i = 0; i < strLength && NEQ_FMT(conversionBuffer[i-1], format); i++) {
                     conversionBuffer[i] = getchar();
                     putchar(conversionBuffer[i]);
                 }
@@ -123,7 +123,7 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             default:
                 //no specifier, wait for a char that is in the format specified, which is '%'.
                 tmp = 0;
-                while (tmp != PRINTF_SPECIFIER) {
+                while (NEQ_FMT(tmp, format)) {
                     tmp = getchar();
                     putchar(tmp);
                 }
@@ -133,7 +133,7 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
         else{
             //no specifier, wait for a char that is in the format specified
             tmp = 0;
-            while (tmp != *format) {
+            while (NEQ_FMT(tmp, format)) {
                 tmp = getchar();
                 putchar(tmp);
             }
