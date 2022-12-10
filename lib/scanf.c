@@ -9,21 +9,34 @@
 #define LSHIFT_SC 0x2a
 #define RSHIFT_SC 0x36
 #define CAPSLOCK_SC 0x3a
+#define NEQ_FMT(a, fmt) (*fmt && a != fmt) || a != '\n'
+const char *scancode_name[] = { "ERROR", "Esc", "1", "2", "3", "4", "5", "6", 
+    "7", "8", "9", "0", "-", "=", "Backspace", "Tab", "Q", "W", "E", 
+        "R", "T", "Y", "U", "I", "O", "P", "[", "]", "Enter", "LCtrl", 
+        "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "`", 
+        "LShift", "\\", "Z", "X", "C", "V", "B", "N", "M", ",", ".", 
+        "/", "RShift", "Keypad *", "LAlt", "Spacebar"};
+
+const char scancode_ascii[] = { '?', '?', '1', '2', '3', '4', '5', '6',     
+    '7', '8', '9', '0', '-', '=', '?', '\t', 'q', 'w', 'e', 'r', 't', 'y', 
+        'u', 'i', 'o', 'p', '[', ']', '\n', '?', 'a', 's', 'd', 'f', 'g', 
+        'h', 'j', 'k', 'l', ';', '\'', '`', '?', '\\', 'z', 'x', 'c', 'v', 
+        'b', 'n', 'm', ',', '.', '/', '?', '?', '?', ' '};
+
+const char scancode_caps_ascii[] = { '?', '?', '!', '@', '#', '$', '%', '^',     
+    '&', '*', '(', ')', '_', '+', '?', '\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 
+        'U', 'I', 'O', 'P', '{', '}', '\n', '?', 'A', 'S', 'D', 'F', 'G', 
+        'H', 'J', 'K', 'L', ':', '"', '~', '?', '|', 'Z', 'X', 'C', 'V', 
+        'B', 'N', 'M', '<', '>', '?', '?', '?', '?', ' '};
+
 
 uint32_t capsl = 0;
 uint32_t caps = 0;
 
-
 char getchar() {
     uint8_t scancode = syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
-
-    waitForKey:
-    while (scancode != 0) {
-        scancode = syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
-        for (int i = 0; i < 50000; i++);
-    }
-
-    if (sc_ascii[scancode] == '?' || scancode == LSHIFT_SC + RELEASE_SC || scancode == RSHIFT_SC + RELEASE_SC) {
+    
+    while (!scancode || scancode == 1 || scancode == 100 || scancode == 90 || scancode_ascii[scancode] == '?' || scancode == LSHIFT_SC + RELEASE_SC || scancode == RSHIFT_SC + RELEASE_SC) {
         if (scancode == LSHIFT_SC || scancode == RSHIFT_SC) {
             caps = 1;
         }
@@ -34,12 +47,10 @@ char getchar() {
             capsl != capsl;
             caps = capsl ? capsl : caps;
         }
-        goto waitForKey;
+        scancode = syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
     }
-    else {
-        kprintc(caps ? sc_shift_ascii[scancode] : sc_ascii[scancode]);
-        return caps ? sc_shift_ascii[scancode] : sc_ascii[scancode];
-    }
+
+    return caps ? scancode_caps_ascii[scancode] : scancode_ascii[scancode];
 }
 
 __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ...) {
@@ -50,7 +61,7 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
     char tmp = 0;
 
     while(*format != '\0') {
-        memcpy(0, conversionBuffer, BUFFER_LEN);
+        memset(0, conversionBuffer, BUFFER_LEN);
 
         if(*format == PRINTF_SPECIFIER) {
             format++;
@@ -60,16 +71,17 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             strLength = strLength < BUFFER_LEN ? strLength : BUFFER_LEN;
             for (; strLength && *format != 's'; format++); // skip the strlength after you know it's a string.
             
-            switch (*format)
-            {
+            switch (*format) {
             case PRINTF_SPECIFIER_CHAR:
-                **pArgument = getchar();
+                tmp = getchar();
+                putchar(tmp);
+                **pArgument = tmp;
                 pArgument++;
                 break;
 
             case PRINTF_SPECIFIER_DECIMAL:
                 format++; // point to the stopping character
-                for (int i = 0; i < BUFFER_LEN && conversionBuffer[i-1] != *format; i++) {
+                for (int i = 0; i < BUFFER_LEN && NEQ_FMT(conversionBuffer[i-1], format); i++) {
                     conversionBuffer[i] = getchar();
                     putchar(conversionBuffer[i]);
                 }

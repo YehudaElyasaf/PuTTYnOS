@@ -32,7 +32,7 @@ void pushQueue(char ch) {
 char popQueue() {
     char ret = key_buffer[buffer_ptr];
     key_buffer[buffer_ptr] = 0;
-    buffer_ptr = buffer_ptr < KEY_BUFFER_LEN ? buffer_ptr + 1 : 0;
+    buffer_ptr = buffer_ptr < KEY_BUFFER_LEN-2 ? buffer_ptr + 1 : 0;
     return ret;
 }
 
