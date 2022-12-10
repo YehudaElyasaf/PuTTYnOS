@@ -54,7 +54,6 @@ void kcprinti(int num, uint8_t color, uint8_t backgroundColor);
 //print colored hex
 void kcprinth(int num, uint8_t color, uint8_t backgroundColor);
 
-
 uint16_t getCursorOffset();
 void setCursorOffset(uint16_t offset);
 uint16_t incCursorOffset();

@@ -25,14 +25,11 @@ void initIrq(){
     out8bit(PIC_SLAVE_CONTROL_REGISTER, PIC_INIT_CMD);
     out8bit(PIC_SLAVE_DATA_REGISTER, PICS_REMAP_CMD3);
 
-//    for(int irqNumber = 0; irqNumber < NUM_OF_IRQS; irqNumber++) //not <=
-//        initIdtEntry(FIRST_IRQ_MASTER_ENTRY_INDEX + irqNumber, getIrq(irqNumber), IDT_FLAGS_INTERRUPT_GATE_RING3);
-
     //install default irq handlers to all
     for(int irqNumber = IRQ0_TIMER; irqNumber < NUM_OF_IRQS; irqNumber++)
-        irqInstallHandler(irqNumber, defaultIrqHandler);    
+        irqInstallHandler(irqNumber, defaultIrqHandler);
     
-    //TODO: di this in timer.c
+    //TODO: do this in timer.c
     irqInstallHandler(IRQ0_TIMER, timerIrqHandler);
 }
 
@@ -48,7 +45,11 @@ void irqHandler(IrqFrame irqFrame){
 }
 
 void irqInstallHandler(uint8_t irqNumber, void(*handler)(IsrFrame)){
-    initIdtEntry(FIRST_IRQ_MASTER_ENTRY_INDEX + irqNumber, getIrq(irqNumber), IDT_FLAGS_INTERRUPT_GATE_RING3);
+    uint8_t flags = IDT_FLAGS_INTERRUPT_GATE_RING0;
+    if(irqNumber == SYSCALL_IRQ_NUMBER)
+        flags = IDT_FLAGS_INTERRUPT_GATE_RING3;
+
+    initIdtEntry(FIRST_IRQ_MASTER_ENTRY_INDEX + irqNumber, getIrq(irqNumber), flags);
     irqHandlers[irqNumber + FIRST_IRQ_MASTER_ENTRY_INDEX] = handler;
 }
 
