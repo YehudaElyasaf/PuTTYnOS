@@ -9,7 +9,10 @@
 #define LSHIFT_SC 0x2a
 #define RSHIFT_SC 0x36
 #define CAPSLOCK_SC 0x3a
-#define NEQ_FMT(a, fmt) (*fmt && a != fmt) || (a != '\n' && !*fmt)
+#define NEQ_FMT(a, fmt) (*fmt && a != *fmt) || (a != '\n' && !*fmt)
+
+#define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
+
 const char *scancode_name[] = { "ERROR", "Esc", "1", "2", "3", "4", "5", "6", 
     "7", "8", "9", "0", "-", "=", "Backspace", "Tab", "Q", "W", "E", 
         "R", "T", "Y", "U", "I", "O", "P", "[", "]", "Enter", "LCtrl", 
@@ -109,13 +112,15 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
 
             case PRINTF_SPECIFIER_STRING:
                 format++; // point to the stopping character
-                for (int i = 0; i < strLength && NEQ_FMT(conversionBuffer[i-1], format); i++) {
-                    conversionBuffer[i] = getchar();
-                    putchar(conversionBuffer[i]);
+                tmp = 0;
+                for (int i = 0; i < strLength && NEQ_FMT(tmp, format); i++) {
+                    tmp = getchar();
+                    conversionBuffer[i] = tmp;
+                    putchar(tmp);
                 }
-                conversionBuffer[strlen(conversionBuffer)-2] = 0;
+                conversionBuffer[strLength+2] = '\0';
 
-                memcpy(conversionBuffer, *pArgument, strlen(conversionBuffer)-2);
+                memcpy(conversionBuffer, *pArgument, strLength+1);
                 pArgument++;
                 break;
 
