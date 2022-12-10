@@ -17,6 +17,12 @@ uint32_t caps = 0;
 char getchar() {
     uint8_t scancode = syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
 
+    waitForKey:
+    while (scancode != 0) {
+        scancode = syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
+        for (int i = 0; i < 50000; i++);
+    }
+
     if (sc_ascii[scancode] == '?' || scancode == LSHIFT_SC + RELEASE_SC || scancode == RSHIFT_SC + RELEASE_SC) {
         if (scancode == LSHIFT_SC || scancode == RSHIFT_SC) {
             caps = 1;
@@ -28,8 +34,10 @@ char getchar() {
             capsl != capsl;
             caps = capsl ? capsl : caps;
         }
+        goto waitForKey;
     }
     else {
+        kprintc(caps ? sc_shift_ascii[scancode] : sc_ascii[scancode]);
         return caps ? sc_shift_ascii[scancode] : sc_ascii[scancode];
     }
 }
