@@ -60,11 +60,9 @@ void main(){
     //printf("%C\ta%%e%saaa\naaa%X%s%c%d%xbbb%c", CYAN, DEFAULT_COLOR, "SAVTASCHEM", 0xaa11, "\n1 - \t\t\t", '1', 234567, 0x789ABCDE, '\n');
 
     int a = 0;
-    scanf("%x ", &a);
 
     putchar('\n');
 
     PRINTN(a);
-    //printf("%d %x", a, a);
 }
 #endif

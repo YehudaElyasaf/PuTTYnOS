@@ -87,11 +87,13 @@ int stoh(char* buffer) {
 }
 
 int stoi(char* buffer) {
-    int out = 0;
-    
+    int out = 0, sign = 1;
+    if (*buffer == '-') {
+        sign = -1;
+    }
     for (; between(*buffer, '0', '9'); buffer++) {
         out *= BASE10;
         out += *buffer - '0';
     }
-    return out;
+    return out * sign;
 }
