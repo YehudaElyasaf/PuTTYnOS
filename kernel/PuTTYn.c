@@ -61,8 +61,10 @@ void main(){
 
     int a = 0;
 
-    putchar('\n');
+    scanf("%d", &a);
 
-    PRINTN(a);
+    //putchar('\n');
+
+    printf("%d", a);
 }
 #endif
