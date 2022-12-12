@@ -114,7 +114,7 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             case PRINTF_SPECIFIER_STRING:
                 format++; // point to the stopping character
                 tmp = 0;
-                for (int i = 0; i < strLength && NEQ_FMT(tmp, format); i++) {
+                for (int i = 0; i < strLength && (NEQ_FMT(tmp, format) || tmp != '\n'); i++) {
                     tmp = getchar();
                     conversionBuffer[i] = tmp;
                     putchar(tmp);
