@@ -38,11 +38,11 @@ int shellMain(){
         char a[100] = {0};
         //scanf("%s", a);
 
-        printf("%C\n%s", RED, DEFAULT_COLOR, a);
+        printf("%C\nRunning program %s...", RED, DEFAULT_COLOR, a);
         
         for(long i =0;i<99999999; i++);
 
-        putchar('\n');
+        printf("\n\n");
     }
     
 }
