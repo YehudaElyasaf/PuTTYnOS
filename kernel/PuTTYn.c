@@ -58,14 +58,18 @@ void main(){
     initialize();
 
     //printf("%C\ta%%e%saaa\naaa%X%s%c%d%xbbb%c", CYAN, DEFAULT_COLOR, "SAVTASCHEM", 0xaa11, "\n1 - \t\t\t", '1', 234567, 0x789ABCDE, '\n');
-
     
-    char a[100] = {0};
-    
-    scanf("%12s", a);
+    int a = 12;
+    char b = ' ';
+    char c[23] = {0};
 
-    //putchar('\n');
+    scanf("%5s", c);
 
-    printf("%s", a);
+    //putchar(b);
+    printf("%s", c);
+
+    printf("\n%d,%d\n", &a, &b);
+
+    //printf("\n%d %c", a, b);
 }
 #endif
