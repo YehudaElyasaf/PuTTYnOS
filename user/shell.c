@@ -1,6 +1,7 @@
 #include "shell.h"
 #include "../lib/ascii.h"
 #include "../lib/printf.h"
+#include "../lib/scanf.h"
 #include <stdbool.h>
 
 static inline printShellEntry(){
@@ -44,18 +45,13 @@ int shellMain(){
         programArgv[0] = "argument1";
         programArgv[1] = "argument2";
         
-        programName[0]='p';
-        programName[0]='r';
-        programName[0]='o';
-        programName[0]='g';
+        scanf("%s", programName);
 
         printf("\nRunning program %s", programName);
         printf(" with %d arguments:", programArgc);
         for(int argumentIndex = 0; argumentIndex < programArgc; argumentIndex++){
             printf(" %s", programArgv[argumentIndex]);
         }
-        
-        for(long i =0;i<199999999; i++);
 
         printf("\n\n");
     }

@@ -7,7 +7,7 @@ _start:
     mov bp, STACK_START
     mov sp, bp
 
-    mov dh, 50 ;sectors to read. 20 is a random number because it's wroking well
+    mov dh, 50 ;sectors to read
     mov dl, [BOOT_DRIVE]
     mov bx, KERNEL_START
     call loadKernelFromDisk

@@ -60,12 +60,17 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
     int** pArgument = (int**)(&format); //point to the first argument, which is A POINTER!!!
     pArgument++; //point to the first OPTIONAL argument
 
-    char conversionBuffer[BUFFER_LEN] = { 0 }; //to store converted numbers
+    char input[BUFFER_LEN] = { 0 };
+    char* inputPtr = input;
     char tmp = 0;
 
-    while(*format != '\0') {
-        memset(0, conversionBuffer, BUFFER_LEN);
+    for (int i = 0; i < BUFFER_LEN && tmp != '\n'; i++) {
+        tmp = getchar();
+        putchar(tmp);
+        input[i] = tmp;
+    }
 
+    while (*format != '\0') {
         if(*format == PRINTF_SPECIFIER) {
             format++;
             // I need to know whether the string is dynamic or not and what's its length.
@@ -76,22 +81,17 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             
             switch (*format) {
             case PRINTF_SPECIFIER_CHAR:
-                tmp = getchar();
-                putchar(tmp);
-                **pArgument = tmp;
+                (**(char**)pArgument) = *inputPtr;
+                inputPtr++;
                 pArgument++;
                 break;
 
             case PRINTF_SPECIFIER_DECIMAL:
-                format++; // point to the stopping character
-                for (int i = 0; i < BUFFER_LEN && NEQ_FMT(conversionBuffer[i-1], format); i++) {
-                    conversionBuffer[i] = getchar();
-                    putchar(conversionBuffer[i]);
+                **pArgument = stoi(inputPtr);
+                while (((*inputPtr >= '0' && *inputPtr <= '9') || *inputPtr == '-')) {
+                    inputPtr++;
                 }
-                
-                **pArgument = stoi(conversionBuffer);
-                
-                pArgument++;
+                pArgument++;// it seems like that in %d%c it doesn't appends 4, it appends 2, you should add 4
                 break;
             
             //4 different hex types
@@ -99,52 +99,37 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             case PRINTF_SPECIFIER_HEXADECIMAL_UPPERCASE:
             case PRINTF_SPECIFIER_HEXADECIMAL_LOWERCASE_NOPREFIX:
             case PRINTF_SPECIFIER_HEXADECIMAL_UPPERCASE_NOPREFIX:
-                format++; // point to the stopping character
-                tmp = 0;
-                for (int i = 0; i < BUFFER_LEN && NEQ_FMT(tmp, format); i++) {
-                    tmp = getchar();
-                    conversionBuffer[i] = tmp;
-                    putchar(tmp);
+                **pArgument = stoh(inputPtr);
+                while (((*inputPtr >= '0' && *inputPtr <= '9') || *inputPtr == '-')) {
+                    inputPtr++;
                 }
-                
-                **pArgument = stoh(conversionBuffer);
                 pArgument++;
                 break;
 
             case PRINTF_SPECIFIER_STRING:
-                format++; // point to the stopping character
-                tmp = 0;
-                for (int i = 0; i < strLength && (NEQ_FMT(tmp, format) || tmp != '\n'); i++) {
-                    tmp = getchar();
-                    conversionBuffer[i] = tmp;
-                    putchar(tmp);
-                }
-                conversionBuffer[strLength+2] = '\0';
-
-                memcpy(conversionBuffer, *pArgument, strLength+1);
+                if (strLength == 0) // which means the string is dynamically allocated
+                    memcpy(inputPtr, *pArgument, strlen(inputPtr));
+                else
+                    memcpy(inputPtr, *pArgument, strLength);
+                inputPtr += strLength;
                 pArgument++;
                 break;
 
             case PRINTF_SPECIFIER:
             default:
                 //no specifier, wait for a char that is in the format specified, which is '%'.
-                tmp = 0;
-                while (NEQ_FMT(tmp, format)) {
-                    tmp = getchar();
-                    putchar(tmp);
+                while (*inputPtr != PRINTF_SPECIFIER) {
+                    inputPtr++;
                 }
                 break;
             }
         }
         else{
             //no specifier, wait for a char that is in the format specified
-            tmp = 0;
-            while (NEQ_FMT(tmp, format)) {
-                tmp = getchar();
-                putchar(tmp);
+            while (*inputPtr != *format) {
+                inputPtr++;
             }
         }
-
         format++;
     }
 }

@@ -38,7 +38,7 @@ run: all
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 build: $(OS_VERSION).img
-	@truncate -s 144k $(OS_VERSION).img
+	truncate -s 144k $(OS_VERSION).img
 
 $(OS_VERSION).img: boot/bootloader.bin PuTTYn.bin
 	@echo "${LOG_COLOR}\nCREATING DISK IMAGE...${DEFAULT_COLOR}"
