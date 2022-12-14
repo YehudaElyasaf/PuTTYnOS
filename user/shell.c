@@ -35,12 +35,27 @@ int shellMain(){
     {
         printShellEntry();
 
-        char a[100] = {0};
-        //scanf("%s", a);
-
-        printf("%C\nRunning program %s...", RED, DEFAULT_COLOR, a);
+        char command[100] = {0};
+        //scanf("%s", command);
         
-        for(long i =0;i<99999999; i++);
+        char programName[100] = {0};
+        int programArgc = 2;
+        char* programArgv[programArgc];
+        programArgv[0] = "argument1";
+        programArgv[1] = "argument2";
+        
+        programName[0]='p';
+        programName[0]='r';
+        programName[0]='o';
+        programName[0]='g';
+
+        printf("\nRunning program %s", programName);
+        printf(" with %d arguments:", programArgc);
+        for(int argumentIndex = 0; argumentIndex < programArgc; argumentIndex++){
+            printf(" %s", programArgv[argumentIndex]);
+        }
+        
+        for(long i =0;i<199999999; i++);
 
         printf("\n\n");
     }
