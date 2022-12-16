@@ -113,7 +113,7 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
                 while (((*inputPtr >= '0' && *inputPtr <= '9') || *inputPtr == '-')) {
                     inputPtr++;
                 }
-                pArgument++;// it seems like that in %d%c it doesn't appends 4, it appends 2, you should add 4
+                pArgument++;
                 break;
             
             //4 different hex types
@@ -151,6 +151,7 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             while (*inputPtr != *format) {
                 inputPtr++;
             }
+            inputPtr++;
         }
         format++;
     }

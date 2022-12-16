@@ -63,7 +63,7 @@ void main(){
     char b = ' ';
     char c[23] = {0};
 
-    scanf("%d %c", &a, &b);
+    scanf("%d, %c", &a, &b);
 
     printf("%d\n%c", a, b);
 
