@@ -63,10 +63,9 @@ void main(){
     char b = ' ';
     char c[23] = {0};
 
-    scanf("%5s", c);
+    scanf("%d %c", &a, &b);
 
-    //putchar(b);
-    printf("%s", c);
+    printf("%d\n%c", a, b);
 
     printf("\n%d,%d\n", &a, &b);
 

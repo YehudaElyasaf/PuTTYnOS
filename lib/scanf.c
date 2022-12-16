@@ -9,6 +9,7 @@
 #define LSHIFT_SC 0x2a
 #define RSHIFT_SC 0x36
 #define CAPSLOCK_SC 0x3a
+#define BACKSPACE_SC 0x0e
 #define NEQ_FMT(a, fmt) (*fmt && a != *fmt) || (a != '\n' && !*fmt)
 
 #define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
@@ -36,10 +37,18 @@ const char scancode_caps_ascii[] = { '?', '?', '!', '@', '#', '$', '%', '^',
 uint8_t capsl = 0;
 uint8_t caps = 0;
 
+void seek(uint32_t offset) {
+    syscall(SYSCALL_SEEK, offset, 0, 0, 0);
+}
+
 char getchar() {
     uint8_t scancode = syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
     
-    while (!scancode || scancode == 1 || scancode >= sizeof(scancode_ascii) || scancode_ascii[scancode] == '?') {
+    while (!scancode || scancode >= sizeof(scancode_ascii) || scancode_ascii[scancode] == '?') {
+        if (scancode == BACKSPACE_SC) {
+            return scancode;
+        }
+        
         if (scancode == LSHIFT_SC || scancode == RSHIFT_SC) {
             caps = 1;
         }
@@ -66,8 +75,19 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
 
     for (int i = 0; i < BUFFER_LEN && tmp != '\n'; i++) {
         tmp = getchar();
-        putchar(tmp);
-        input[i] = tmp;
+        if (tmp == BACKSPACE_SC && i > 0) {
+            i--;
+            tmp = 0;
+            seek(-1);
+            putchar(tmp);
+            input[i] = tmp;
+            i--;
+            seek(-1);
+        }
+        else {
+            putchar(tmp);
+            input[i] = tmp;
+        }
     }
 
     while (*format != '\0') {
