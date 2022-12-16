@@ -75,14 +75,16 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
 
     for (int i = 0; i < BUFFER_LEN && tmp != '\n'; i++) {
         tmp = getchar();
-        if (tmp == BACKSPACE_SC && i > 0) {
-            i--;
-            tmp = 0;
-            seek(-1);
-            putchar(tmp);
-            input[i] = tmp;
-            i--;
-            seek(-1);
+        if (tmp == BACKSPACE_SC) {
+            if (i > 0) {
+                i -= 2;
+                tmp = 0;
+                seek(-1);
+                putchar(tmp);
+                seek(-1);
+            } else {
+                i = -1;
+            }
         }
         else {
             putchar(tmp);
