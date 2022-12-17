@@ -2,6 +2,7 @@
 #include "../lib/ascii.h"
 #include "../lib/printf.h"
 #include "../lib/scanf.h"
+#include "../lib/string.h"
 #include <stdbool.h>
 
 static inline printShellEntry(){
@@ -40,18 +41,38 @@ int shellMain(){
         //scanf("%s", command);
         
         char programName[100] = {0};
-        int programArgc = 2;
-        char* programArgv[programArgc];
-        programArgv[0] = "argument1";
-        programArgv[1] = "argument2";
+        char programArg[100] = {0};
         
-        scanf("%s", programName);
+        int i = 0;
+        char* ch = command;
+        scanf("%s", command);
+
+        //trim spaces
+        for(i = 0; *ch == ' '; i++) ch++;
+
+        for(i = 0; *ch != ' ' && *ch != '\0'; i++){
+            programName[i] = *ch;
+            ch++;
+        }
+        
+        //trim spaces
+        for(i = 0; *ch == ' '; i++) ch++;
+
+        for(i = 0; *ch != ' ' && *ch != '\0'; i++){
+            programArg[i] = *ch;
+            ch++;
+        }
+
+        if(strcmp(programName, "") == STRCMP_EQUALS)
+            //no program
+            continue;
+
 
         printf("\nRunning program %s", programName);
-        printf(" with %d arguments:", programArgc);
-        for(int argumentIndex = 0; argumentIndex < programArgc; argumentIndex++){
-            printf(" %s", programArgv[argumentIndex]);
-        }
+        if(strcmp(programArg, "") != STRCMP_EQUALS)
+            printf(" with argument %s", programArg);
+        printf("!");
+            
 
         printf("\n\n");
     }

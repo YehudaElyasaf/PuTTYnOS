@@ -1,5 +1,6 @@
 #include "string.h"
 #include "../kernel/io/print.h"
+#include <stdbool.h>
 
 void strrev(char* str){
     int len = strlen(str);
@@ -34,5 +35,19 @@ void toupper(char* str){
             (*str) += ('A' - 'a'); //convert char to UPPERCASE
 
         str++;
+    }
+}
+
+int strcmp(char* str1, char* str2){
+    while(true){
+        if(*str1 > *str2)
+            return STRCMP_STR1_IS_BIGGER;
+        if(*str2 > *str1)
+            return STRCMP_STR2_IS_BIGGER;
+        if(*str1 == *str2 && *str1 == 0)
+            return STRCMP_EQUALS;
+
+        str1++;
+        str2++;
     }
 }
