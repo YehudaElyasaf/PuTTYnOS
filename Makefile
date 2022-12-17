@@ -15,6 +15,7 @@ LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386 -fda
 QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF)
+QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 NASM=nasm
 PY=python3
 GDB=gdb
@@ -41,7 +42,7 @@ run: all
 
 debug: build PuTTYn.elf
 	@ echo "${DEBUG_COLOR}RUNNING PuTTYnOS IN DEBUG MODE!${DEFAULT_COLOR}"
-	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS) -s -S &
+	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) &
 	@ ${GDB} -ex "target remote localhost:1234" -ex "symbol-file PuTTYn.elf"
 
 	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
