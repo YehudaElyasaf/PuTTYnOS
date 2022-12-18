@@ -1,6 +1,7 @@
 .PHONY: all clean run build
 
-OS_VERSION=PuTTYnOS-i386
+OS_NAME=PuTTYnOS
+OS_VERSION=$(OS_NAME)-i386
 #32m = green
 #35m = purple
 #37m = white
@@ -35,32 +36,32 @@ AUTO_GENERATED_H_FILES=kernel/cpu/isrs.h kernel/cpu/irqs.h
 all: build
 
 run: all
-	@echo "${SUCESS_COLOR}RUNNING PuTTYnOS!${DEFAULT_COLOR}"
+	@echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}''"
 	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS)
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
-debug: build PuTTYn.elf
-	@ echo "${DEBUG_COLOR}RUNNING PuTTYnOS IN DEBUG MODE!${DEFAULT_COLOR}"
+debug: build $(OS_VERSION).elf
+	@ echo "${DEBUG_COLOR}RUNNING ${OS_NAME} IN DEBUG MODE!${DEFAULT_COLOR}"
 	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) &
-	@ ${GDB} -ex "target remote localhost:1234" -ex "symbol-file PuTTYn.elf"
+	@ ${GDB} -ex "target remote localhost:1234" -ex "symbol-file $(OS_VERSION).elf"
 
 	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 build: $(OS_VERSION).img
 	@truncate -s 144k $(OS_VERSION).img
 
-$(OS_VERSION).img: boot/bootloader.bin PuTTYn.bin
+$(OS_VERSION).img: boot/bootloader.bin $(OS_VERSION).bin
 	@echo "${LOG_COLOR}\nCREATING DISK IMAGE...${DEFAULT_COLOR}"
 	@cat $^ > $@
 	@echo
 
-PuTTYn.bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
+$(OS_VERSION).bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
 	@echo "${LOG_COLOR}\nLINKING...${DEFAULT_COLOR}"
 	@ $(LD) $^ $(LDFLAGS) -o $@ --oformat binary
 
-PuTTYn.elf: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
-	@echo "${DEBUG_COLOR}CREATING SYMBL TABLE TO DEBUG MODE...${DEFAULT_COLOR}"
+$(OS_VERSION).elf: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
+	@echo "${DEBUG_COLOR}CREATING SYMBOL TABLE TO DEBUG MODE...${DEFAULT_COLOR}"
 	@ $(LD) $^ $(LDFLAGS) -o $@
 
 %.o: %.c
