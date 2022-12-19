@@ -1,5 +1,6 @@
 #include "scanf.h"
 #include "printf.h"
+#include "string.h"
 #include "convert.h"
 #include "memory.h"
 

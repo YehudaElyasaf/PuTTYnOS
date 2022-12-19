@@ -1,21 +1,25 @@
 .PHONY: all clean run build
 
-OS_VERSION=PuTTYnOS-i386
+OS_NAME=PuTTYnOS
+OS_VERSION=$(OS_NAME)-i386
 #32m = green
 #35m = purple
 #37m = white
 SUCESS_COLOR=\033[0;32m
 DEFAULT_COLOR=\033[0;37m
 LOG_COLOR=\033[0;35m
+DEBUG_COLOR=\033[0;31m
 
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
 GCCFLAGS=-c -ffreestanding -g
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
-LDFLAGS= -Ttext 0x1000 --oformat binary
+LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386 -fda
 QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF)
+QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 NASM=nasm
 PY=python3
+GDB=gdb
 
 C_FILES=$(shell find -name "*.c")
 C_OBJECT_FILES=${C_FILES:.c=.o}
@@ -32,21 +36,32 @@ AUTO_GENERATED_H_FILES=kernel/cpu/isrs.h kernel/cpu/irqs.h
 all: build
 
 run: all
-	@echo "${SUCESS_COLOR}RUNNING PuTTYnOS!${DEFAULT_COLOR}"
+	@echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
 	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS)
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
-build: $(OS_VERSION).img
-	truncate -s 144k $(OS_VERSION).img
+debug: build $(OS_VERSION).elf
+	@ echo "${DEBUG_COLOR}RUNNING ${OS_NAME} IN DEBUG MODE!${DEFAULT_COLOR}"
+	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) &
+	@ ${GDB} -ex "target remote localhost:1234" -ex "symbol-file $(OS_VERSION).elf"
 
-$(OS_VERSION).img: boot/bootloader.bin PuTTYn.bin
+	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
+
+build: $(OS_VERSION).img
+	@truncate -s 144k $(OS_VERSION).img
+
+$(OS_VERSION).img: boot/bootloader.bin $(OS_VERSION).bin
 	@echo "${LOG_COLOR}\nCREATING DISK IMAGE...${DEFAULT_COLOR}"
 	@cat $^ > $@
 	@echo
 
-PuTTYn.bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
+$(OS_VERSION).bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
 	@echo "${LOG_COLOR}\nLINKING...${DEFAULT_COLOR}"
+	@ $(LD) $^ $(LDFLAGS) -o $@ --oformat binary
+
+$(OS_VERSION).elf: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
+	@echo "${DEBUG_COLOR}CREATING SYMBOL TABLE TO DEBUG MODE...${DEFAULT_COLOR}"
 	@ $(LD) $^ $(LDFLAGS) -o $@
 
 %.o: %.c
@@ -67,6 +82,7 @@ clean:
 	@echo "${LOG_COLOR}\nCLEANING BUILD FILES...${DEFAULT_COLOR}"
 	@rm -f -r $(shell find -name "*.o")
 	@rm -f -r $(shell find -name "*.bin")
+	@rm -f -r $(shell find -name "*.elf")
 	@rm -f -r $(shell find -name "*.img")
 	@rm -f -r $(shell find -name "*.iso")
 	@rm -f -r $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto g file
