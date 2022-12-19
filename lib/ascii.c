@@ -14,13 +14,13 @@ static int inline getSpecificCharacterColor(int color, int row, int col){
         row == 7    && col == 53    ||
         row == 8    && col == 52
     )
-        color = RED;
+        color = LIGHT_RED;
 
     //toBlue chars
     if(
         row == 10   && col == 58
     )
-        color = BLUE;
+        color = LIGHT_BLUE;
 
     return color;
 }
@@ -43,13 +43,13 @@ static void inline cprintPuTTYnOSLine(char* line, int lineIndex, int indent){
         if(i <= BEAR_END_INDEX)
             color = BROWN;
         else if(i <= P_END_INDEX)
-            color = RED;
+            color = LIGHT_RED;
         else if(i <= u_END_INDEX)
-            color = BLUE;
+            color = LIGHT_BLUE;
         else if(i <= TTY_END_INDEX)
-            color = RED;
+            color = LIGHT_RED;
             else if(i <= n_END_INDEX)
-            color = BLUE;
+            color = LIGHT_BLUE;
         else
             color = WHITE;
         color = getSpecificCharacterColor(color, lineIndex, i);

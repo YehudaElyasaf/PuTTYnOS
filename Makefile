@@ -36,7 +36,7 @@ AUTO_GENERATED_H_FILES=kernel/cpu/isrs.h kernel/cpu/irqs.h
 all: build
 
 run: all
-	@echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}''"
+	@echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
 	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS)
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
