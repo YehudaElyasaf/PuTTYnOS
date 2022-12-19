@@ -14,7 +14,7 @@ GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
 GCCFLAGS=-c -ffreestanding -g
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
-QEMU=qemu-system-i386 -fda
+QEMU=qemu-system-i386 -fda 
 QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF)
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 NASM=nasm

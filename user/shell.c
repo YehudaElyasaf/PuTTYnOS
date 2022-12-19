@@ -5,7 +5,7 @@
 #include "../lib/string.h"
 #include <stdbool.h>
 
-static inline printShellEntry(){
+static inline void printShellEntry(){
     int SHELL_COLOR = GRAY;
     cputchar(244, SHELL_COLOR, DEFAULT_COLOR);
     cputchar('P', LIGHT_RED, DEFAULT_COLOR);
@@ -38,16 +38,15 @@ int shellMain(){
         printShellEntry();
 
         char command[100] = {0};
-        //scanf("%s", command);
         
         char programName[100] = {0};
         char programArg[100] = {0};
         
         int i = 0;
         char* ch = command;
-        scanf("%s", command);
+        scanf("%100s", command);
 
-        //trim spaces
+        //trim spaces in beginning
         for(i = 0; *ch == ' '; i++) ch++;
 
         for(i = 0; *ch != ' ' && *ch != '\0'; i++){
@@ -55,13 +54,21 @@ int shellMain(){
             ch++;
         }
         
-        //trim spaces
-        for(i = 0; *ch == ' '; i++) ch++;
+        //trim spaces in middle
+        for(ch; *ch == ' '; ch++);
 
         for(i = 0; *ch != '\0'; i++){
             programArg[i] = *ch;
             ch++;
         }
+
+        cputchar(*ch, RED, YELLOW);
+
+        //trim spaces in end
+        for(--i; programArg[i] == ' '; i--){
+            programArg[i] = '\0';
+        }
+
 
         if(strcmp(programName, "") == STRCMP_EQUALS)
             //no program

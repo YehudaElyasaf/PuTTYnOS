@@ -134,9 +134,9 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
 
             case PRINTF_SPECIFIER_STRING:
                 if (strLength == 0) // which means the string is dynamically allocated
-                    memcpy(inputPtr, *pArgument, strlen(inputPtr));
+                    memcpy(inputPtr, (char*)*pArgument, strlen(inputPtr));
                 else
-                    memcpy(inputPtr, *pArgument, strLength);
+                    memcpy(inputPtr, (char*)*pArgument, strLength);
                 
                 inputPtr += strLength;
                 pArgument++;
