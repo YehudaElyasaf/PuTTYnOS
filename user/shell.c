@@ -7,6 +7,7 @@
 
 static inline void printShellEntry(){
     int SHELL_COLOR = GRAY;
+    cputchar('\n', SHELL_COLOR, DEFAULT_COLOR);
     cputchar(244, SHELL_COLOR, DEFAULT_COLOR);
     cputchar('P', LIGHT_RED, DEFAULT_COLOR);
     cputchar('u', LIGHT_BLUE, DEFAULT_COLOR);
@@ -62,8 +63,6 @@ int shellMain(){
             ch++;
         }
 
-        cputchar(*ch, RED, YELLOW);
-
         //trim spaces in end
         for(--i; programArg[i] == ' '; i--){
             programArg[i] = '\0';
@@ -80,8 +79,7 @@ int shellMain(){
             printf(" with argument %s", programArg);
         printf("!");
             
-
-        printf("\n\n");
+        printf("\n");
     }
     
 }
