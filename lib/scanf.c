@@ -78,8 +78,9 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
         tmp = getchar();
         if (tmp == BACKSPACE_SC) {
             if (i > 0) {
-                i -= 2;
-                input[i+1] = 0;
+                i--;
+                memset(0, input+i, BUFFER_LEN-i);
+                i--;
                 tmp = 0;
                 seek(-1);
                 putchar(tmp);
@@ -93,8 +94,6 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             input[i] = tmp;
         }
     }
-
-    kcprint(input, RED, DEFAULT_COLOR);
 
     while (*format != '\0') {
         if(*format == PRINTF_SPECIFIER) {
@@ -135,10 +134,8 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
             case PRINTF_SPECIFIER_STRING:
                 if (strLength == 0) // which means the string is dynamically allocated
                     memcpy(inputPtr, *pArgument, strlen(inputPtr));
-                else {
+                else
                     memcpy(inputPtr, *pArgument, strLength);
-                    *pArgument[strLength] = '\0';
-                }
                 
                 inputPtr += strLength;
                 pArgument++;
