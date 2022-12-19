@@ -63,12 +63,10 @@ void main(){
     char b = ' ';
     char c[23] = {0};
 
-    scanf("%d, %c", &a, &b);
+    scanf("%10s", &c);
 
-    printf("%d\n%c", a, b);
-
-    printf("\n%d,%d\n", &a, &b);
-
+    printf("%s\n", c);
+    
     //printf("\n%d %c", a, b);
 }
 #endif
