@@ -89,11 +89,12 @@ __attribute__((__cdecl__)) int scanf(char* format, /* <type>* <ptrName> ...*/ ..
                 i = -1;
             }
         }
-        else {
+        else if (tmp != '\n') {
             putchar(tmp);
             input[i] = tmp;
         }
     }
+
 
     while (*format != '\0') {
         if(*format == PRINTF_SPECIFIER) {
