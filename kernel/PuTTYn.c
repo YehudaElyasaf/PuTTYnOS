@@ -14,14 +14,14 @@
 
 //#define _DEBUG
 
-static inline void printDone(){
+static void printDone(){
     #ifndef _DEBUG
-    for(long i=0;i<50000000;i++){} //wait
+    for(long i=0;i<20;i++);//i<50000000;i++){} //wait
     #endif
     setCursorCol(NUMBER_OF_COLS / 2);
     kcprint("Done!\n", GREEN, getBackgroundColor());
     #ifndef _DEBUG
-    for(long i=0;i<20000000;i++){} //wait
+    for(long i=0;i<20;i++);//for(long i=0;i<20000000;i++){} //wait
     #endif
 }
 void initialize(){
@@ -40,8 +40,8 @@ void initialize(){
     printDone();
 
     kprint("Initializing PDT...");
-    //initPDT(/*params*/);
-    printDone();
+    initPDT(/*params*/);
+    //printDone();
     
     setColor(WHITE);
 }

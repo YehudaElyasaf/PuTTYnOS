@@ -6,6 +6,7 @@
 void nop(){
     asm("nop");
 }
+
 void sti(){
     asm("sti");
 }
@@ -17,7 +18,6 @@ void hlt(){
 }
 
 //in\out
-
 //write to garbage port, to wait a bit
 static inline void portWait(){
     asm("out %%al, %%dx" : : "a"(GARBAGE_VALUE), "d"(GARBAGE_PORT));

@@ -51,3 +51,5 @@ typedef struct
 
 void initIdtEntry(uint8_t entryNum, uint32_t* isrAdress, uint8_t flags);
 void initIdt();
+
+IDTRegister getIDTR();
