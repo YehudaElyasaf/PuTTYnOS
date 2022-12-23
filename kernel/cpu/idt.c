@@ -23,7 +23,7 @@ void initIdt(){
     cli();
     
     IDTRegister idtr = {sizeof(idt) - 1, idt};
-    
+
     //create IDT entries
     //0-31: CPU exceptions
     initIsr();
@@ -39,4 +39,8 @@ void initIdt(){
     );
 
     sti();
+}
+
+IDTRegister getIDTR() {
+    return (IDTRegister){sizeof(idt) - 1, idt};
 }
