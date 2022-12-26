@@ -10,6 +10,7 @@
 #include "../lib/syscall.h"
 #include "../lib/printf.h"
 #include "../lib/scanf.h"
+#include "../lib/heap.h"
 
 
 //#define _DEBUG
@@ -56,17 +57,17 @@ void main(){
 #define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
 void main(){
     initialize();
+    int* j[] = {0, 0, 0, 0};
+    for (int i = 0; i < 4; i++) {
+        j[i] = alloc(i+4);
+        printf("%h ", j[i]);
+    }
+    printf("\n");
 
-    //printf("%C\ta%%e%saaa\naaa%X%s%c%d%xbbb%c", CYAN, DEFAULT_COLOR, "SAVTASCHEM", 0xaa11, "\n1 - \t\t\t", '1', 234567, 0x789ABCDE, '\n');
-    
-    int a = 12;
-    char b = ' ';
-    char c[23] = {0};
+    free(j[2]);
+    free(j[1]);
 
-    scanf("%10s", &c);
-
-    printf("%s\n", c);
-    
-    //printf("\n%d %c", a, b);
+    j[2] = alloc(8);
+    printf("%h %d %h", j[1], SIZE((uint32_t)j[1]-4), j[2]);
 }
 #endif
