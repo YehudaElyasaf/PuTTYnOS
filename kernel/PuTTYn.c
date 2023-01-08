@@ -14,7 +14,7 @@
 #include "../lib/heap.h"
 
 
-//#define _DEBUG
+#define _DEBUG
 
 static void printDone(){
     #ifndef _DEBUG
@@ -47,8 +47,12 @@ void initialize(){
     initPDT();
     printDone();
 
-    kprint("Initializing timer...");
+    kprint("Initializing PIT...");
     initTimer();
+    printDone();
+
+    kprint("Initializing tasking...");
+    initTasking();
     printDone();
     
     setColor(WHITE);
@@ -58,15 +62,15 @@ void initialize(){
 #ifndef _DEBUG
 void main(){
     initialize();
-    int a;
-    //scanf("%d", &a);
     //shellMain();
 }
 #else
 
-#define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
+
 void main(){
     initialize();
+    int a;
+    //scanf("%d", &a);
     //shellMain();
 }
 #endif
