@@ -14,8 +14,12 @@ void initTimer(){
     //reset static variables
     ticks = 0;
     
-    if(PIT_DIVISOR > MAX_UINT16_VALUE){
+    if(SYSTEM_FREQUNCY > MAX_UINT16_VALUE){
         //too high frequency, can't be written to the timer data register
+        kcprint("\nInvalid system frequency (", RED, DEFAULT_COLOR);
+        kcprinti(SYSTEM_FREQUNCY, RED, DEFAULT_COLOR);
+        kcprint("Hz)\n", RED, DEFAULT_COLOR);
+        kcprint("Initialization failed.", RED, DEFAULT_COLOR);
         cli();
         hlt();
     }
