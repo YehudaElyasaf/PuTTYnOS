@@ -47,9 +47,10 @@ void kmalloc(uint32_t size, uint32_t pageTable) {
 }
 
 uint32_t allocPage() {
-    int cr0 = 0;
+    int cr0 = 0, wasInPagingMode = 0;
     __asm__("mov %%cr0, %0":"=r"(cr0));
-    cr0 ^= 0x80000000; // turn off paging mode
+    wasInPagingMode = cr0 & 0x80000000;
+    cr0 &= ~0x80000000; // turn off paging mode
     __asm__("mov %0, %%cr0"::"r"(cr0));
 
     uint32_t addr = firstHole;
@@ -61,20 +62,24 @@ uint32_t allocPage() {
         firstHole += PAGE_SIZE;
         headOfPages = firstHole;
     }
-    __asm__("mov %%cr0, %0":"=r"(cr0));
-    cr0 |= 0x80000000; // turn on paging mode
-    __asm__("mov %0, %%cr0"::"r"(cr0));
+    
+    if (wasInPagingMode) {
+        __asm__("mov %%cr0, %0":"=r"(cr0));
+        cr0 |= 0x80000000; // turn on paging mode
+        __asm__("mov %0, %%cr0"::"r"(cr0));
+    }
     return addr;
 }
 
 void deallocPage(uint32_t page) {
-    int cr0 = 0;
+    int cr0 = 0, wasInPagingMode = 0;
 
     if (page >= headOfPages)
         return;
 
     __asm__("mov %%cr0, %0":"=r"(cr0));
-    cr0 ^= 0x80000000; // turn off paging mode
+    wasInPagingMode = cr0 & 0x80000000;
+    cr0 &= ~0x80000000; // turn off paging mode
     __asm__("mov %0, %%cr0"::"r"(cr0));
     
     memset(0, page, PAGE_SIZE);
@@ -96,9 +101,11 @@ void deallocPage(uint32_t page) {
         *((uint32_t*)page) = ptr;
     *ptr = page;
 
-    __asm__("mov %%cr0, %0":"=r"(cr0));
-    cr0 |= 0x80000000; // turn on paging mode
-    __asm__("mov %0, %%cr0"::"r"(cr0));
+    if (wasInPagingMode) {
+        __asm__("mov %%cr0, %0":"=r"(cr0));
+        cr0 |= 0x80000000; // turn on paging mode
+        __asm__("mov %0, %%cr0"::"r"(cr0));
+    }
 }
 
 void startVirtualMode(uint32_t address) {    

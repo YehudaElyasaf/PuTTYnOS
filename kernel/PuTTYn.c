@@ -42,7 +42,7 @@ void initialize(){
 
     kprint("Initializing PDT...");
     initPDT(/*params*/);
-    //printDone();
+    printDone();
     
     setColor(WHITE);
 }
@@ -54,20 +54,7 @@ void main(){
     shellMain();
 }
 #else
-#define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
 void main(){
     initialize();
-    int* j[] = {0, 0, 0, 0};
-    for (int i = 0; i < 4; i++) {
-        j[i] = alloc(i+4);
-        printf("%h ", j[i]);
-    }
-    printf("\n");
-
-    free(j[2]);
-    free(j[1]);
-
-    j[2] = alloc(8);
-    printf("%h %d %h", j[1], SIZE((uint32_t)j[1]-4), j[2]);
 }
 #endif
