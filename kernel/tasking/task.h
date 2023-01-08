@@ -16,7 +16,7 @@ typedef struct
 
     bool isBlocked;
     //TODO: page directory
-    Task* next;
+    struct Task* next;
 } Task;
 
 #define TASK_STRUCT_NEXT_INDEX sizeof(Task) - sizeof(Task*)
