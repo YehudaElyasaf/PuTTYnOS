@@ -37,8 +37,6 @@ void initIdt(){
         : //no output
         : "r" (&idtr)
     );
-
-    sti();
 }
 
 IDTRegister getIDTR() {

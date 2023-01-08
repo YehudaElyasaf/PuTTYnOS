@@ -5,6 +5,7 @@
 #include "cpu/idt.h"
 #include "cpu/syscall.h"
 #include "io/keyboard.h"
+#include "tasking/timer.h"
 #include "../lib/string.h"
 #include "../user/shell.h"
 #include "../lib/syscall.h"
@@ -13,7 +14,7 @@
 #include "../lib/heap.h"
 
 
-//#define _DEBUG
+#define _DEBUG
 
 static void printDone(){
     #ifndef _DEBUG
@@ -26,6 +27,8 @@ static void printDone(){
     #endif
 }
 void initialize(){
+    cli();
+
     initScreen(GRAY, BLACK);
     
     kprint("Initializing IDT...");
@@ -41,10 +44,15 @@ void initialize(){
     printDone();
 
     kprint("Initializing PDT...");
-    initPDT(/*params*/);
-    //printDone();
+    initPDT();
+    printDone();
+
+    kprint("Initializing timer...");
+    initTimer();
+    printDone();
     
     setColor(WHITE);
+    sti();
 }
 
 #ifndef _DEBUG
@@ -54,20 +62,10 @@ void main(){
     shellMain();
 }
 #else
+
 #define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
 void main(){
     initialize();
-    int* j[] = {0, 0, 0, 0};
-    for (int i = 0; i < 4; i++) {
-        j[i] = alloc(i+4);
-        printf("%h ", j[i]);
-    }
-    printf("\n");
-
-    free(j[2]);
-    free(j[1]);
-
-    j[2] = alloc(8);
-    printf("%h %d %h", j[1], SIZE((uint32_t)j[1]-4), j[2]);
+    //shellMain();
 }
 #endif
