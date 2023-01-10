@@ -1,5 +1,5 @@
 #include "task.h"
 
 void initTasking(){
-    lastPid = 0;
+    lastTaskId = 0;
 }
