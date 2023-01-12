@@ -43,6 +43,7 @@ char kgetc() {
 
 static void keyboardIrqHandler(IrqFrame reg) {
     uint8_t scancode = in8bit(0x60);
+    in8bit(0x60); //clean port 0x60
 
     if (scancode >= 0x80) {
         if (scancode != LSHIFT_SC && scancode != RSHIFT_SC)

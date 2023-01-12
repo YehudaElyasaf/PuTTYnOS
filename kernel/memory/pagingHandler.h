@@ -8,8 +8,7 @@
 #define PAGE_SIZE 0x1000
 #define KERNEL_SIZE 0xe
 #define KERNEL_END (KERNEL_START + PAGE_SIZE*KERNEL_SIZE)
-
-uint32_t allocPage();
+#define DEFAULT_PAGE_NUM 4
 
 typedef enum {
     PRESENT = 1,
@@ -24,15 +23,14 @@ typedef enum {
 
 typedef uint32_t PDEntry;
 
-typedef struct {
-    PDEntry entries[PDT_SIZE];
-} PD;
-
 typedef uint32_t PTEntry;
 
-typedef struct {
-    PTEntry entries[PDT_SIZE];
-} PT;
+uint32_t initPT(int size);
+
+void kmalloc(uint32_t size, uint32_t pageTable);
+
+uint32_t allocPage();
+void deallocPage(uint32_t page);
 
 void startVirtualMode(uint32_t address);
 

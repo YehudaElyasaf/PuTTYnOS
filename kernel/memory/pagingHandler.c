@@ -2,16 +2,110 @@
 #include "../io/print.h"
 #include "../asm.h"
 #include "../cpu/idt.h"
+#include "../../lib/memory.h"
 
 PTEntry* kernelPTAddr = 0;
 
-uint32_t firstFree;
+uint32_t firstHole = KERNEL_END, headOfPages = KERNEL_END;
+
+uint32_t initPT(int size) {
+    uint32_t pt = allocPage();
+    int i = 0, cr0 = 0;
+    for (; i < PDT_SIZE && !(*(uint32_t*)(0xfffff000+i) & PRESENT); i++);
+    if (i >= PDT_SIZE) // PDT full
+        return;
+    
+    *(uint32_t*)(0xfffff000+i) = PRESENT | USER | READWRITE | pt;
+
+    size = size > 0 ? size : DEFAULT_PAGE_NUM;
+    size *= PAGE_SIZE;
+
+    kmalloc(size, i);
+
+    return i*0x400000;
+}
+
+void kmalloc(uint32_t size, uint32_t pageTable) {
+    PTEntry *pt = *(PTEntry*)(0xfffff000+pageTable);
+    uint8_t* ptr = 0xffc00000 + pageTable*PAGE_SIZE;
+
+    if (!(*pt & DIRTY) || !(*pt & PRESENT)) {
+        return;
+    }
+
+    size = size / PAGE_SIZE + !(!(size % PAGE_SIZE)); // size in pages. the remainder counts as another page.
+    
+    for (; *ptr & DIRTY && ptr < (uint32_t)pt + PAGE_SIZE; ptr++); // wait until you find not used 
+    if (ptr >= (uint32_t)pt + PAGE_SIZE)
+        return; // no more pages to allocate
+
+    for (int i = 0; i < size; i++) {
+        if (*(ptr+i) & PRESENT)
+            continue;
+        *(ptr+i) = allocPage() | DIRTY | USER | PRESENT | READWRITE;
+    }
+}
 
 uint32_t allocPage() {
-    if (firstFree == 0)
-        firstFree = KERNEL_END;
-    firstFree += PAGE_SIZE;
-    return firstFree - PAGE_SIZE;
+    int cr0 = 0, wasInPagingMode = 0;
+    __asm__("mov %%cr0, %0":"=r"(cr0));
+    wasInPagingMode = cr0 & 0x80000000;
+    cr0 &= ~0x80000000; // turn off paging mode
+    __asm__("mov %0, %%cr0"::"r"(cr0));
+
+    uint32_t addr = firstHole;
+
+    if (*((uint32_t*)firstHole) != 0) { // this is a hole which is not in the head of the pageHeap
+        firstHole = *((uint32_t*)firstHole); // goto next hole.
+        *((uint32_t*)addr) = 0; // clear the next segment in this hole.
+    } else {
+        firstHole += PAGE_SIZE;
+        headOfPages = firstHole;
+    }
+    
+    if (wasInPagingMode) {
+        __asm__("mov %%cr0, %0":"=r"(cr0));
+        cr0 |= 0x80000000; // turn on paging mode
+        __asm__("mov %0, %%cr0"::"r"(cr0));
+    }
+    return addr;
+}
+
+void deallocPage(uint32_t page) {
+    int cr0 = 0, wasInPagingMode = 0;
+
+    if (page >= headOfPages)
+        return;
+
+    __asm__("mov %%cr0, %0":"=r"(cr0));
+    wasInPagingMode = cr0 & 0x80000000;
+    cr0 &= ~0x80000000; // turn off paging mode
+    __asm__("mov %0, %%cr0"::"r"(cr0));
+    
+    memset(0, page, PAGE_SIZE);
+
+    if (page == headOfPages - PAGE_SIZE) {
+        if (firstHole == headOfPages)
+            firstHole = page;
+        headOfPages = page;
+    }
+
+    if (page < firstHole) {
+        *((uint32_t*)page) = firstHole;
+        firstHole = page;
+        return;
+    }
+    uint32_t* ptr = firstHole;
+    for (; *ptr < page; ptr = *ptr);
+    if (page != headOfPages)
+        *((uint32_t*)page) = ptr;
+    *ptr = page;
+
+    if (wasInPagingMode) {
+        __asm__("mov %%cr0, %0":"=r"(cr0));
+        cr0 |= 0x80000000; // turn on paging mode
+        __asm__("mov %0, %%cr0"::"r"(cr0));
+    }
 }
 
 void startVirtualMode(uint32_t address) {    
@@ -26,7 +120,7 @@ void initPDT() {
     PDEntry* table = allocPage();
     kernelPTAddr = allocPage();
 
-    *table = READWRITE | PRESENT | (uint32_t)kernelPTAddr;
+    *table = READWRITE | PRESENT | DIRTY | (uint32_t)kernelPTAddr;
 
     // identity mapping kernel code physical address to virtual address
     for (int i = 1; i <= KERNEL_SIZE; i++) {
@@ -44,7 +138,7 @@ void initPDT() {
     }
 
     // last entry points to the pdt itself
-    *(table+(PDT_SIZE-1)) = READWRITE | PRESENT | (uint32_t)table;
+    *(table+(PDT_SIZE-1)) = READWRITE | PRESENT | DIRTY | USER | (uint32_t)table;
 
 
     irqInstallHandler(14, pagefault);
