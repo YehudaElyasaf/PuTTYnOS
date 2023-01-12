@@ -25,6 +25,8 @@ typedef uint32_t PDEntry;
 
 typedef uint32_t PTEntry;
 
+uint32_t initPT(int size);
+
 void kmalloc(uint32_t size, uint32_t pageTable);
 
 uint32_t allocPage();
