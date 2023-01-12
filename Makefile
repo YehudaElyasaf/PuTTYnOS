@@ -11,7 +11,7 @@ LOG_COLOR=\033[0;35m
 DEBUG_COLOR=\033[0;31m
 
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
-GCCFLAGS=-c -ffreestanding -g
+GCCFLAGS=-c -ffreestanding
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386 -fda 
