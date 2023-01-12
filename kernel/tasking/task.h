@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "../memory/pagingHandler.h"
 #include "../../lib/linkedList.h"
+#include "../memory/pagingHandler.h"
 
 typedef struct
 {
@@ -15,12 +16,12 @@ typedef struct
     uint32_t eip;
 
     bool isBlocked;
-    //TODO: page directory
+    //page table
+    uint32_t pt;
     struct Task* next;
 } Task;
 
 #define TASK_STRUCT_NEXT_INDEX sizeof(Task) - sizeof(Task*)
 
-static uint32_t lastTaskId;
-
 void initTasking();
+//void taskSwitch();

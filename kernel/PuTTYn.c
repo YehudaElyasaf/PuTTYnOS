@@ -6,6 +6,7 @@
 #include "cpu/syscall.h"
 #include "io/keyboard.h"
 #include "tasking/timer.h"
+#include "tasking/task.h"
 #include "../lib/string.h"
 #include "../user/shell.h"
 #include "../lib/syscall.h"
