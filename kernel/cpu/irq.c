@@ -4,7 +4,7 @@
 #include "../asm.h"
 #include "irqs.h" //auto generated
 #include "../io/print.h"
-#include "../tasking/timer.h"
+#include "../timer.h"
 #include "../cpu/syscall.h"
 
 void (*irqHandlers[NUM_OF_IDT_ENTRIES- FIRST_IRQ_MASTER_ENTRY_INDEX])(IsrFrame) = {0};
@@ -28,6 +28,9 @@ void initIrq(){
     //install default irq handlers to all
     for(int irqNumber = IRQ0_TIMER; irqNumber < NUM_OF_IRQS; irqNumber++)
         irqInstallHandler(irqNumber, defaultIrqHandler);
+    
+    //TODO: do this in timer.c
+    irqInstallHandler(IRQ0_TIMER, timerIrqHandler);
 }
 
 void irqHandler(IrqFrame irqFrame){

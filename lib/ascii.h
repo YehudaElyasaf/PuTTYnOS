@@ -1,3 +1,3 @@
 #pragma once
 
-void printPuTTYnOS();
+void printPuTTYnOS(int indent);
