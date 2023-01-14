@@ -32,7 +32,7 @@ static inline void printShellEntry(){
 
 int shellMain(){
     clearScreen();
-    printPuTTYnOS();
+    printPuTTYnOS(0);
 
     while (true)
     {

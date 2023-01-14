@@ -33,7 +33,7 @@ enum PuTTYnOSIndexes{
     n_END_INDEX     =   57
 };
 //print one line according to PuTTYnOS's colors
-static void cprintPuTTYnOSLine(char* line, int lineIndex, int indent){
+static void inline cprintPuTTYnOSLine(char* line, int lineIndex, int indent){
     //print indent spaces
     for(int j = 0; j < indent; j++)
     putchar(' ');
@@ -58,8 +58,8 @@ static void cprintPuTTYnOSLine(char* line, int lineIndex, int indent){
         cputchar(line[i], color, DEFAULT_COLOR);
     }
 }
-void printPuTTYnOS(){
-    int line = 0, indent = 0;
+void printPuTTYnOS(int indent){
+    int line = 0;
     cprintPuTTYnOSLine("                __                                                     \n"   , line, indent);  line++;
     cprintPuTTYnOSLine("     __/~~\\-''- _ |                                                    \n"    , line, indent);  line++;
     cprintPuTTYnOSLine("__- - {            \\                                                   \n"    , line, indent);  line++;
