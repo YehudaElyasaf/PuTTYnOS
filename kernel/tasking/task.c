@@ -11,7 +11,7 @@ void initTasking(){
     lastTaskId = 0;
 
     Task mainTaskContainer = { 0 };
-    Task* mainTask = &mainTaskContainer; //TODO: = alocate task instead of using static memory
+    Task* mainTask = &mainTaskContainer; //TODO: = allocate task instead of using static memory
     mainTask->id = lastTaskId++;
     //TODO: init esp, ebp, eip
     mainTask->isBlocked = false;

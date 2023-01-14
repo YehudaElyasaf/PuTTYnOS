@@ -53,7 +53,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing tasking...");
-    initTasking();
+    //initTasking();
     printDone();
     
     setColor(WHITE);

@@ -16,8 +16,7 @@ typedef struct
     uint32_t eip;
 
     bool isBlocked;
-    //page table
-    uint32_t pt;
+    PTEntry* pt;
     struct Task* next;
 } Task;
 
