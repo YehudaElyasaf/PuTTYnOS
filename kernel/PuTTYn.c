@@ -63,6 +63,7 @@ void initialize(){
 #ifndef _DEBUG
 void main(){
     initialize();
+
     //shellMain();
 }
 #else
