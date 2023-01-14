@@ -8,7 +8,7 @@ PTEntry* kernelPTAddr = 0;
 
 uint32_t firstHole = KERNEL_END, headOfPages = KERNEL_END;
 
-int initPT(int size) {
+uint32_t initPT(int size) {
     uint32_t pt = allocPage();
     int i = 0, cr0 = 0;
     for (; i < PDT_SIZE && !(*(uint32_t*)(0xfffff000+i) & PRESENT); i++);
