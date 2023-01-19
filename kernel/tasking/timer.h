@@ -8,5 +8,5 @@
 #define TIMER_INTERVAL  (1 / (double)SYSTEM_FREQUNCY)       //interval between ticks
 
 void initTimer();
-void timerIrqHandler(IrqFrame irqFrame);
+void timerIrqHandler(uint32_t esp, uint32_t ebp);
 long getTime();

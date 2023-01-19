@@ -20,7 +20,8 @@ QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 NASM=nasm
 PY=python3
 GDB=gdb
-GDB_COMMANDS=-ex "target remote localhost:1234" -ex "symbol-file $(OS_VERSION).elf"
+GDBFLAGS=--quiet
+GDBCMDS=-ex "target remote localhost:1234" -ex "symbol-file $(OS_VERSION).elf"
 
 C_FILES=$(shell find -name "*.c")
 C_OBJECT_FILES=${C_FILES:.c=.o}
@@ -45,7 +46,7 @@ run: all
 debug: build $(OS_VERSION).elf
 	@ echo "${DEBUG_COLOR}RUNNING ${OS_NAME} IN DEBUG MODE!${DEFAULT_COLOR}"
 	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) &
-	@ ${GDB} $(GDB_COMMANDS)
+	@ ${GDB} $(GDBFLAGS) $(GDBCMDS)
 
 	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 

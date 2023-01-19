@@ -36,14 +36,18 @@ void initTimer(){
     irqInstallHandler(IRQ0_TIMER, timerIrqHandler);
 }
 
-void timerIrqHandler(IrqFrame irqFrame){
+void timerIrqHandler(uint32_t esp, uint32_t ebp){
+    //inform that interrupt was handled
+    out8bit(PIC_MASTER_CONTROL_REGISTER, PIC_EOI_CMD);
+
     ticks++;
-    switchTask();
+    switchTask(esp, ebp);
 
     if(ticks % SYSTEM_FREQUNCY == 0){
         kprinti(getTime());
         kprint(" second\n");
     }
+    
 }
 
 

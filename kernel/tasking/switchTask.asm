@@ -7,8 +7,8 @@ startTask:
     mov esp, [esp + 4]; param1: new esp
 
     ;init satck
-    mov esp, eax
-    mov ebp, eax
+    mov ebp, esp
+    
     sti
     ;run task
     jmp ebx
@@ -16,19 +16,9 @@ startTask:
     hlt ;shouldn't run
 
 switchToTask:
+    mov ebp, [esp + 8] ;param2: new ebp
+    mov esp, [esp + 4] ;param1: new esp
     
-    mov ebp, [esp + 8] ;param2: new esp
-    mov esp, [esp + 4] ;param1: new ebp
-    
-    pop eax
-    mov ds, ax
-	mov es, ax
-	mov fs, ax
-	mov gs, ax
-
-    popa
-    add esp, 4; pop isr number
-    add esp, 4; pop error code
     popad
     sti; re-enble irqs
     iret

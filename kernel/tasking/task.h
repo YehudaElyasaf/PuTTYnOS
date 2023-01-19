@@ -29,7 +29,7 @@ typedef struct
 void initTasking();
 void createTask(uint32_t* startAddres);
 //return value: has switched
-bool switchTask();
+bool switchTask(uint32_t esp, uint32_t ebp);
 //allocate task struct //TODO: and initialize it
 Task* allocateNewTask(uint32_t* startAddres);
 //get the adress of the first reserved stack

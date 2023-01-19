@@ -72,6 +72,7 @@ void task(){
     while (true)
     {
         kprint("4");
+        for(long i=0;i<9999;i++);
     }
     
 }
@@ -79,6 +80,7 @@ void task2(){
     while (true)
     {
         kprint("2");
+        for(long i=0;i<9999;i++);
     }
 }
 
@@ -86,7 +88,6 @@ void main(){
     initialize();
     int a;
     createTask(&task);
-    createTask(&task2);
     //scanf("%d", &a);
     //shellMain();
 }

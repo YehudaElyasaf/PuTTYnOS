@@ -4,7 +4,6 @@
 #include "../../lib/memory.h"
 
 #define DEFAULT_PAGE_DIRECTORY_SIZE 0
-#define MAGIC_NUMBER 0x5945
 #define TASK_STRUCT_NEXT_OFFSET sizeof(Task) - sizeof(Task*)
 
 #define KERNEL_STACK_START  0x9000
@@ -62,7 +61,7 @@ void createTask(uint32_t* startAddres){
     sti();
 }
 
-bool switchTask(){
+bool switchTask(uint32_t esp, uint32_t ebp){
     cli();
 
     if(tasksHead == NULL)
@@ -70,8 +69,8 @@ bool switchTask(){
         return false;
 
     //save stack pointers
-    asm volatile("mov %%esp, %0" : "=r"(currentTask->esp));
-    asm volatile("mov %%ebp, %0" : "=r"(currentTask->ebp));
+    currentTask->esp = esp;
+    currentTask->ebp = ebp;
     
    //FIXME: = nextUnblockedTask();
     Task* newTask = currentTask->next;
@@ -89,7 +88,10 @@ bool switchTask(){
             kcprint("-", PURPLE, DEFAULT_COLOR);
         else
             kcprint("-", BROWN, DEFAULT_COLOR);
-        //switchToTask(newTask->esp, newTask->ebp);
+
+        kprinth(newTask->ebp);
+        kprintc('\n');
+        switchToTask(newTask->esp, newTask->ebp);
     }
     else{
         //start this task
@@ -100,10 +102,10 @@ bool switchTask(){
         int startAdress = newTask->startAdress;
         newTask->startAdress = NULL;
 
+        kprinth(newTask->ebp);
+        kprintc('\n');
         startTask(newTask->esp, startAdress);
     }
-
-    sti();
 }
 
 Task* allocateNewTask(uint32_t* startAddres){
@@ -114,10 +116,12 @@ Task* allocateNewTask(uint32_t* startAddres){
 uint32_t* createStack(){
     //FIXME: maybe a task space is needed?
     //TODO: when a task is killed, unreserve it's stack in the array
-    int stackIndex = 0;
+    int stackIndex = 1;
     for(stackIndex; stackIndex < MAX_TASK; stackIndex++)
-        if(reservedStacksIndexes[stackIndex] == 0) //stack is unused
+        if(reservedStacksIndexes[stackIndex] == false){ //stack is unused
+            reservedStacksIndexes[stackIndex] = true;
             break;
+        }
 
     return KERNEL_STACK_START + (stackIndex * STACK_SIZE_BYTES);
 }
