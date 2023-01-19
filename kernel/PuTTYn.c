@@ -45,7 +45,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing PDT...");
-    initPDT(); //TODO: enable
+    //initPDT(); //TODO: enable
     printDone();
 
     kprint("Initializing PIT...");
@@ -68,10 +68,27 @@ void main(){
 #else
 
 
+void task(){
+    while (true)
+    {
+        kprint("4");
+    }
+    
+}
+void task2(){
+    while (true)
+    {
+        kprint("2");
+    }
+}
+
 void main(){
     initialize();
     int a;
+    createTask(&task);
+    createTask(&task2);
     //scanf("%d", &a);
     //shellMain();
 }
+
 #endif

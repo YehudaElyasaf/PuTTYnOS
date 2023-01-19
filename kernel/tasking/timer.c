@@ -38,7 +38,7 @@ void initTimer(){
 
 void timerIrqHandler(IrqFrame irqFrame){
     ticks++;
-    taskSwitch();
+    switchTask();
 
     if(ticks % SYSTEM_FREQUNCY == 0){
         kprinti(getTime());

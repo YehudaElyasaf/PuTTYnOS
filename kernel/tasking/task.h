@@ -10,7 +10,7 @@
 typedef struct
 {
     //task ID
-    uint32_t id;
+    uint32_t pid;
 
     //registers
     uint32_t esp;
@@ -19,7 +19,7 @@ typedef struct
 
     //when a task is created, 
     uint32_t* startAdress;
-    bool (*hasStarted)();
+    bool (*hasStarted);
 
     bool isBlocked;
     PTEntry* pt; //TODO: delete
@@ -27,13 +27,11 @@ typedef struct
 } Task;
 
 void initTasking();
-void createTask();
+void createTask(uint32_t* startAddres);
 //return value: has switched
-bool taskSwitch();
-//allocate task struct //TODO: and initizlize it
-Task* allocateNewTask();
+bool switchTask();
+//allocate task struct //TODO: and initialize it
+Task* allocateNewTask(uint32_t* startAddres);
 //get the adress of the first reserved stack
 uint32_t* createStack();
-
-//struct Task - methods
-bool hasStarted(Task* this);
+bool hasTaskStarted(Task* task);

@@ -53,6 +53,7 @@ callIrqHandler:
     
     add esp, 4; pop irq number
     add esp, 4; pop irq index in IDT
+
     sti; re-enble irqs
     iret
 '''
