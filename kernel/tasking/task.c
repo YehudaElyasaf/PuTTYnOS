@@ -67,6 +67,7 @@ bool switchTask(){
     if(tasksHead == NULL)
         //no multitasking
         return false;
+
     if(hasTaskStarted(currentTask)){
         //save stack pointers
         asm volatile("mov %%esp, %0" : "=r"(currentTask->esp));
@@ -89,8 +90,6 @@ bool switchTask(){
         int startAdress = newTask->startAdress;
         newTask->startAdress = NULL;
 
-        kcprinth(newTask->esp, BROWN, DEFAULT_COLOR);
-        kprintc('\n');
         startTask(newTask->esp, startAdress);
     }
     else{
@@ -103,7 +102,10 @@ bool switchTask(){
         else
             kcprint("-", BROWN, DEFAULT_COLOR);
 
+        kprintc('\n');
         kprinth(newTask->esp);
+        kprintc('\n');
+        kprinth(newTask->ebp);
         kprintc('\n');
         switchToTask(newTask->esp, newTask->ebp);
     }
