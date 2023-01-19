@@ -7,7 +7,7 @@ jmp _start
 
 _start:
     mov [BOOT_DRIVE], dl
-    mov bp, STACK_START
+    mov bp, KERNEL_STACK_START
     mov sp, bp
 
     mov dh, 52 ;sectors to read
@@ -15,7 +15,7 @@ _start:
     mov bx, KERNEL_START
     call loadKernelFromDisk
     call switch_to_pm
-    jmp $
+    hlt
 
 [bits 32]
 BEGIN_PM:
@@ -24,7 +24,7 @@ BEGIN_PM:
 
 msg db "Hello, Putin is awaiting!", 0
 
-STACK_START equ 0x9000
+KERNEL_STACK_START equ 0x9000
 KERNEL_START equ 0x1000
 BOOT_DRIVE db 0
 

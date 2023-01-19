@@ -18,7 +18,7 @@ typedef struct
     uint32_t eip; //TODO: delete
 
     //when a task is created, 
-    uint32_t startAdress;
+    uint32_t* startAdress;
     bool (*hasStarted)();
 
     bool isBlocked;
@@ -28,9 +28,12 @@ typedef struct
 
 void initTasking();
 void createTask();
-bool taskSwitch(); //return value: has switched
+//return value: has switched
+bool taskSwitch();
+//allocate task struct //TODO: and initizlize it
 Task* allocateNewTask();
-uint32_t createStack();
+//get the adress of the first reserved stack
+uint32_t* createStack();
 
 //struct Task - methods
 bool hasStarted(Task* this);
