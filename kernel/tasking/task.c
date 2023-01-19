@@ -42,7 +42,7 @@ void createTask(uint32_t* startAddres){
     newTask->isBlocked = false;
     newTask->next = NULL;
     
-    //TODO: use LinkedList.h
+    //FIXME: use LinkedList.h
     if(!tasksHead){
         //first task
         tasksHead = newTask;
@@ -61,16 +61,17 @@ void createTask(uint32_t* startAddres){
     sti();
 }
 
-bool switchTask(uint32_t esp, uint32_t ebp){
+bool switchTask(){
     cli();
 
     if(tasksHead == NULL)
         //no multitasking
         return false;
-
-    //save stack pointers
-    currentTask->esp = esp;
-    currentTask->ebp = ebp;
+    if(hasTaskStarted(currentTask)){
+        //save stack pointers
+        asm volatile("mov %%esp, %0" : "=r"(currentTask->esp));
+        asm volatile("mov %%ebp, %0" : "=r"(currentTask->ebp));
+    }
     
    //FIXME: = nextUnblockedTask();
     Task* newTask = currentTask->next;
@@ -79,7 +80,20 @@ bool switchTask(uint32_t esp, uint32_t ebp){
         newTask = tasksHead;
 
     currentTask = newTask;
-    if(hasTaskStarted(newTask)){
+    if(!hasTaskStarted(newTask)){
+        //start this task
+
+        kcprint("new task!", RED, DEFAULT_COLOR);
+
+        //save start adress before we override it
+        int startAdress = newTask->startAdress;
+        newTask->startAdress = NULL;
+
+        kcprinth(newTask->esp, BROWN, DEFAULT_COLOR);
+        kprintc('\n');
+        startTask(newTask->esp, startAdress);
+    }
+    else{
         //switch to this task
 
         if(newTask->pid==1)
@@ -89,22 +103,9 @@ bool switchTask(uint32_t esp, uint32_t ebp){
         else
             kcprint("-", BROWN, DEFAULT_COLOR);
 
-        kprinth(newTask->ebp);
+        kprinth(newTask->esp);
         kprintc('\n');
         switchToTask(newTask->esp, newTask->ebp);
-    }
-    else{
-        //start this task
-
-        kcprint("new task!", RED, DEFAULT_COLOR);
-
-        //save start adress before we override it
-        int startAdress = newTask->startAdress;
-        newTask->startAdress = NULL;
-
-        kprinth(newTask->ebp);
-        kprintc('\n');
-        startTask(newTask->esp, startAdress);
     }
 }
 

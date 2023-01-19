@@ -64,11 +64,7 @@ irq0:
     
     pushad
 
-    push ebp
-    push esp
     call timerIrqHandler
-    pop eax
-    pop eax
 
     popad
 

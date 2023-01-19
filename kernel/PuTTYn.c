@@ -68,7 +68,7 @@ void main(){
 #else
 
 
-void task(){
+void t1(){
     while (true)
     {
         kprint("4");
@@ -76,7 +76,7 @@ void task(){
     }
     
 }
-void task2(){
+void t2(){
     while (true)
     {
         kprint("2");
@@ -87,7 +87,8 @@ void task2(){
 void main(){
     initialize();
     int a;
-    createTask(&task);
+    createTask(&t1);
+    createTask(&t2);
     //scanf("%d", &a);
     //shellMain();
 }
