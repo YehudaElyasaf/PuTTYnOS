@@ -1,6 +1,7 @@
 #include "timer.h"
 #include "../io/print.h"
 #include "../asm.h"
+#include "../tasking/task.h"
 
 #define PIT_TIMER_CONTROL_REGISTER  0x43
 #define PIT_TIMER_INIT_BYTE         0x36
@@ -37,6 +38,8 @@ void initTimer(){
 
 void timerIrqHandler(IrqFrame irqFrame){
     ticks++;
+    taskSwitch();
+
     if(ticks % SYSTEM_FREQUNCY == 0){
         kprinti(getTime());
         kprint(" second\n");

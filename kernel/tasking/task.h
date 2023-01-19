@@ -5,6 +5,8 @@
 #include "../../lib/linkedList.h"
 #include "../memory/pagingHandler.h"
 
+#define MAX_TASK 5 //TODO: more tasks
+
 typedef struct
 {
     //task ID
@@ -13,14 +15,22 @@ typedef struct
     //registers
     uint32_t esp;
     uint32_t ebp;
-    uint32_t eip;
+    uint32_t eip; //TODO: delete
+
+    //when a task is created, 
+    uint32_t startAdress;
+    bool (*hasStarted)();
 
     bool isBlocked;
-    PTEntry* pt;
+    PTEntry* pt; //TODO: delete
     struct Task* next;
 } Task;
 
-#define TASK_STRUCT_NEXT_INDEX sizeof(Task) - sizeof(Task*)
-
 void initTasking();
-//void taskSwitch();
+void createTask();
+bool taskSwitch(); //return value: has switched
+Task* allocateNewTask();
+uint32_t createStack();
+
+//struct Task - methods
+bool hasStarted(Task* this);

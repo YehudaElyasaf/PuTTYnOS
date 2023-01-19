@@ -1,5 +1,8 @@
 [org 7c00h]
 [bits 16]
+
+global STACK_START
+
 jmp _start
 
 _start:
@@ -20,6 +23,7 @@ BEGIN_PM:
     jmp $
 
 msg db "Hello, Putin is awaiting!", 0
+
 STACK_START equ 0x9000
 KERNEL_START equ 0x1000
 BOOT_DRIVE db 0
