@@ -8,13 +8,13 @@ void nop(){
 }
 
 void sti(){
-    asm("sti");
+    asm volatile("sti");
 }
 void cli(){
-    asm("cli");
+    asm volatile("cli");
 }
 void hlt(){
-    asm("hlt");
+    asm volatile("hlt");
 }
 
 //in\out

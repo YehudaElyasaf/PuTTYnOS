@@ -26,7 +26,7 @@ typedef struct
 } Task;
 
 void initTasking();
-void createTask(uint32_t* startAddres);
+uint32_t createTask(uint32_t* startAddres);
 //return value: has switched
 bool switchTask();
 //allocate task struct //TODO: and initialize it

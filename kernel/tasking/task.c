@@ -30,7 +30,7 @@ void initTasking(){
     sti();
 }
 
-void createTask(uint32_t* startAddres){
+uint32_t createTask(uint32_t* startAddres){
     cli();
     
     Task* newTask = allocateNewTask(startAddres);
@@ -57,8 +57,12 @@ void createTask(uint32_t* startAddres){
     }
 
     currentTask = newTask;
-
-    sti();
+    asm("\
+    mov %%eax, %0   ;\
+    sti             ;\
+    leave           ;\
+    ret             ;\
+    " : : "r"(newTask->pid));
 }
 
 bool switchTask(){
@@ -84,7 +88,7 @@ bool switchTask(){
     if(!hasTaskStarted(newTask)){
         //start this task
 
-        kcprint("new task!", RED, DEFAULT_COLOR);
+        kcprint("\nnew task!\n", RED, DEFAULT_COLOR);
 
         //save start adress before we override it
         int startAdress = newTask->startAdress;
@@ -94,19 +98,6 @@ bool switchTask(){
     }
     else{
         //switch to this task
-
-        if(newTask->pid==1)
-            kcprint("-", GREEN, DEFAULT_COLOR);
-        else if(newTask->pid==2)
-            kcprint("-", PURPLE, DEFAULT_COLOR);
-        else
-            kcprint("-", BROWN, DEFAULT_COLOR);
-
-        kprintc('\n');
-        kprinth(newTask->esp);
-        kprintc('\n');
-        kprinth(newTask->ebp);
-        kprintc('\n');
         switchToTask(newTask->esp, newTask->ebp);
     }
 }

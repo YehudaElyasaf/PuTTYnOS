@@ -63,34 +63,32 @@ void initialize(){
 #ifndef _DEBUG
 void main(){
     initialize();
-    //shellMain();
+    
+    createTask(&shellMain);
+
+    //do nothing
+    while (true)
+    {
+        hlt();
+    }
 }
 #else
 
-
-void t1(){
+void t(){
     while (true)
     {
-        kprint("4");
-        for(long i=0;i<9999;i++);
+        kprint("a");
+        for(long i=0;i<50000000;i++);
     }
     
 }
-void t2(){
-    while (true)
-    {
-        kprint("2");
-        for(long i=0;i<9999;i++);
-    }
-}
-
 void main(){
     initialize();
-    int a;
-    createTask(&t1);
-    createTask(&t2);
-    //scanf("%d", &a);
-    //shellMain();
+
+    createTask(&shellMain);
+    createTask(&t);
+    
+    
 }
 
 #endif
