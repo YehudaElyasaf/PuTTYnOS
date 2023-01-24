@@ -3,8 +3,9 @@
 OS_NAME=PuTTYnOS
 OS_VERSION=$(OS_NAME)-i386
 #32m = green
-#35m = purple
 #37m = white
+#35m = purple
+#31m = orange
 SUCESS_COLOR=\033[0;32m
 DEFAULT_COLOR=\033[0;37m
 LOG_COLOR=\033[0;35m
@@ -18,7 +19,7 @@ LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386 -fda 
 QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF) #TODO: --no-reboot
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
-QEMU_QUIET_RUN=> /dev/null 2>&1  
+QUIET_RUN= > /dev/null 2>&1
 NASM=nasm
 PY=python3
 GDB=gdb
@@ -41,13 +42,13 @@ all: build
 
 run: all
 	@echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
-	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS) $(QEMU_QUIET_RUN)
+	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS) $(QUIET_RUN)
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 debug: build $(OS_VERSION).elf
 	@ echo "${DEBUG_COLOR}RUNNING ${OS_NAME} IN DEBUG MODE!${DEFAULT_COLOR}"
-	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) $(QEMU_QUIET_RUN) &
+	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) $(QUIET_RUN) &
 	@ ${GDB} $(GDBFLAGS) $(GDBCMDS)
 
 	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
