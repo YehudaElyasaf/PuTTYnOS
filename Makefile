@@ -1,4 +1,4 @@
-.PHONY: all clean run build
+.PHONY: all clean run build debug
 
 OS_NAME=PuTTYnOS
 OS_VERSION=$(OS_NAME)-i386
@@ -89,7 +89,7 @@ clean:
 	@rm -f -r $(shell find -name "*.elf")
 	@rm -f -r $(shell find -name "*.img")
 	@rm -f -r $(shell find -name "*.iso")
-	@rm -f -r $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto g file
+	@rm -f -r $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto generated file
 	@rm -f -r $(shell find -name "*.vscode")
 	@rm -f -r $(shell find -name "*__pycache__")
 	@rm -f -r $(AUTO_GENERATED_ASM_FILES) $(AUTO_GENERATED_H_FILES)
