@@ -8,19 +8,18 @@ void initScheduler(Task* kmain){
 }
 
 void insertTask(Task* newTask){
-    //FIXME: use LinkedList.h
     if(!tasksHead){
         //first task
         tasksHead = newTask;
+        return;
     }
-    else{
-        //goto last task
-        Task* mov = tasksHead;
-        while(mov->next)
-            mov = mov->next;
-        
-        mov->next = newTask;
-    }
+
+    //goto last task
+    Task* mov = tasksHead;
+    while(mov->next)
+        mov = mov->next;
+    
+    mov->next = newTask;
 }
 
 Task* getCurrentTask(){

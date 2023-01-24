@@ -59,33 +59,12 @@ callIrqHandler:
 TIMER_IRQ_HANDLER_CODE = '''
 global irq0
 
-;TODO: del
-strr db 0xa, 0
-extern kprinth
-extern kprint
-extern kprintc
-
 extern timerIrqHandler
 irq0:
     cli
-    
-    ;TODO: del
-    ;push strr
-    ;call kprint
-    ;pop eax
-;
-    ;push esp
-    ;call kprinth
-    ;pop eax
-    ;
-    ;push strr
-    ;call kprint
-    ;pop eax
 
     pushad
-
     call timerIrqHandler
-
     popad
 
     sti
