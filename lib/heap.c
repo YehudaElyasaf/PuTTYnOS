@@ -9,7 +9,7 @@ static uint32_t firstHole = LLEMPTY;
 static uint32_t headOfHeap = HEAP_START;
 
 uint32_t alloc(uint32_t size) {
-    uint32_t ptr = headOfHeap;
+    uint8_t* ptr = headOfHeap;
     HeapHeader* i = (HeapHeader*)firstHole, *last_header = i;
     size += sizeof(HeapHeader)/2; // no need for the "next" in the header for a used block
     if (size < sizeof(HeapHeader))

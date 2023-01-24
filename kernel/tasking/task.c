@@ -4,6 +4,9 @@
 #include "../../lib/memory.h"
 #include "scheduler.h"
 
+extern void startTask(uint32_t, void(*startAddress)(void));
+extern void switchTo(uint32_t, uint32_t);
+
 #define DEFAULT_PAGE_DIRECTORY_SIZE 0
 #define TASK_STRUCT_NEXT_OFFSET sizeof(Task) - sizeof(Task*)
 
@@ -14,7 +17,7 @@ static uint32_t lastTaskPid;
 
 //TODO: delete this
 static Task tasksContainer[MAX_TASK + 5];
-static bool reservedStacksIndexes[MAX_TASK];
+static char reservedStacksIndexes[MAX_TASK];
 
 void initTasking(){
     cli();
@@ -27,7 +30,7 @@ void initTasking(){
     kmain->pid = ++lastTaskPid;
     kmain->esp = createStack();
     kmain->ebp = kmain->esp;
-    kmain->startAdress = NULL; //task already started
+    kmain->startAddress = NULL; //task already started
     kmain->isBlocked = false;
     kmain->next = NULL;
     initScheduler(kmain);
@@ -35,7 +38,7 @@ void initTasking(){
     sti();
 }
 
-uint32_t createTask(uint32_t* startAddres){
+uint32_t createTask(void(*startAddress)(void)){
     cli();
     
     Task* newTask = allocateNewTask();
@@ -43,7 +46,7 @@ uint32_t createTask(uint32_t* startAddres){
     newTask->pid = ++lastTaskPid;
     newTask->esp = createStack();
     newTask->ebp = newTask->esp;
-    newTask->startAdress = startAddres;
+    newTask->startAddress = startAddress;
     newTask->isBlocked = false;
     newTask->next = NULL;
     
@@ -79,14 +82,14 @@ bool switchTask(){
         //start this task
 
         //save start adress before we override it
-        int startAdress = newTask->startAdress;
-        newTask->startAdress = NULL;
+        void(*startAddress)(void) = newTask->startAddress;
+        newTask->startAddress = NULL;
 
-        startTask(newTask->esp, startAdress);
+        startTask(newTask->esp, startAddress);
     }
     else{
-        //switch to this task
-        switchToTask(newTask->esp, newTask->ebp);
+        //switch to next task
+        switchTo(newTask->esp, newTask->ebp);
     }
 }
 
@@ -95,7 +98,7 @@ Task* allocateNewTask(){
     return tasksContainer + lastTaskPid;
 }
 
-uint32_t* createStack(){
+uint32_t createStack(){
     //FIXME: maybe a task space is needed?
     //TODO: when a task is killed, unreserve it's stack in the array
     int stackIndex = 1;
@@ -110,5 +113,5 @@ uint32_t* createStack(){
 
 bool hasTaskStarted(Task* task){
     //start adress isn't NULL only if the task is waiting to start
-    return task->startAdress == NULL;
+    return task->startAddress == NULL;
 }

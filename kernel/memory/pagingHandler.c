@@ -13,7 +13,7 @@ uint32_t initPT(int size) {
     int i = 0, cr0 = 0;
     for (; i < PDT_SIZE && !(*(uint32_t*)(0xfffff000+i) & PRESENT); i++);
     if (i >= PDT_SIZE) // PDT full
-        return;
+        return NULL;
     
     *(uint32_t*)(0xfffff000+i) = PRESENT | USER | READWRITE | pt;
 
@@ -35,8 +35,8 @@ void kmalloc(uint32_t size, uint32_t pageTable) {
 
     size = size / PAGE_SIZE + !(!(size % PAGE_SIZE)); // size in pages. the remainder counts as another page.
     
-    for (; *ptr & DIRTY && ptr < (uint32_t)pt + PAGE_SIZE; ptr++); // wait until you find not used 
-    if (ptr >= (uint32_t)pt + PAGE_SIZE)
+    for (; *ptr & DIRTY && ptr < (uint8_t*)pt + PAGE_SIZE; ptr++); // wait until you find not used 
+    if (ptr >= (uint8_t*)pt + PAGE_SIZE)
         return; // no more pages to allocate
 
     for (int i = 0; i < size; i++) {

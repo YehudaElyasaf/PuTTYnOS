@@ -1,6 +1,6 @@
 [bits 32]
 global startTask
-global switchToTask
+global switchTo
 
 startTask:
     mov ebx, [esp + 8]; param2: startAdress
@@ -16,7 +16,7 @@ startTask:
     hlt ;shouldn't run
 
 
-switchToTask:
+switchTo:
     mov ebp, [esp + 8] ;param2: new ebp
     mov esp, [esp + 4] ;param1: new esp
 

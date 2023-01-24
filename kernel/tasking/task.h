@@ -7,7 +7,7 @@
 
 #define MAX_TASK 5 //TODO: more tasks
 
-typedef struct
+struct Task
 {
     //task ID
     uint32_t pid;
@@ -18,19 +18,21 @@ typedef struct
     uint32_t eip; //TODO: delete
 
     //when a task is created, 
-    uint32_t* startAdress;
+    void(*startAddress)(void);
 
     bool isBlocked;
     PTEntry* pt; //TODO: delete
     struct Task* next;
-} Task;
+};
+typedef struct Task Task;
+
 
 void initTasking();
-uint32_t createTask(uint32_t* startAddres);
+uint32_t createTask(void(*startAddress)(void));
 //return value: has switched
 bool switchTask();
 //allocate task struct //TODO: and initialize it
 Task* allocateNewTask();
 //get the adress of the first reserved stack
-uint32_t* createStack();
+uint32_t createStack();
 bool hasTaskStarted(Task* task);
