@@ -35,8 +35,8 @@ static inline void printShellEntry(){
 void t1(){
     while (true)
     {
-        kprint("4");
-        for(long i=0;i<99999;i++);
+        //kprint("4");
+        for(long i=0;i<99999999;i++);
     }
     
 }
@@ -44,20 +44,19 @@ void t2(){
     while (true)
     {
         //kprint("2");
-        for(long i=0;i<99999;i++);
+        for(long i=0;i<99999999;i++);
     }
 }
 
 int shellMain(){
     int a, b, c, d, e;
-    //a=createTask(&t1);
-    //b=createTask(&t2);
-    //c=createTask(&t2);
-    //d=createTask(&t2);
-    //e=createTask(&t2);
-    printf("%C%d, %d, %d, %d, %d",YELLOW, DEFAULT_COLOR, a,b,c,d,e);
+    a=createTask(&t1);
+    b=createTask(&t2);
+    c=createTask(&t2);
+    d=createTask(&t2);
+    e=createTask(&t2);
     
-    clearScreen();
+    //clearScreen();
     printPuTTYnOS();
 
     while (true)

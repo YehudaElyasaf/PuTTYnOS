@@ -78,17 +78,23 @@ void t(){
     while (true)
     {
         kprint("a");
-        for(long i=0;i<50000000;i++);
+        for(long i=0;i<5000000;i++);
     }
-    
+}
+void tt(){
+    while (true)
+    {
+        kprint("bc");
+        for(long i=0;i<5000000;i++);
+    }
 }
 void main(){
     initialize();
 
     createTask(&shellMain);
+    //for(long i=0;i<5000000;i++);
     createTask(&t);
-    
-    
+    createTask(&tt);
 }
 
 #endif

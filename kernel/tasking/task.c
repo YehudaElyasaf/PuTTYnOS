@@ -2,6 +2,7 @@
 #include "../asm.h"
 #include "../../lib/linkedList.h"
 #include "../../lib/memory.h"
+#include "scheduler.h"
 
 #define DEFAULT_PAGE_DIRECTORY_SIZE 0
 #define TASK_STRUCT_NEXT_OFFSET sizeof(Task) - sizeof(Task*)
@@ -10,12 +11,9 @@
 #define STACK_SIZE_BYTES    0x2000
 
 static uint32_t lastTaskPid;
-static Task* tasksHead;
-static Task* currentTask;
 
 //TODO: delete this
 static Task tasksContainer[MAX_TASK + 5];
-
 static bool reservedStacksIndexes[MAX_TASK];
 
 void initTasking(){
@@ -24,8 +22,15 @@ void initTasking(){
     memset(0, reservedStacksIndexes, sizeof(reservedStacksIndexes));
     lastTaskPid = 0;
 
-    currentTask = NULL;
-    tasksHead = NULL;
+    Task* kmain = allocateNewTask();
+
+    kmain->pid = ++lastTaskPid;
+    kmain->esp = createStack();
+    kmain->ebp = kmain->esp;
+    kmain->startAdress = NULL; //task already started
+    kmain->isBlocked = false;
+    kmain->next = NULL;
+    initScheduler(kmain);
 
     sti();
 }
@@ -33,7 +38,7 @@ void initTasking(){
 uint32_t createTask(uint32_t* startAddres){
     cli();
     
-    Task* newTask = allocateNewTask(startAddres);
+    Task* newTask = allocateNewTask();
 
     newTask->pid = ++lastTaskPid;
     newTask->esp = createStack();
@@ -42,21 +47,8 @@ uint32_t createTask(uint32_t* startAddres){
     newTask->isBlocked = false;
     newTask->next = NULL;
     
-    //FIXME: use LinkedList.h
-    if(!tasksHead){
-        //first task
-        tasksHead = newTask;
-    }
-    else{
-        //goto last task
-        Task* mov = tasksHead;
-        while(mov->next)
-            mov = mov->next;
-        
-        mov->next = newTask;
-    }
-
-    currentTask = newTask;
+    insertTask(newTask);
+    
     asm("\
     mov %%eax, %0   ;\
     sti             ;\
@@ -68,27 +60,23 @@ uint32_t createTask(uint32_t* startAddres){
 bool switchTask(){
     cli();
 
-    if(tasksHead == NULL)
-        //no multitasking
-        return false;
+    Task* currentTask = getCurrentTask();
 
     if(hasTaskStarted(currentTask)){
         //save stack pointers
+        //if task hasn't started, esp and ebp are initialized to current values
         asm volatile("mov %%esp, %0" : "=r"(currentTask->esp));
         asm volatile("mov %%ebp, %0" : "=r"(currentTask->ebp));
     }
     
-   //FIXME: = nextUnblockedTask();
-    Task* newTask = currentTask->next;
-    if(!newTask)
-        //end of tasks queue
-        newTask = tasksHead;
+    Task* newTask = getNextTask();
+    if(newTask == NULL)
+        //shouldn't switch task
+        return false;
 
     currentTask = newTask;
     if(!hasTaskStarted(newTask)){
         //start this task
-
-        kcprint("\nnew task!\n", RED, DEFAULT_COLOR);
 
         //save start adress before we override it
         int startAdress = newTask->startAdress;
@@ -102,7 +90,7 @@ bool switchTask(){
     }
 }
 
-Task* allocateNewTask(uint32_t* startAddres){
+Task* allocateNewTask(){
     //FIXME: use dinamic memory instead
     return tasksContainer + lastTaskPid;
 }

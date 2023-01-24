@@ -30,7 +30,7 @@ uint32_t createTask(uint32_t* startAddres);
 //return value: has switched
 bool switchTask();
 //allocate task struct //TODO: and initialize it
-Task* allocateNewTask(uint32_t* startAddres);
+Task* allocateNewTask();
 //get the adress of the first reserved stack
 uint32_t* createStack();
 bool hasTaskStarted(Task* task);
