@@ -67,38 +67,23 @@ void main(){
     
     createTask(&shellMain);
 
-    //do nothing
-    while (true)
-    {
-        hlt();
-    }
+    blockTask(CURRENT_TASK); //FIXME: block -> kill
 }
 #else
 
 void t(){
     while (true)
     {
-        kprint("a");
-        for(long i=0;i<5000000;i++);
-    }
-}
-void tt(){
-    while (true)
-    {
-        kprint("bc");
-        for(long i=0;i<5000000;i++);
+        printf("a");
+        for(long i=0;i<50000;i++);
     }
 }
 void main(){
     initialize();
 
     createTask(&shellMain);
-    //for(long i=0;i<5000000;i++);
-    //createTask(&t);
-    //createTask(&tt);
     for(long i=0;i<50000000;i++);
-    printf("%CEND!", RED, DEFAULT_COLOR);
-    blockTask(CURRENT_TASK); //FIXME: block -> kill
+    createTask(&t);
 }
 
 #endif
