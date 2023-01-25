@@ -27,17 +27,42 @@ Task* getCurrentTask(){
 }
 
 Task* getNextTask(){
-    Task* newTask = NULL;
-
     if(currentTask == NULL){
         currentTask = tasksHead;
-        return tasksHead;
+        return currentTask;
     }
 
-    newTask = currentTask->next;
-    if(!newTask)
-        //end of tasks queue
-        newTask = tasksHead;
+    Task* newTask = currentTask;
+
+    do{
+        newTask = newTask->next;
+
+        if(!newTask)
+            //end of tasks queue
+            newTask = tasksHead;
+
+        if(newTask == currentTask)
+            return NULL;
+    } while(newTask->isBlocked);
     
     currentTask = newTask;
+}
+
+bool blockTask(uint32_t pid){
+    if(pid == CURRENT_TASK){
+        currentTask->isBlocked = true;
+        return true;
+    }
+
+    Task* mov = tasksHead;
+    while (mov != NULL)
+    {
+        if(mov->pid == pid){
+            mov->isBlocked = true;
+        }
+        mov = mov->next;
+    }
+
+    //couldn't find process
+    return false;
 }

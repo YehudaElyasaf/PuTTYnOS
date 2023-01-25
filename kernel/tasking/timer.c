@@ -41,13 +41,13 @@ void timerIrqHandler(){
     out8bit(PIC_MASTER_CONTROL_REGISTER, PIC_EOI_CMD);
     
     ticks++;
-    switchTask();
 
     if(ticks % SYSTEM_FREQUNCY == 0){
         kprinti(getTime());
         kprint(" second\n");
     }
     
+    switchTask();
 }
 
 

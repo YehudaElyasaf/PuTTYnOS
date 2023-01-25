@@ -7,6 +7,7 @@
 #include "io/keyboard.h"
 #include "tasking/timer.h"
 #include "tasking/task.h"
+#include "tasking/scheduler.h"
 #include "../lib/string.h"
 #include "../user/shell.h"
 #include "../lib/syscall.h"
@@ -93,8 +94,11 @@ void main(){
 
     createTask(&shellMain);
     //for(long i=0;i<5000000;i++);
-    createTask(&t);
-    createTask(&tt);
+    //createTask(&t);
+    //createTask(&tt);
+    for(long i=0;i<50000000;i++);
+    printf("%CEND!", RED, DEFAULT_COLOR);
+    blockTask(CURRENT_TASK); //FIXME: block -> kill
 }
 
 #endif

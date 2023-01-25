@@ -25,11 +25,15 @@ void initTasking(){
     memset(0, reservedStacksIndexes, sizeof(reservedStacksIndexes));
     lastTaskPid = 0;
 
+    uint32_t esp, ebp;
     Task* kmain = allocateNewTask();
 
+    asm volatile("mov %%esp, %0" : "=r"(esp) : );
+    asm volatile("mov %%esp, %0" : "=r"(ebp) : );
+
     kmain->pid = ++lastTaskPid;
-    kmain->esp = createStack();
-    kmain->ebp = kmain->esp;
+    kmain->esp = esp;
+    kmain->ebp = ebp;
     kmain->startAddress = NULL; //task already started
     kmain->isBlocked = false;
     kmain->next = NULL;
@@ -73,9 +77,11 @@ bool switchTask(){
     }
     
     Task* newTask = getNextTask();
-    if(newTask == NULL)
+    if(newTask == NULL){
         //shouldn't switch task
+        sti();
         return false;
+    }
 
     currentTask = newTask;
     if(!hasTaskStarted(newTask)){
