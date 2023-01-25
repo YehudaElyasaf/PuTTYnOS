@@ -33,32 +33,8 @@ static inline void printShellEntry(){
     uint8_t color = GREEN;
 }
 
-
-
-void t1(){
-    while (true)
-    {
-        printf("4");
-        for(long i=0;i<99999; i++);
-    }
-    
-}
-void t2(){
-    while (true)
-    {
-        printf("2");
-        for(long i=0;i<99999; i++);
-    }
-}
-
-int shellMain(){
-    int a, b, c, d;
-    a=createTask(&t1);
-    b=createTask(&t2);
-    c=createTask(&t1);
-    d=createTask(&t2);
-    
-    //clearScreen();
+int shellMain(){    
+    clearScreen();
     printPuTTYnOS();
 
     while (true)

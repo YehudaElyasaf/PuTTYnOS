@@ -16,16 +16,16 @@
 #include "../lib/heap.h"
 
 
-#define _DEBUG
+//#define _DEBUG
 
 static void printDone(){
     #ifndef _DEBUG
-    for(long i=0;i<50000000;i++); //wait
+    for(long i=0;i<5000000;i++); //wait
     #endif
     setCursorCol(NUMBER_OF_COLS / 2);
     kcprint("Done!\n", GREEN, getBackgroundColor());
     #ifndef _DEBUG
-    for(long i=0;i<20000000;i++){} //wait
+    for(long i=0;i<2000000;i++){} //wait
     #endif
 }
 void initialize(){
