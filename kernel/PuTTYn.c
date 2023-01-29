@@ -46,7 +46,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing PDT...");
-    //initPDT(); //TODO: enable
+    initPDT();
     printDone();
 
     kprint("Initializing PIT...");

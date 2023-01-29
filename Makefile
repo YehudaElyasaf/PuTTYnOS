@@ -17,7 +17,7 @@ GCCWARNINGS=-Wno-incompatible-pointer-types -Wno-int-conversion
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386 -fda 
-QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF) #TODO: --no-reboot
+QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF) --no-reboot
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 QUIET_RUN= > /dev/null 2>&1
 NASM=nasm
