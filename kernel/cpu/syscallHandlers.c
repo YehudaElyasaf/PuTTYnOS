@@ -34,6 +34,7 @@ uint32_t putcharSyscallHandler(uint32_t ch, uint32_t color, uint32_t backgroundC
 }
 
 uint32_t getcharSyscallHandler(uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4) {
+    //TODO: block
     return kgetc();
 }
 

@@ -67,6 +67,8 @@ uint32_t createTask(void(*startAddress)(void)){
 bool switchTask(){
     cli();
 
+    decreaseSleepTimes();
+
     Task* currentTask = getCurrentTask();
 
     if(hasTaskStarted(currentTask)){
@@ -80,6 +82,13 @@ bool switchTask(){
     if(newTask == NULL){
         //shouldn't switch task
         sti();
+
+        if(currentTask != NULL && currentTask->isBlocked){
+            //Ho no! Task is blocked but we don't have any other task. We'll wait to next interrupt
+            
+                kprint("a");
+        }
+
         return false;
     }
 

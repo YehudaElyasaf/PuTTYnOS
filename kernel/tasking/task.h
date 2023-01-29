@@ -20,6 +20,7 @@ struct Task
     void(*startAddress)(void);
 
     bool isBlocked;
+    uint32_t sleepTimeMS; //to sleep syscall, in miliseconds
     PTEntry* pt; //TODO: delete?
     struct Task* next;
 };

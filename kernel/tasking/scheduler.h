@@ -9,5 +9,10 @@ void initScheduler(Task* kmain);
 void insertTask(Task* newTask);
 Task* getCurrentTask();
 Task* getNextTask();
-bool blockTask(uint32_t pid); //return value: is successful
-bool killTask(uint32_t pid); //return value: is successful
+//return value: is successfull
+bool blockTask(uint32_t pid);
+//return value: is successfull
+bool killTask(uint32_t pid);
+//decrease sleep time to all sleeping tasks
+void decreaseSleepTimes();
+void delayCurrentTask(uint32_t ms);

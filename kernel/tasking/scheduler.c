@@ -83,5 +83,31 @@ bool killTask(uint32_t pid){
     
     //kill task
     //TODO: deallocate task
-    
+    task->isBlocked = true; //delete this line
+}
+
+void decreaseSleepTimes(){
+    Task* mov = tasksHead;
+
+    while(mov != NULL){
+        if(mov->isBlocked && mov->sleepTimeMS > 0){
+            //task is sleeping
+            //let's help it wake up!
+            mov->sleepTimeMS--;
+
+            if(mov->sleepTimeMS == 0)
+                //Yap! We woke it!
+                mov->isBlocked = false;
+        }
+
+        mov = mov->next;
+    }
+}
+
+void delayCurrentTask(uint32_t ms){
+    if(currentTask == NULL)
+        return;
+
+    currentTask->isBlocked = true;
+    currentTask->sleepTimeMS = ms;
 }
