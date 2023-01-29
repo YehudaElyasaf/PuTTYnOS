@@ -48,21 +48,40 @@ Task* getNextTask(){
     currentTask = newTask;
 }
 
-bool blockTask(uint32_t pid){
-    if(pid == CURRENT_TASK){
-        currentTask->isBlocked = true;
-        return true;
-    }
+static Task* findTask(uint32_t pid){
+    if(pid == CURRENT_TASK)
+        return currentTask;
 
     Task* mov = tasksHead;
     while (mov != NULL)
     {
-        if(mov->pid == pid){
-            mov->isBlocked = true;
-        }
+        if(mov->pid == pid)
+            return mov;
+
         mov = mov->next;
     }
 
     //couldn't find process
-    return false;
+    return NULL;
+}
+
+bool blockTask(uint32_t pid){
+    Task* task = findTask(pid);
+    
+    if(task == NULL)
+        return false;
+    
+    task->isBlocked = true;
+    return true;
+}
+
+bool killTask(uint32_t pid){
+    Task* task = findTask(pid);
+    
+    if(task == NULL)
+        return false;
+    
+    //kill task
+    //TODO: deallocate task
+    
 }

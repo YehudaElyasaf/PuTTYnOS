@@ -10,3 +10,4 @@ void insertTask(Task* newTask);
 Task* getCurrentTask();
 Task* getNextTask();
 bool blockTask(uint32_t pid); //return value: is successful
+bool killTask(uint32_t pid); //return value: is successful
