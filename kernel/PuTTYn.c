@@ -17,7 +17,7 @@
 #include "../lib/heap.h"
 #include "../lib/tasking.h"
 
-#define _DEBUG
+//#define _DEBUG
 
 static void printDone(){
     setCursorCol(NUMBER_OF_COLS / 2);

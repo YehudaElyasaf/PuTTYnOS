@@ -34,8 +34,9 @@ uint8_t initRTL8139() {
 
     ioAddr = in32bit(pciAddr + 0x10);
 
-    if(ioAddr != 0xFFFFFFFF){
+    if(ioAddr == 0xFFFFFFFF){
         kprint("\tCouldn't find NIC!");
+        return -1;
     }
     else{
         printf("\tFound device: RTL8139\n");
@@ -45,7 +46,7 @@ uint8_t initRTL8139() {
     out8bit(ioAddr + INIT_RTL_CONTROL_REGISTER, POWER_ON_CODE);
     //reset card
     out8bit( ioAddr + RTL_CONTROL_REGISTER, RESET_CODE);
-    //while( (in8bit(ioAddr + RTL_CONTROL_REGISTER) & RESET_CODE) != 0) { }
+    while( (in8bit(ioAddr + RTL_CONTROL_REGISTER) & RESET_CODE) != 0) { }
 
     out32bit(ioAddr + RBSTART, rx_buffer); // send uint32_t memory location to RBSTART (0x30)
     
@@ -61,7 +62,7 @@ uint8_t initRTL8139() {
     for (int i = 0; i < 6; i++) {
         macAddr[i] = in8bit(ioAddr+i);
     }
-    
+
     //print MAC adress
     printf("\tMAC: ", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
     for(int i = 0; i < MAC_ADDRES_GROUPS; i++){
