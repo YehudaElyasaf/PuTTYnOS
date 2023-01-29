@@ -4,8 +4,6 @@
 #include "convert.h"
 #include "memory.h"
 
-#define BUFFER_LEN 512
-
 #define RELEASE_SC 0x80
 #define LSHIFT_SC 0x2a
 #define RSHIFT_SC 0x36

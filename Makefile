@@ -5,6 +5,7 @@ OS_VERSION=$(OS_NAME)-i386
 #32m = green
 #35m = purple
 #37m = white
+#31m = orange
 SUCESS_COLOR=\033[0;32m
 DEFAULT_COLOR=\033[0;37m
 LOG_COLOR=\033[0;35m
@@ -15,7 +16,7 @@ GCCFLAGS=-c -ffreestanding -g
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386 -fda 
-QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF)
+QEMUFLAGS=-boot c -net nic -net user -nic model=rtl8139 -m 4G $(QAF)
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 NASM=nasm
 PY=python3
@@ -41,15 +42,15 @@ run: all
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
-debug: build $(OS_VERSION).elf
+debug: build $(OS_VERSION)-symbols.elf
 	@ echo "${DEBUG_COLOR}RUNNING ${OS_NAME} IN DEBUG MODE!${DEFAULT_COLOR}"
 	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) &
-	@ ${GDB} -ex "target remote localhost:1234" -ex "symbol-file $(OS_VERSION).elf"
+	@ ${GDB} -ex "target remote localhost:1234" -symbols=$(OS_VERSION)-symbols.elf
 
 	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 build: $(OS_VERSION).img
-	@truncate -s 144k $(OS_VERSION).img
+	@truncate -s 1440k $(OS_VERSION).img
 
 $(OS_VERSION).img: boot/bootloader.bin $(OS_VERSION).bin
 	@echo "${LOG_COLOR}\nCREATING DISK IMAGE...${DEFAULT_COLOR}"
@@ -60,8 +61,8 @@ $(OS_VERSION).bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLE
 	@echo "${LOG_COLOR}\nLINKING...${DEFAULT_COLOR}"
 	@ $(LD) $^ $(LDFLAGS) -o $@ --oformat binary
 
-$(OS_VERSION).elf: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
-	@echo "${DEBUG_COLOR}CREATING SYMBOL TABLE TO DEBUG MODE...${DEFAULT_COLOR}"
+$(OS_VERSION)-symbols.elf: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
+	@echo "${DEBUG_COLOR}CREATING SYMBOL TABLE...${DEFAULT_COLOR}"
 	@ $(LD) $^ $(LDFLAGS) -o $@
 
 %.o: %.c

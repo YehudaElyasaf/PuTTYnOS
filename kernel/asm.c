@@ -38,3 +38,37 @@ void out8bit(uint16_t port, uint8_t buffer){
     asm("out %%al, %%dx" : : "a"(buffer), "d"(port));
     portWait();
 }
+
+uint32_t in32bit(uint16_t port){
+    uint32_t buffer;
+    //syntax: IN    port, accumulator
+    //read from port stored in dx to al
+    asm("in %%dx, %%eax" : "=a"(buffer) : "d"(port));
+    portWait();
+
+    return buffer;
+}
+
+void out32bit(uint16_t port, uint32_t buffer){
+    //syntax: OUT   accumulator. port
+    //write from al to port stored in dx
+    asm("out %%eax, %%dx" : : "a"(buffer), "d"(port));
+    portWait();
+}
+
+uint16_t in16bit(uint16_t port){
+    uint16_t buffer;
+    //syntax: IN    port, accumulator
+    //read from port stored in dx to al
+    asm("in %%dx, %%ax" : "=a"(buffer) : "d"(port));
+    portWait();
+
+    return buffer;
+}
+
+void out16bit(uint16_t port, uint16_t buffer){
+    //syntax: OUT   accumulator. port
+    //write from al to port stored in dx
+    asm("out %%ax, %%dx" : : "a"(buffer), "d"(port));
+    portWait();
+}

@@ -38,25 +38,25 @@ int shellMain(){
     {
         printShellEntry();
 
-        char command[100] = {0};
+        char command[BUFFER_LEN] = {0};
         
-        char programName[100] = {0};
-        char programArg[100] = {0};
+        char programName[BUFFER_LEN] = {0};
+        char programArg[BUFFER_LEN] = {0};
         
         int i = 0;
         char* ch = command;
-        scanf("%100s", command);
+        scanf("%1024s", command);
 
         //trim spaces in beginning
-        for(i = 0; *ch == ' '; i++) ch++;
+        for(i = 0; *ch == ' ' || *ch == '\t'; i++) ch++;
 
-        for(i = 0; *ch != ' ' && *ch != '\0'; i++){
+        for(i = 0; *ch != ' ' && *ch != '\t' && *ch != '\0'; i++){
             programName[i] = *ch;
             ch++;
         }
         
         //trim spaces in middle
-        for(ch; *ch == ' '; ch++);
+        for(ch; *ch == ' ' || *ch == '\t'; ch++);
 
         for(i = 0; *ch != '\0'; i++){
             programArg[i] = *ch;
@@ -64,7 +64,7 @@ int shellMain(){
         }
 
         //trim spaces in end
-        for(--i; programArg[i] == ' '; i--){
+        for(--i; programArg[i] == ' ' || programArg[i] == '\t'; i--){
             programArg[i] = '\0';
         }
 

@@ -4,6 +4,8 @@
 #include "syscall.h"
 #include "../kernel/io/print.h"
 
+#define BUFFER_LEN 1024
+
 // return: kernel system call return
 char getchar();
 // add offset to cursor position
