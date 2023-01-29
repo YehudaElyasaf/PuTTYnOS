@@ -1,5 +1,6 @@
 #include "PuTTYn.h"
 #include "io/print.h"
+#include "network/network.h"
 #include "io/screen.h"
 #include "memory/pagingHandler.h"
 #include "cpu/idt.h"
@@ -13,14 +14,14 @@
 #include "../lib/heap.h"
 
 
-//#define _DEBUG
+#define _DEBUG
 
 static void printDone(){
     #ifndef _DEBUG
     for(long i=0;i<20;i++);//i<50000000;i++){} //wait
     #endif
     setCursorCol(NUMBER_OF_COLS / 2);
-    kcprint("Done!\n", GREEN, getBackgroundColor());
+    kcprint("Done!\n", GREEN, DEFAULT_COLOR);
     #ifndef _DEBUG
     for(long i=0;i<20;i++);//for(long i=0;i<20000000;i++){} //wait
     #endif
@@ -43,6 +44,10 @@ void initialize(){
     kprint("Initializing PDT...");
     initPDT(/*params*/);
     printDone();
+
+    kprint("Finding NIC...");
+    initNetworking();
+    printDone();
     
     setColor(WHITE);
 }
@@ -56,5 +61,7 @@ void main(){
 #else
 void main(){
     initialize();
+
+    shellMain();
 }
 #endif

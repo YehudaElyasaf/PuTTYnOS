@@ -5,39 +5,20 @@
 #include "../../lib/string.h"
 #include "../../lib/memory.h"
 #include "print.h"
+#include "../../lib/queue.h"
 
 #define KEY_BUFFER_LEN 1024
 
 #define LSHIFT_SC 0x2a + 0x80
 #define RSHIFT_SC 0x36 + 0x80
 
-static uint8_t key_buffer[KEY_BUFFER_LEN];
-static uint16_t buffer_ptr = 0;
+static uint8_t key_buffer[KEY_BUFFER_LEN] = {0};
 
-void pushQueue(char ch) {
-    int len = strlen(key_buffer + buffer_ptr);
-    if (len >= KEY_BUFFER_LEN) return;
-    if (len == 0) {
-        buffer_ptr = 0;
-    }
-    else if (buffer_ptr + len + 1 > KEY_BUFFER_LEN) {
-        memcpy(key_buffer + buffer_ptr, key_buffer, len);
-        buffer_ptr = 0;
-    }
-
-    key_buffer[buffer_ptr + len] = ch;
-    key_buffer[buffer_ptr + len+1] = 0;
-}
-
-char popQueue() {
-    char ret = key_buffer[buffer_ptr];
-    key_buffer[buffer_ptr] = 0;
-    buffer_ptr = buffer_ptr < KEY_BUFFER_LEN-2 ? buffer_ptr + 1 : 0;
-    return ret;
-}
+Queue keyQueue = {key_buffer, 0, KEY_BUFFER_LEN, 1};
 
 char kgetc() {
-    char tmp = popQueue();
+    char tmp = 0;
+    queuePop(&keyQueue, &tmp);
     return tmp;
 }
 
@@ -50,7 +31,7 @@ static void keyboardIrqHandler(IrqFrame reg) {
             return;
     }
 
-    pushQueue(scancode);
+    queuePush(&keyQueue, &scancode);
 }
 
 void initKeyboard() {
