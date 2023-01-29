@@ -5,48 +5,36 @@
 #include "../../lib/string.h"
 #include "../../lib/memory.h"
 #include "print.h"
+#include "../../lib/queue.h"
 
 #define KEY_BUFFER_LEN 1024
 
-static uint8_t key_buffer[KEY_BUFFER_LEN];
-static uint16_t buffer_ptr = 0;
+#define LSHIFT_SC 0x2a + 0x80
+#define RSHIFT_SC 0x36 + 0x80
 
-void pushQueue(char ch) {
-    int len = strlen(key_buffer + buffer_ptr);
-    if (len >= KEY_BUFFER_LEN) return;
-    if (len == 0) {
-        buffer_ptr = 0;
-    }
-    else if (buffer_ptr + len + 1 > KEY_BUFFER_LEN) {
-        memcpy(key_buffer + buffer_ptr, key_buffer, len);
-        buffer_ptr = 0;
-    }
+static uint8_t key_buffer[KEY_BUFFER_LEN] = {0};
 
-    key_buffer[buffer_ptr + len] = ch;
-    key_buffer[buffer_ptr + len+1] = 0;
-}
-
-char popQueue() {
-    char ret = key_buffer[buffer_ptr];
-    key_buffer[buffer_ptr] = 0;
-    buffer_ptr++;
-    return ret;
-}
+Queue keyQueue = {key_buffer, 0, KEY_BUFFER_LEN, 1};
 
 char kgetc() {
-    return popQueue();
+    char tmp = 0;
+    queuePop(&keyQueue, &tmp);
+    return tmp;
 }
 
-static void keyboardHandler(IsrFrame reg) {
+static void keyboardIrqHandler(IrqFrame reg) {
     uint8_t scancode = in8bit(0x60);
+    in8bit(0x60); //clean port 0x60
 
-    if (scancode >= 0x80) return;
+    if (scancode >= 0x80) {
+        if (scancode != LSHIFT_SC && scancode != RSHIFT_SC)
+            return;
+    }
 
-    kprinth(scancode);
-    kprintc('\n');
-    pushQueue(scancode);
+    queuePush(&keyQueue, &scancode);
 }
 
 void initKeyboard() {
-    irqInstallHandler(IRQ1_KEYBOARD, keyboardHandler);
+    irqInstallHandler(IRQ1_KEYBOARD, keyboardIrqHandler);
+    in8bit(0x60); //clean port 0x60
 }

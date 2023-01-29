@@ -1,18 +1,21 @@
 [org 7c00h]
 [bits 16]
+
+global STACK_START
+
 jmp _start
 
 _start:
     mov [BOOT_DRIVE], dl
-    mov bp, STACK_START
+    mov bp, KERNEL_STACK_START
     mov sp, bp
 
-    mov dh, 20 ;sectors to read. 20 is a random number because it's wroking well
+    mov dh, 52 ;sectors to read
     mov dl, [BOOT_DRIVE]
     mov bx, KERNEL_START
     call loadKernelFromDisk
     call switch_to_pm
-    jmp $
+    hlt
 
 [bits 32]
 BEGIN_PM:
@@ -20,7 +23,8 @@ BEGIN_PM:
     jmp $
 
 msg db "Hello, Putin is awaiting!", 0
-STACK_START equ 0x9000
+
+KERNEL_STACK_START equ 0x9000
 KERNEL_START equ 0x1000
 BOOT_DRIVE db 0
 

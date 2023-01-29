@@ -1,21 +1,30 @@
-.PHONY: all clean run build
+.PHONY: all clean run build debug
 
-OS_VERSION=PuTTYnOS-i386
+OS_NAME=PuTTYnOS
+OS_VERSION=$(OS_NAME)-i386
 #32m = green
-#35m = purple
 #37m = white
+#35m = purple
+#31m = orange
 SUCESS_COLOR=\033[0;32m
 DEFAULT_COLOR=\033[0;37m
 LOG_COLOR=\033[0;35m
+DEBUG_COLOR=\033[0;31m
 
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
 GCCFLAGS=-c -ffreestanding -g
+GCCWARNINGS=-Wno-incompatible-pointer-types -Wno-int-conversion -Wno-int-to-pointer-cast
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
-LDFLAGS= -Ttext 0x1000 --oformat binary
-QEMU=qemu-system-i386 -fda
-QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF)
+LDFLAGS= -Ttext 0x1000
+QEMU=qemu-system-i386 -fda 
+QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF) --no-reboot
+QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
+QUIET_RUN= > /dev/null 2>&1
 NASM=nasm
 PY=python3
+GDB=gdb
+GDBFLAGS=--quiet
+GDBCMDS=-ex "target remote localhost:1234" -ex "symbol-file $(OS_VERSION)-symbols.elf"
 
 C_FILES=$(shell find -name "*.c")
 C_OBJECT_FILES=${C_FILES:.c=.o}
@@ -32,25 +41,35 @@ AUTO_GENERATED_H_FILES=kernel/cpu/isrs.h kernel/cpu/irqs.h
 all: build
 
 run: all
-	@echo "${SUCESS_COLOR}RUNNING PuTTYnOS!${DEFAULT_COLOR}"
-	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS)
+	@echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
+	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS) $(QUIET_RUN)
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
-build: $(OS_VERSION).img
-	@truncate -s 144k $(OS_VERSION).img
+debug: build $(OS_VERSION)-symbols.elf
+	@ echo "${DEBUG_COLOR}RUNNING ${OS_NAME} IN DEBUG MODE!${DEFAULT_COLOR}"
+	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) $(QUIET_RUN) &
+	@ ${GDB} $(GDBFLAGS) $(GDBCMDS)
 
-$(OS_VERSION).img: boot/bootloader.bin PuTTYn.bin
+	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
+
+build: $(OS_VERSION).img
+
+$(OS_VERSION).img: boot/bootloader.bin $(OS_VERSION).bin
 	@echo "${LOG_COLOR}\nCREATING DISK IMAGE...${DEFAULT_COLOR}"
 	@cat $^ > $@
 	@echo
 
-PuTTYn.bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
+$(OS_VERSION).bin: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
 	@echo "${LOG_COLOR}\nLINKING...${DEFAULT_COLOR}"
+	@ $(LD) $^ $(LDFLAGS) -o $@ --oformat binary
+
+$(OS_VERSION)-symbols.elf: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERNEL_CALLER} ${C_OBJECT_FILES}
+	@echo "${DEBUG_COLOR}CREATING SYMBOL TABLE...${DEFAULT_COLOR}"
 	@ $(LD) $^ $(LDFLAGS) -o $@
 
 %.o: %.c
-	@ $(GCC) $< $(GCCFLAGS) -o $@
+	@ $(GCC) $< $(GCCFLAGS) -o $@ $(GCCWARNINGS)
 
 %.o: %.asm
 	@ $(NASM) $^ -f elf -o $@
@@ -65,12 +84,15 @@ $(AUTO_GENERATED_ASM_FILES): kernel/cpu/generateIsrsAsm.py kernel/cpu/generateIs
 
 clean:
 	@echo "${LOG_COLOR}\nCLEANING BUILD FILES...${DEFAULT_COLOR}"
-	@rm -f $(shell find -name "*.o")
-	@rm -f $(shell find -name "*.bin")
-	@rm -f $(shell find -name "*.img")
-	@rm -f $(shell find -name "*.iso")
-	@rm -f $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto gfile
-	@rm -f $(AUTO_GENERATED_ASM_FILES) $(AUTO_GENERATED_H_FILES)
+	@rm -f -r $(shell find -name "*.o")
+	@rm -f -r $(shell find -name "*.bin")
+	@rm -f -r $(shell find -name "*.elf")
+	@rm -f -r $(shell find -name "*.img")
+	@rm -f -r $(shell find -name "*.iso")
+	@rm -f -r $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto generated file
+	@rm -f -r $(shell find -name "*.vscode")
+	@rm -f -r $(shell find -name "*__pycache__")
+	@rm -f -r $(AUTO_GENERATED_ASM_FILES) $(AUTO_GENERATED_H_FILES)
 
 	@echo "${SUCESS_COLOR}\c"
 	@echo "Successfully cleaned!\n${DEFAULT_COLOR}"

@@ -26,7 +26,7 @@
 #define FIRST_IRQ_SLAVE_ENTRY_INDEX 40
 #define LAST_IRQ_SLAVE_ENTRY_INDEX 47
 
-#define NUM_OF_IRQS LAST_IRQ_SLAVE_ENTRY_INDEX - FIRST_IRQ_MASTER_ENTRY_INDEX + 1
+#define NUM_OF_IRQS LAST_IRQ_SLAVE_ENTRY_INDEX - FIRST_IRQ_MASTER_ENTRY_INDEX
 
 #define PIC_MASTER_REMAP_CMD1 0x4
 #define PIC_SLAVE_REMAP_CMD1 0x2
@@ -51,3 +51,5 @@ typedef struct
 
 void initIdtEntry(uint8_t entryNum, uint32_t* isrAdress, uint8_t flags);
 void initIdt();
+
+IDTRegister getIDTR();

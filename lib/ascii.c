@@ -1,6 +1,5 @@
 #include "ascii.h"
-#include "../../kernel/io/print.h"
-#include "../../kernel/io/screen.h"
+#include "printf.h"
 
 //some characters in word PuTTYnOS are in the same column,
 //therefore I manually change their color
@@ -15,13 +14,13 @@ static int inline getSpecificCharacterColor(int color, int row, int col){
         row == 7    && col == 53    ||
         row == 8    && col == 52
     )
-        color = RED;
+        color = LIGHT_RED;
 
     //toBlue chars
     if(
         row == 10   && col == 58
     )
-        color = BLUE;
+        color = LIGHT_BLUE;
 
     return color;
 }
@@ -37,26 +36,26 @@ enum PuTTYnOSIndexes{
 static void inline cprintPuTTYnOSLine(char* line, int lineIndex, int indent){
     //print indent spaces
     for(int j = 0; j < indent; j++)
-    kprintc(' ');
+    putchar(' ');
 
     int color;
     for(int i = 0; line[i] != '\0'; i++){
         if(i <= BEAR_END_INDEX)
             color = BROWN;
         else if(i <= P_END_INDEX)
-            color = RED;
+            color = LIGHT_RED;
         else if(i <= u_END_INDEX)
-            color = BLUE;
+            color = LIGHT_BLUE;
         else if(i <= TTY_END_INDEX)
-            color = RED;
+            color = LIGHT_RED;
             else if(i <= n_END_INDEX)
-            color = BLUE;
+            color = LIGHT_BLUE;
         else
             color = WHITE;
         color = getSpecificCharacterColor(color, lineIndex, i);
         
         //print character
-        kcprintc(line[i], color, getBackgroundColor());
+        cputchar(line[i], color, DEFAULT_COLOR);
     }
 }
 void printPuTTYnOS(int indent){

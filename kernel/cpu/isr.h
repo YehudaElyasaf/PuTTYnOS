@@ -10,6 +10,8 @@ typedef struct {
    uint32_t isrIndex, errorCode; //or irqIndex, irqNumber
    uint32_t eip, cs, eflags, useresp, ss; //isr registers
 } IsrFrame;
+//some of the fields are different in irq handlers
+#define IrqFrame IsrFrame
 #define irqIndex isrIndex
 #define irqNumber errorCode
 

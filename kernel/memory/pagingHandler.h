@@ -1,48 +1,39 @@
 #pragma once
 #include <stdint.h>
+#include "../io/print.h"
+#include "../cpu/irq.h"
+
 #define PDT_SIZE 1024
+#define KERNEL_START 0x1000
+#define PAGE_SIZE 0x1000
+#define KERNEL_SIZE 0xe
+#define KERNEL_END (KERNEL_START + PAGE_SIZE*KERNEL_SIZE)
+#define DEFAULT_PAGE_NUM 4
 
-void startVirtualMode(uint32_t address) {
-    __asm__("mov %0, %%cr3"::"r"(address));
-    
-    uint32_t cr0 = 0;
-    __asm__("mov %%cr0, %0":"=r"(cr0));
-    cr0 |= 0x80000000;
-    __asm__("mov %0, %%cr0"::"r"(cr0));
-}
+#define NULL ( (void*)0 )
 
-typedef struct __attribute__((__packed__)) { // packed so it won't pad the struct
-    unsigned present : 1;        // if the page is in the memory at the moment
-    // if set, can write. if not, can only read. WP in cr0 controls whether the kernel can write even though this is not set.
-    unsigned readWrite : 1;      
-    unsigned userSupervisor : 1; // if set, can be accessed by user, otherwise user cannot access
-    unsigned writeThrough : 1;   // if set, write-through caching is enabled. if not, write-back is enabled
-    unsigned cacheDisabled : 1;  // if page could be cached
-    // if page was read by mmu during virtual address finding. CPU will not take care of this, but we don't need it
-    unsigned accessed : 1;
-    unsigned available : 1;      // empty bit for kernel use if we need
-    unsigned pageSize : 1;       // page size, 0 is for 4 Kib (32-bit), 1 is for 4 Mib (64-bit)
-} PageDirectoryFlags;
+typedef enum {
+    PRESENT = 1,
+    READWRITE = 2,
+    USER = 4,
+    WRITETHROUGH = 8,
+    CACHE = 16,
+    DIRTY = 64 // this is specifically in PTEntry and not in PDEntry
+    // you may have noticed i don't mention some other flags, such as PageSize, Global, PageAttributeTable
+    // I didn't because we don't need them
+} PageFlags;
 
-typedef struct {
-    //PageDirectoryFlags flags;
-    unsigned flags: 8;
-    unsigned available : 4; // available bits for kernel use if we need
-    unsigned address : 20;
-} PageDirectoryEntry;
+typedef uint32_t PDEntry;
 
-typedef struct {
-    PageDirectoryEntry entries[PDT_SIZE];
-} PDT;
+typedef uint32_t PTEntry;
 
-void initPDT(uint32_t address) {
-    PDT* table = (PDT*)address;
+void kmalloc(uint32_t size, uint32_t pageTable);
 
-    PageDirectoryEntry firstEntry = {0xA96348, 0, 0};
-    for (int i = 0; i < PDT_SIZE; i++)
-        table->entries[i] = firstEntry;
+uint32_t allocPage();
+void deallocPage(uint32_t page);
 
-    // last entry points to the pdt
-    PageDirectoryEntry lastEntry = {0xA96348, 0, address<<12};
-    table->entries[PDT_SIZE-1] = lastEntry;
-}
+void startVirtualMode(uint32_t address);
+
+void initPDT();
+
+void pagefault(IsrFrame regs);

@@ -71,7 +71,7 @@ void printChar(unsigned char ch, uint8_t attribute, uint16_t offset){
         incCursorOffset();
     }
 
-    if(getCursorRow() > NUMBER_OF_ROWS - 3)
+    if(getCursorRow() >= NUMBER_OF_ROWS - 1)
         //close to end of the screen
         scrollScreen(1);
 }

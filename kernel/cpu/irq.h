@@ -21,7 +21,7 @@ enum IRQS{
     IRQ7_LPT1,
     IRQ8_REAL_TIME_CLOCK,
     IRQ9_GENERAL_IO,
-    IRQ10_GENERAL_IO,
+    IRQ10_NETWORK_ADAPTER,
     IRQ11_GENERAL_IO,
     IRQ12_GENERAL_IO,
     IRQ13_COMPRESSOR,
@@ -31,5 +31,5 @@ enum IRQS{
 
 void initIrq();
 void irqHandler(IsrFrame isrFrame);
-void irqInstallHandler(uint8_t irqNumber, void(*adress)(IsrFrame));
+void irqInstallHandler(uint8_t irqNumber, void(*handler)(IsrFrame));
 void defaultIrqHandler(IsrFrame isrFrame);

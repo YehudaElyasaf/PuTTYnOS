@@ -19,7 +19,9 @@ enum COLORS{
     LIGHT_RED,
     LIGHT_PURPLE,
     YELLOW,
-    WHITE
+    WHITE,
+
+    DEFAULT_COLOR
 };
 
 #define VIDEO_MEMORY_ADDRESS 0xb8000
@@ -51,7 +53,6 @@ void kcprintc(char ch, uint8_t color, uint8_t backgroundColor);
 void kcprinti(int num, uint8_t color, uint8_t backgroundColor);
 //print colored hex
 void kcprinth(int num, uint8_t color, uint8_t backgroundColor);
-
 
 uint16_t getCursorOffset();
 void setCursorOffset(uint16_t offset);
