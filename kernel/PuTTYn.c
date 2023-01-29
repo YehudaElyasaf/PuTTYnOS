@@ -9,15 +9,15 @@
 #include "tasking/timer.h"
 #include "tasking/task.h"
 #include "tasking/scheduler.h"
-#include "../lib/string.h"
 #include "../user/shell.h"
+#include "../lib/string.h"
 #include "../lib/syscall.h"
 #include "../lib/printf.h"
 #include "../lib/scanf.h"
 #include "../lib/heap.h"
+#include "../lib/tasking.h"
 
-
-//#define _DEBUG
+#define _DEBUG
 
 static void printDone(){
     setCursorCol(NUMBER_OF_COLS / 2);
@@ -25,6 +25,7 @@ static void printDone(){
 }
 
 void initialize(){
+    cli();
     initScreen(GRAY, BLACK);
     
     kprint("Initializing IDT...");
@@ -40,11 +41,9 @@ void initialize(){
     printDone();
 
     kprint("Initializing PDT...");
-    initPDT(/*params*/);
+    initPDT();
     printDone();
 
-    kprint("Finding NIC...");
-    initNetworking();
     kprint("Initializing PIT...");
     initTimer();
     printDone();
@@ -52,17 +51,22 @@ void initialize(){
     kprint("Initializing tasking...");
     initTasking();
     printDone();
+
+    kprint("Initializing networking...");
+    initNetworking();
+    printDone();
     
     setColor(WHITE);
+    sti();
 }
 
 #ifndef _DEBUG
 void main(){
     initialize();
     
-    createTask(&shellMain);
+    createProcess(&shellMain);
 
-    killTask(CURRENT_TASK);
+    killProcess(CURRENT_TASK);
 }
 #else
 
@@ -76,9 +80,10 @@ void t(){
 void main(){
     initialize();
 
-    createTask(&shellMain);
-    for(long i=0;i<50000000;i++);
-    createTask(&t);
+    clearScreen();
+    createProcess(&shellMain);
+    
+    killProcess(CURRENT_TASK);
 }
 
 #endif

@@ -1,5 +1,6 @@
 #include "queue.h"
 #include "memory.h"
+#include "string.h"
 
 void queuePush(Queue* q, void* item) {
     int len = strlen(q->ptr + q->curPtr*q->itemSize);
@@ -7,7 +8,7 @@ void queuePush(Queue* q, void* item) {
     if (len == 0) {
         q->curPtr = 0;
     }
-    else if (q->ptr + len + 1 > q->bufferSize) {
+    else if (q->ptr + len + 1 > (uint8_t*)q->bufferSize) {
         memcpy(q->ptr + q->curPtr*q->itemSize, q->ptr, len);
         q->curPtr = 0;
     }

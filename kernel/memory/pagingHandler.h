@@ -10,6 +10,8 @@
 #define KERNEL_END (KERNEL_START + PAGE_SIZE*KERNEL_SIZE)
 #define DEFAULT_PAGE_NUM 4
 
+#define NULL ( (void*)0 )
+
 typedef enum {
     PRESENT = 1,
     READWRITE = 2,

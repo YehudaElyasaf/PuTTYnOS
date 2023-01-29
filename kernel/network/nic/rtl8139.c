@@ -25,18 +25,27 @@ uint8_t macAddr[6];
 uint32_t ioAddr = 0;
 
 uint8_t initRTL8139() {
+    kprint("\n\tScanning for NIC...\n");
     int pciAddr = PCI_ScanForDevice(VENDOR_ID, DEVICE_ID);
-    if (pciAddr == -1) return;
-
-    printf("Found device: RTL8139");
+    if (pciAddr == -1){
+        kprint("\tCouldn't find NIC address on PCI!");
+        return -1;
+    }
 
     ioAddr = in32bit(pciAddr + 0x10);
+
+    if(ioAddr != 0xFFFFFFFF){
+        kprint("\tCouldn't find NIC!");
+    }
+    else{
+        printf("\tFound device: RTL8139\n");
+    }
 
     //power on
     out8bit(ioAddr + INIT_RTL_CONTROL_REGISTER, POWER_ON_CODE);
     //reset card
     out8bit( ioAddr + RTL_CONTROL_REGISTER, RESET_CODE);
-    while( (in8bit(ioAddr + RTL_CONTROL_REGISTER) & RESET_CODE) != 0) { }
+    //while( (in8bit(ioAddr + RTL_CONTROL_REGISTER) & RESET_CODE) != 0) { }
 
     out32bit(ioAddr + RBSTART, rx_buffer); // send uint32_t memory location to RBSTART (0x30)
     
@@ -52,7 +61,19 @@ uint8_t initRTL8139() {
     for (int i = 0; i < 6; i++) {
         macAddr[i] = in8bit(ioAddr+i);
     }
-    printf("\nMAC: %h%h\n", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
+    
+    //print MAC adress
+    printf("\tMAC: ", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
+    for(int i = 0; i < MAC_ADDRES_GROUPS; i++){
+        //print padding
+        if(macAddr[i] < 0xA)
+            printf("0");
+
+        printf("%x", macAddr[i]);
+        if(i != MAC_ADDRES_GROUPS - 1)
+            //not last field
+            printf("-");
+    }
 }
 
 void RTLIrqHandler(IsrFrame registers) {

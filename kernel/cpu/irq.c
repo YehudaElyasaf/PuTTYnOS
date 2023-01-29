@@ -4,7 +4,7 @@
 #include "../asm.h"
 #include "irqs.h" //auto generated
 #include "../io/print.h"
-#include "../timer.h"
+#include "../tasking/timer.h"
 #include "../cpu/syscall.h"
 
 void (*irqHandlers[NUM_OF_IDT_ENTRIES- FIRST_IRQ_MASTER_ENTRY_INDEX])(IsrFrame) = {0};

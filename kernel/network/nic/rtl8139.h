@@ -7,6 +7,8 @@
 #define IPv4_LENGTH     4
 #define IPv6_LENGTH     8
 
+#define MAC_ADDRES_GROUPS 6
+
 typedef struct
 {
     //Physical layer

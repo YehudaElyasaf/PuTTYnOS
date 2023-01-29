@@ -13,7 +13,7 @@ DEBUG_COLOR=\033[0;31m
 
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
 GCCFLAGS=-c -ffreestanding -g
-GCCWARNINGS=-Wno-incompatible-pointer-types -Wno-int-conversion
+GCCWARNINGS=-Wno-incompatible-pointer-types -Wno-int-conversion -Wno-int-to-pointer-cast
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386 -fda 
@@ -24,7 +24,7 @@ NASM=nasm
 PY=python3
 GDB=gdb
 GDBFLAGS=--quiet
-GDBCMDS=-ex "target remote localhost:1234" -ex "symbol-file $(OS_VERSION).elf"
+GDBCMDS=-ex "target remote localhost:1234" -ex "symbol-file $(OS_VERSION)-symbols.elf"
 
 C_FILES=$(shell find -name "*.c")
 C_OBJECT_FILES=${C_FILES:.c=.o}
@@ -54,7 +54,6 @@ debug: build $(OS_VERSION)-symbols.elf
 	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 build: $(OS_VERSION).img
-	@truncate -s 1440k $(OS_VERSION).img
 
 $(OS_VERSION).img: boot/bootloader.bin $(OS_VERSION).bin
 	@echo "${LOG_COLOR}\nCREATING DISK IMAGE...${DEFAULT_COLOR}"

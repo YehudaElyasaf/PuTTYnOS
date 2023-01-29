@@ -1,3 +1,3 @@
 #pragma once
 
-void initNetworking(/*params*/);
+void initNetworking();

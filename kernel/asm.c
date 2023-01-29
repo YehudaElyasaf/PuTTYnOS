@@ -20,7 +20,8 @@ void hlt(){
 //in\out
 //write to garbage port, to wait a bit
 static inline void portWait(){
-    asm("out %%al, %%dx" : : "a"(GARBAGE_VALUE), "d"(GARBAGE_PORT));
+    //asm("out %%al, %%dx" : : "a"(GARBAGE_VALUE), "d"(GARBAGE_PORT));
+    //out8bit(0x80, 0);
 }
 uint8_t in8bit(uint16_t port){
     uint8_t buffer;

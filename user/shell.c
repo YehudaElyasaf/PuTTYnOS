@@ -33,8 +33,7 @@ static inline void printShellEntry(){
     uint8_t color = GREEN;
 }
 
-int shellMain(){    
-    clearScreen();
+int shellMain(){
     printPuTTYnOS(0);
 
     while (true)

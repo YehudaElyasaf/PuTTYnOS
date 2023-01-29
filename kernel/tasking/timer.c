@@ -28,7 +28,7 @@ void initTimer(){
     uint8_t divisorLow  = (uint8_t) PIT_DIVISOR;
     uint8_t divisorHigh = (uint8_t) (PIT_DIVISOR >> 8);
 
-    out8bit(PIT_TIMER_CONTROL_REGISTER, PIT_TIMER_INIT_BYTE);
+    //out8bit(PIT_TIMER_CONTROL_REGISTER, PIT_TIMER_INIT_BYTE);
     //set the frequncy register
     out8bit(PIT_TIMER_DATA_REGISTER, divisorLow);
     out8bit(PIT_TIMER_DATA_REGISTER, divisorHigh);
