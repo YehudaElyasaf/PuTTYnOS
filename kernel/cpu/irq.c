@@ -26,7 +26,7 @@ void initIrq(){
     out8bit(PIC_SLAVE_DATA_REGISTER, PICS_REMAP_CMD3);
 
     //install default irq handlers to all
-    for(int irqNumber = IRQ0_TIMER; irqNumber < NUM_OF_IRQS; irqNumber++)
+    for(int irqNumber = 0; irqNumber < NUM_OF_IRQS; irqNumber++)
         irqInstallHandler(irqNumber, defaultIrqHandler);
     
     //TODO: do this in timer.c

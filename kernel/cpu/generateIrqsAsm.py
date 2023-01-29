@@ -4,7 +4,7 @@ SYSCALL_IRQ_NUMBER = 0x42 - FIRST_IRQ_INDEX
 
 GENERATED_FILE_PATH = 'kernel/cpu/irqs.asm'
 
-file_beginning = '''; AUTO GENERATED FILE
+FILE_BEGINNING = '''; AUTO GENERATED FILE
 
 KERNEL_DATA_SEGMENT equ 0x10
 
@@ -53,7 +53,21 @@ callIrqHandler:
     
     add esp, 4; pop irq number
     add esp, 4; pop irq index in IDT
-    sti; re-enble irqs
+    sti; re-enable irqs
+    iret
+'''
+TIMER_IRQ_HANDLER_CODE = '''
+global irq0
+
+extern timerIrqHandler
+irq0:
+    cli
+
+    pushad
+    call timerIrqHandler
+    popad
+
+    sti
     iret
 '''
 
@@ -68,9 +82,10 @@ irq{irq_number}:
 '''
 
 with open(GENERATED_FILE_PATH, 'w') as generated_file:
-    generated_file.write(file_beginning)
+    generated_file.write(FILE_BEGINNING)
+    generated_file.write(TIMER_IRQ_HANDLER_CODE)
 
-    for irq_number in range(NUMBER_OF_IRQS):
+    for irq_number in range(1, NUMBER_OF_IRQS):
         generated_file.write(specific_irq_genereate(irq_number))
     
     generated_file.write('\n\n;syscall irq')

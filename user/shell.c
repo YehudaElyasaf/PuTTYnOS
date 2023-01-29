@@ -5,6 +5,9 @@
 #include "../lib/string.h"
 #include <stdbool.h>
 
+//TODO: use syscall, it's user mode
+#include "../kernel/tasking/task.h"
+
 static inline void printShellEntry(){
     int SHELL_COLOR = GRAY;
     cputchar('\n', SHELL_COLOR, DEFAULT_COLOR);
@@ -30,7 +33,7 @@ static inline void printShellEntry(){
     uint8_t color = GREEN;
 }
 
-int shellMain(){
+int shellMain(){    
     clearScreen();
     printPuTTYnOS(0);
 
@@ -82,4 +85,5 @@ int shellMain(){
         printf("\n");
     }
     
+    return 0;
 }

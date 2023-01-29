@@ -5,9 +5,9 @@
 
 char* isrExceptionMassages[] = { 0 };
 
-void initIsrExceptionMassages(){
+static void initIsrExceptionMessages(){
 
-    char* isrExceptionMassagesInitializer[] = {
+    char* isrExceptionMessagesInitializer[] = {
     //0
     "Divide By Zero",
     "Debug",
@@ -47,7 +47,7 @@ void initIsrExceptionMassages(){
     };
     
     for(int isr = FIRST_ISR_ENTRY_INDEX; isr <= LAST_ISR_ENTRY_INDEX; isr++)
-        isrExceptionMassages[isr] = isrExceptionMassagesInitializer[isr];
+        isrExceptionMassages[isr] = isrExceptionMessagesInitializer[isr];
 }
 
 static inline void exit(){
@@ -72,7 +72,7 @@ void isrHandler(IsrFrame isrFrame){
 }
 
 void initIsr(){
-    initIsrExceptionMassages();
+    initIsrExceptionMessages();
     
     for(uint8_t isrNumber = FIRST_ISR_ENTRY_INDEX; isrNumber <= LAST_ISR_ENTRY_INDEX; isrNumber++)
         initIdtEntry(isrNumber, getIsr(isrNumber), IDT_FLAGS_INTERRUPT_GATE_RING3);

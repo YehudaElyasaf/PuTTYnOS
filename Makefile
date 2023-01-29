@@ -1,10 +1,10 @@
-.PHONY: all clean run build
+.PHONY: all clean run build debug
 
 OS_NAME=PuTTYnOS
 OS_VERSION=$(OS_NAME)-i386
 #32m = green
-#35m = purple
 #37m = white
+#35m = purple
 #31m = orange
 SUCESS_COLOR=\033[0;32m
 DEFAULT_COLOR=\033[0;37m
@@ -13,14 +13,18 @@ DEBUG_COLOR=\033[0;31m
 
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
 GCCFLAGS=-c -ffreestanding -g
+GCCWARNINGS=-Wno-incompatible-pointer-types -Wno-int-conversion
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386 -fda 
-QEMUFLAGS=-boot c -net nic -net user -nic model=rtl8139 -m 4G $(QAF)
+QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF) --no-reboot
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
+QUIET_RUN= > /dev/null 2>&1
 NASM=nasm
 PY=python3
 GDB=gdb
+GDBFLAGS=--quiet
+GDBCMDS=-ex "target remote localhost:1234" -ex "symbol-file $(OS_VERSION).elf"
 
 C_FILES=$(shell find -name "*.c")
 C_OBJECT_FILES=${C_FILES:.c=.o}
@@ -38,14 +42,14 @@ all: build
 
 run: all
 	@echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
-	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS)
+	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS) $(QUIET_RUN)
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 debug: build $(OS_VERSION)-symbols.elf
 	@ echo "${DEBUG_COLOR}RUNNING ${OS_NAME} IN DEBUG MODE!${DEFAULT_COLOR}"
-	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) &
-	@ ${GDB} -ex "target remote localhost:1234" -symbols=$(OS_VERSION)-symbols.elf
+	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) $(QUIET_RUN) &
+	@ ${GDB} $(GDBFLAGS) $(GDBCMDS)
 
 	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
@@ -66,7 +70,7 @@ $(OS_VERSION)-symbols.elf: boot/kernelCaller.o ${ASM_OBJECT_FILES_EXCLUDING_KERN
 	@ $(LD) $^ $(LDFLAGS) -o $@
 
 %.o: %.c
-	@ $(GCC) $< $(GCCFLAGS) -o $@
+	@ $(GCC) $< $(GCCFLAGS) -o $@ $(GCCWARNINGS)
 
 %.o: %.asm
 	@ $(NASM) $^ -f elf -o $@
@@ -86,7 +90,7 @@ clean:
 	@rm -f -r $(shell find -name "*.elf")
 	@rm -f -r $(shell find -name "*.img")
 	@rm -f -r $(shell find -name "*.iso")
-	@rm -f -r $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto g file
+	@rm -f -r $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto generated file
 	@rm -f -r $(shell find -name "*.vscode")
 	@rm -f -r $(shell find -name "*__pycache__")
 	@rm -f -r $(AUTO_GENERATED_ASM_FILES) $(AUTO_GENERATED_H_FILES)

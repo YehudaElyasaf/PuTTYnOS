@@ -9,13 +9,13 @@ static uint32_t firstHole = LLEMPTY;
 static uint32_t headOfHeap = HEAP_START;
 
 uint32_t alloc(uint32_t size) {
-    uint32_t ptr = headOfHeap;
+    uint8_t* ptr = headOfHeap;
     HeapHeader* i = (HeapHeader*)firstHole, *last_header = i;
     size += sizeof(HeapHeader)/2; // no need for the "next" in the header for a used block
     if (size < sizeof(HeapHeader))
         size = sizeof(HeapHeader);
 
-    while (i != LLEMPTY) {
+    while (i != (HeapHeader*)LLEMPTY) {
         // if the size is exactly the size of the hole, or if the hole is 
         // big enough to store the new block and a new one after that.
         if (i->size == size || i->size >= size + sizeof(HeapHeader)) {
@@ -33,7 +33,7 @@ uint32_t alloc(uint32_t size) {
     }
     
     // if didn't find a hole that is good for this memory block
-    if (ptr != i) {
+    if (ptr != (uint8_t*)i) {
         headOfHeap += size;
     }
     SIZE(ptr) = size;
