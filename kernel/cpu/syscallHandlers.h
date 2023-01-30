@@ -10,9 +10,8 @@ enum SyscallsIndexes{
 
     //20 - 29: Tasking Syscalls
     SYSCALL_CREATE_TASK = 20,
-    SYSCALL_BLOCK_TASK  = 21,       //TODO:
-    SYSCALL_KILL_TASK   = 22,       //TODO:
-    SYSCALL_SLEEP       = 23        //TODO:
+    SYSCALL_KILL_TASK   = 21,
+    SYSCALL_SLEEP       = 22
 };
 
 /*
@@ -39,8 +38,6 @@ uint32_t getcharSyscallHandler(uint32_t param1, uint32_t param2, uint32_t param3
 uint32_t seekSyscallHandler(uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4);
 //return: pid
 uint32_t createTaskSyscallHandler(uint32_t startAddress, uint32_t param2, uint32_t param3, uint32_t param4);
-//return: is successfull
-uint32_t blockTaskSyscallHandler(uint32_t pid, uint32_t param2, uint32_t param3, uint32_t param4);
 //return: is successfull
 uint32_t killTaskSyscallHandler(uint32_t pid, uint32_t param2, uint32_t param3, uint32_t param4);
 

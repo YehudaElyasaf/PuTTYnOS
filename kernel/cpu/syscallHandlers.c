@@ -48,10 +48,6 @@ uint32_t createTaskSyscallHandler(uint32_t startAddress, uint32_t param2, uint32
     return 0;
 }
 
-uint32_t blockTaskSyscallHandler(uint32_t pid, uint32_t param2, uint32_t param3, uint32_t param4){
-    return blockTask(pid);
-}
-
 uint32_t killTaskSyscallHandler(uint32_t pid, uint32_t param2, uint32_t param3, uint32_t param4){
     return killTask(pid);
 }

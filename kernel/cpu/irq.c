@@ -28,9 +28,6 @@ void initIrq(){
     //install default irq handlers to all
     for(int irqNumber = 0; irqNumber < NUM_OF_IRQS; irqNumber++)
         irqInstallHandler(irqNumber, defaultIrqHandler);
-    
-    //TODO: do this in timer.c
-    irqInstallHandler(IRQ0_TIMER, timerIrqHandler);
 }
 
 void irqHandler(IrqFrame irqFrame){

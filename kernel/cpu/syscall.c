@@ -16,7 +16,6 @@ void initSyscalls(){
     syscallHandlers[SYSCALL_SEEK]         = seekSyscallHandler;
     
     syscallHandlers[SYSCALL_CREATE_TASK]  = createTaskSyscallHandler;
-    syscallHandlers[SYSCALL_BLOCK_TASK]   = blockTaskSyscallHandler;
     syscallHandlers[SYSCALL_KILL_TASK]    = killTaskSyscallHandler;
     syscallHandlers[SYSCALL_SLEEP]        = sleepSyscallHandler;
 }
