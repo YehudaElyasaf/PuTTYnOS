@@ -14,11 +14,11 @@
 const int RTL_TRANSMIT_COMMAND[] = {0x10, 0x14, 0x18, 0x1C};
 const int RTL_TRANSMIT_START[]   = {0x20, 0x24, 0x28, 0x2C};
 
-RTLPacket RTLQueueBuffer[QUEUE_BUFFER_LEN] = {0};
+NICPacket RTLQueueBuffer[QUEUE_BUFFER_LEN] = {0};
 
 char rx_buffer[BUFFER_LEN] = {0};
 
-Queue RTLQueue = {RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(RTLPacket)};
+Queue RTLQueue = {RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(NICPacket)};
 
 uint8_t macAddr[6];
 
@@ -83,9 +83,9 @@ void RTLIrqHandler(IsrFrame registers) {
     out8bit(ioAddr + IMR_ISR_FLAGS + 3, 0x5);
 }
 
-void RTLSendPacket(RTLPacket packet) {
+void RTLSendPacket(NICPacket packet) {
     while (packet.size > SEND_MAX_SIZE) {
-        RTLPacket smallerPacket = {packet.address, SEND_MAX_SIZE};
+        NICPacket smallerPacket = {packet.address, SEND_MAX_SIZE};
         queuePush(&RTLQueue, &smallerPacket);
         packet.size -= SEND_MAX_SIZE;
         packet.address += SEND_MAX_SIZE;
@@ -99,7 +99,7 @@ uint8_t RTLSendNextPacketInQueue() {
     if (i == 4) // no pairs which arent used
         return 0; // return false, it couldn't send the next packet.
 
-    RTLPacket packet = {0};
+    NICPacket packet = {0};
     queuePop(&RTLQueue, &packet);
     if (!packet.address && !packet.size) // no packet in queues
         return 0;

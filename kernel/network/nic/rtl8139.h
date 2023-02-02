@@ -2,27 +2,9 @@
 
 #include <stdint.h>
 #include "../../cpu/isr.h"
-
-#define MAC_LENGTH      4
-#define IPv4_LENGTH     4
-#define IPv6_LENGTH     8
+#include "network.h"
 
 #define MAC_ADDRES_GROUPS 6
-
-typedef struct
-{
-    //Physical layer
-    uint32_t IOBase;
-
-    //Data link layer
-    uint8_t MAC[MAC_LENGTH];
-
-    //Network layer
-    uint8_t IPv4[IPv4_LENGTH];
-    uint16_t IPv6[IPv6_LENGTH];
-
-
-} NetwotkAdapter;
 
 enum RTL8139{
     MAC0                        = 0x0,
@@ -36,17 +18,11 @@ enum RTL8139{
     RESET_CODE                  = 0X10
 };
 
-typedef struct {
-    uint8_t* address;
-    uint16_t size;
-} RTLPacket;
-
-
 // initiates RTL device, returns true if successful.
 uint8_t initRTL8139();
 
 // this function is the way for software to send packets
-void RTLSendPacket(RTLPacket packet);
+void RTLSendPacket(NICPacket packet);
 
 
 /*
