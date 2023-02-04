@@ -1,8 +1,10 @@
 #include "rtl8139.h"
+#include "../network.h"
 #include "../../io/pci.h"
 #include "../../asm.h"
 #include "../../../lib/printf.h"
 #include "../../../lib/queue.h"
+#include "../../../lib/memory.h"
 
 #define VENDOR_ID  0x10EC
 #define DEVICE_ID  0x8139
@@ -58,23 +60,18 @@ uint8_t initRTL8139() {
 
     out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
 
-    // mac finding doesnt work for now.
-    for (int i = 0; i < 6; i++) {
-        macAddr[i] = in8bit(ioAddr+i);
-    }
+    // // mac finding doesnt work for now.
+    // for (int i = 0; i < 6; i++) {
+    //     macAddr[i] = in8bit(ioAddr+i);
+    // }
 
-    //print MAC adress
-    printf("\tMAC: ", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
-    for(int i = 0; i < MAC_ADDRES_GROUPS; i++){
-        //print padding
-        if(macAddr[i] < 0xA)
-            printf("0");
+    // //print MAC adress
+    // printf("\tMAC: %x:%x:%x:%x:%x:%x", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
 
-        printf("%x", macAddr[i]);
-        if(i != MAC_ADDRES_GROUPS - 1)
-            //not last field
-            printf("-");
-    }
+    currentNIC.IOBase = ioAddr;
+    currentNIC.recv = RTLIrqHandler;
+    currentNIC.send = RTLSendPacket;
+    currentNIC.sendMaxLen = SEND_MAX_SIZE;
 }
 
 void RTLIrqHandler(IsrFrame registers) {
@@ -84,13 +81,9 @@ void RTLIrqHandler(IsrFrame registers) {
 }
 
 void RTLSendPacket(NICPacket packet) {
-    while (packet.size > SEND_MAX_SIZE) {
-        NICPacket smallerPacket = {packet.address, SEND_MAX_SIZE};
-        queuePush(&RTLQueue, &smallerPacket);
-        packet.size -= SEND_MAX_SIZE;
-        packet.address += SEND_MAX_SIZE;
-    }
     queuePush(&RTLQueue, &packet);
+    NICPacket* packetAddr = queueHead(RTLQueue);
+    memcpy(packet.data.dataAndFCS, packetAddr->data.dataAndFCS, packet.size); // deep copy
 }
 
 uint8_t RTLSendNextPacketInQueue() {
@@ -99,15 +92,17 @@ uint8_t RTLSendNextPacketInQueue() {
     if (i == 4) // no pairs which arent used
         return 0; // return false, it couldn't send the next packet.
 
-    NICPacket packet = {0};
-    queuePop(&RTLQueue, &packet);
-    if (!packet.address && !packet.size) // no packet in queues
+    NICPacket *packet = queueHead(RTLQueue);
+    if (!packet) // no packet in queue
         return 0;
 
-    out16bit(ioAddr + RTL_TRANSMIT_COMMAND[i], packet.size | 1 << 13 | 1 << 15);
+    out16bit(ioAddr + RTL_TRANSMIT_COMMAND[i], packet->size | 1 << 13 | 1 << 15);
 
-    out32bit(ioAddr + RTL_TRANSMIT_START[i], (uint32_t)packet.address);
+    out32bit(ioAddr + RTL_TRANSMIT_START[i], (uint32_t)&packet->data);
 
-    out16bit(ioAddr + RTL_TRANSMIT_COMMAND[i], packet.size | 1 << 13); // clear 1 from send bit, it will start to send the packet
-    return 1;    
+    out16bit(ioAddr + RTL_TRANSMIT_COMMAND[i], packet->size | 1 << 13); // clear 1 from send bit, it will start to send the packet
+
+    queuePop(&RTLQueue, 0);
+
+    return 1;
 }

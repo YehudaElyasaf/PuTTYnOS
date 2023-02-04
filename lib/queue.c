@@ -3,7 +3,7 @@
 #include "string.h"
 
 void queuePush(Queue* q, void* item) {
-    int len = strlen(q->ptr + q->curPtr*q->itemSize);
+    int len = queueLen(*q);
     if (len >= q->bufferSize) return;
     if (len == 0) {
         q->curPtr = 0;
@@ -18,12 +18,35 @@ void queuePush(Queue* q, void* item) {
 }
 
 void queuePop(Queue* q, void* item) {
-    int len = strlen(q->ptr + q->curPtr*q->itemSize);
+    int len = queueLen(*q);
     if (!len) {
         memset(0, item, q->itemSize);
         return;
     }
-    memcpy(q->ptr + q->curPtr*q->itemSize, item, q->itemSize);
+    
+    if (item)
+        memcpy(q->ptr + q->curPtr*q->itemSize, item, q->itemSize);
     memset(0, q->ptr + q->curPtr*q->itemSize, q->itemSize);
     q->curPtr = q->curPtr < q->bufferSize - q->itemSize-1 ? q->curPtr + q->itemSize : 0;
+}
+
+void* queueHead(Queue q) {
+    int len = queueLen(q);
+    if (!len) {
+        return 0;
+    }
+    return q.ptr + q.curPtr*q.itemSize;
+}
+
+uint32_t queueLen(Queue q) {
+    uint32_t len = 0;
+    for (void* ptr = q.ptr + q.curPtr+q.itemSize; ptr < q.ptr + q.bufferSize; ptr += q.itemSize) {
+        uint8_t* emptyChecker;
+        for (emptyChecker = ptr; *emptyChecker == 0 && emptyChecker < q.ptr + q.itemSize; emptyChecker++);
+        
+        if (*emptyChecker == 0)
+            return len; // all of the bytes in itemSize are empty
+        len++;
+    }
+    return len;
 }

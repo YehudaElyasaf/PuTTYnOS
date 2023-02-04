@@ -1,11 +1,14 @@
 #pragma once
 
-#define MAC_LENGTH      4
+#include "protocols/ethernet.h"
+#define MAC_LENGTH      6
 #define IPv4_LENGTH     4
 #define IPv6_LENGTH     8
 
+struct _EtherPacket;
+
 typedef struct {
-    uint8_t* address;
+    EtherPacket data;
     uint16_t size;
 } NICPacket;
 
@@ -22,6 +25,8 @@ typedef struct {
 
     void (*send)(NICPacket);
     void (*recv)(NICPacket);
+
+    uint32_t sendMaxLen;
 } NetwotkAdapter;
 
 static NetwotkAdapter currentNIC;
