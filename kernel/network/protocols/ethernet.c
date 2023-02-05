@@ -37,5 +37,10 @@ void etherSend(void* packet, uint32_t size) {
 }
 
 void etherRecv(void* data) {
-
+    EtherPacket packet;
+    memcpy(data, &packet, sizeof(EtherPacket));
+    
+    if (packet.type == ET_IPV4) {
+        ipRecv(packet.data, sizeof(packet.dataAndFCS));
+    }
 }
