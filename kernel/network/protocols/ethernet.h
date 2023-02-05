@@ -2,7 +2,6 @@
 #include "stdint.h"
 #include "arp.h"
 #include "ip.h"
-#include "../network.h"
 
 #define PREAMBLE_BYTE 0xAAAA
 #define ETHER_MAX_LENGTH 1500

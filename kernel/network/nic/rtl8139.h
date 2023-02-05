@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include "../../cpu/isr.h"
-#include "network.h"
+#include "../network.h"
 
 #define MAC_ADDRES_GROUPS 6
 

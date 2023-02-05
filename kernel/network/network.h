@@ -8,7 +8,7 @@
 struct _EtherPacket;
 
 typedef struct {
-    EtherPacket data;
+    struct _EtherPacket data;
     uint16_t size;
 } NICPacket;
 

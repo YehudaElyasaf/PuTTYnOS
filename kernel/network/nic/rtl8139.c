@@ -22,8 +22,6 @@ char rx_buffer[BUFFER_LEN] = {0};
 
 Queue RTLQueue = {RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(NICPacket)};
 
-uint8_t macAddr[6];
-
 uint32_t ioAddr = 0;
 
 uint8_t initRTL8139() {
@@ -62,11 +60,18 @@ uint8_t initRTL8139() {
 
     // mac finding doesnt work for now.
     for (int i = 0; i < 6; i++) {
-        macAddr[i] = in8bit(ioAddr+i);
+        currentNIC.MAC[i] = in8bit(ioAddr+i);
     }
 
     //print MAC adress
-    printf("\tMAC: %x:%x:%x:%x:%x:%x", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
+    printf("\tMAC: ");
+    for (int i = 0; i < MAC_LENGTH; i++) {
+        printf("%x", currentNIC.MAC[i]);
+        if (i != MAC_LENGTH-1)
+            printf(":");
+        else
+            printf("\n");
+    }
 
     currentNIC.IOBase = ioAddr;
     currentNIC.recv = RTLIrqHandler;

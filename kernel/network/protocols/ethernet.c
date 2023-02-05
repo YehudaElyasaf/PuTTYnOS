@@ -1,5 +1,7 @@
 #include "ethernet.h"
 #include "../../../lib/memory.h"
+#include "../network.h"
+#include "ip.h"
 
 const uint8_t MAC_BROADCAST[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
@@ -10,6 +12,7 @@ void etherSend(void* packet, uint32_t size) {
     NICPacket p;
     toSend.preamble1 = PREAMBLE_BYTE;
     toSend.preamble2AndSFD = PREAMBLE_BYTE|1;
+    // TODO: change MAC address to 
     memcpy(MAC_BROADCAST, toSend.dstMAC, MAC_LENGTH);
     memcpy(currentNIC.MAC, toSend.srcMAC, MAC_LENGTH);
     toSend.type = ET_ARP;
@@ -41,6 +44,6 @@ void etherRecv(void* data) {
     memcpy(data, &packet, sizeof(EtherPacket));
     
     if (packet.type == ET_IPV4) {
-        ipRecv(packet.data, sizeof(packet.dataAndFCS));
+        ipRecv(packet.dataAndFCS, sizeof(packet.dataAndFCS)-4);
     }
 }
