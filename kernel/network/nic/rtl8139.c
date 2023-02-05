@@ -34,7 +34,7 @@ uint8_t initRTL8139() {
         return -1;
     }
 
-    ioAddr = in32bit(pciAddr + 0x10);
+    ioAddr = PCI_Read(pciAddr + 0x10);
 
     if(ioAddr == 0xFFFFFFFF){
         kprint("\tCouldn't find NIC!");
@@ -60,13 +60,13 @@ uint8_t initRTL8139() {
 
     out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
 
-    // // mac finding doesnt work for now.
-    // for (int i = 0; i < 6; i++) {
-    //     macAddr[i] = in8bit(ioAddr+i);
-    // }
+    // mac finding doesnt work for now.
+    for (int i = 0; i < 6; i++) {
+        macAddr[i] = in8bit(ioAddr+i);
+    }
 
-    // //print MAC adress
-    // printf("\tMAC: %x:%x:%x:%x:%x:%x", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
+    //print MAC adress
+    printf("\tMAC: %x:%x:%x:%x:%x:%x", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
 
     currentNIC.IOBase = ioAddr;
     currentNIC.recv = RTLIrqHandler;
@@ -81,6 +81,7 @@ void RTLIrqHandler(IsrFrame registers) {
 }
 
 void RTLSendPacket(NICPacket packet) {
+    // TODO: implement locking task switch (cli and sti?)
     queuePush(&RTLQueue, &packet);
     NICPacket* packetAddr = queueHead(RTLQueue);
     memcpy(packet.data.dataAndFCS, packetAddr->data.dataAndFCS, packet.size); // deep copy
