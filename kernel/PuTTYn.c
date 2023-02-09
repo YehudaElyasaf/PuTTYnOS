@@ -41,7 +41,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing PDT...");
-    initPDT();
+    //initPDT();
     printDone();
 
     kprint("Initializing PIT...");
@@ -55,6 +55,8 @@ void initialize(){
     kprint("Initializing networking...");
     initNetworking();
     printDone();
+    kprint("ARP table:");
+    printARPTable(2);
     
     setColor(WHITE);
     sti();

@@ -2,6 +2,7 @@
 
 OS_NAME=PuTTYnOS
 OS_VERSION=$(OS_NAME)-i386
+OS_MAC_ADDR=
 #32m = green
 #37m = white
 #35m = purple
@@ -13,11 +14,11 @@ DEBUG_COLOR=\033[0;31m
 
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
 GCCFLAGS=-c -ffreestanding -g
-GCCWARNINGS=-Wno-incompatible-pointer-types -Wno-int-conversion -Wno-int-to-pointer-cast
+GCCWARNINGS=-Wno-incompatible-pointer-types -Wno-int-conversion -Wno-int-to-pointer-cast -Wno-overflow -Wno-discarded-qualifiers
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
-QEMU=qemu-system-i386 -fda 
-QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF) --no-reboot
+QEMU=qemu-system-i386
+QEMUFLAGS= -fda $(OS_VERSION).img  -boot c -nic model=rtl8139,mac=$(OS_MAC_ADDR) -m 4G $(QAF) --no-reboot
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 QUIET_RUN= > /dev/null 2>&1
 NASM=nasm
@@ -42,13 +43,13 @@ all: build
 
 run: all
 	@echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
-	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS) $(QUIET_RUN)
+	@ $(QEMU) $(QEMUFLAGS) $(QUIET_RUN)
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 debug: build $(OS_VERSION)-symbols.elf
 	@ echo "${DEBUG_COLOR}RUNNING ${OS_NAME} IN DEBUG MODE!${DEFAULT_COLOR}"
-	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) $(QUIET_RUN) &
+	@ $(QEMU) $(QEMUFLAGS_DEBUG) $(QUIET_RUN) &
 	@ ${GDB} $(GDBFLAGS) $(GDBCMDS)
 
 	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"

@@ -40,7 +40,7 @@ void* queueHead(Queue q) {
 
 uint32_t queueLen(Queue q) {
     uint32_t len = 0;
-    for (void* ptr = q.ptr + q.curPtr+q.itemSize; ptr < q.ptr + q.bufferSize; ptr += q.itemSize) {
+    for (uint8_t* ptr = q.ptr + q.curPtr+q.itemSize; ptr < q.ptr + q.bufferSize; ptr += q.itemSize) {
         uint8_t* emptyChecker;
         for (emptyChecker = ptr; *emptyChecker == 0 && emptyChecker < q.ptr + q.itemSize; emptyChecker++);
         

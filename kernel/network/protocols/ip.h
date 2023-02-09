@@ -1,5 +1,7 @@
 #pragma once
-#include "stdint.h"
+#include <stdint.h>
+
+#define IPv4_LENGTH 4
 
 typedef struct {
 

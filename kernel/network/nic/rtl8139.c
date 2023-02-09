@@ -3,6 +3,7 @@
 #include "../../io/pci.h"
 #include "../../asm.h"
 #include "../../../lib/printf.h"
+#include "../../../lib/convert.h"
 #include "../../../lib/queue.h"
 #include "../../../lib/memory.h"
 
@@ -25,7 +26,7 @@ Queue RTLQueue = {RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(NICPacket)};
 uint32_t ioAddr = 0;
 
 uint8_t initRTL8139() {
-    kprint("\n\tScanning for NIC...\n");
+    kprint("\tScanning for NIC...\n");
     int pciAddr = PCI_ScanForDevice(VENDOR_ID, DEVICE_ID);
     if (pciAddr == -1){
         kprint("\tCouldn't find NIC address on PCI!");
@@ -64,14 +65,9 @@ uint8_t initRTL8139() {
     }
 
     //print MAC adress
-    printf("\tMAC: ");
-    for (int i = 0; i < MAC_LENGTH; i++) {
-        printf("%x", currentNIC.MAC[i]);
-        if (i != MAC_LENGTH-1)
-            printf(":");
-        else
-            printf("\n");
-    }
+    char MACStr[20];
+    MACtos(currentNIC.MAC, MACStr);
+    printf("\tMAC: %s\n", MACStr);
 
     currentNIC.IOBase = ioAddr;
     currentNIC.recv = RTLIrqHandler;
@@ -111,4 +107,16 @@ uint8_t RTLSendNextPacketInQueue() {
     queuePop(&RTLQueue, 0);
 
     return 1;
+}
+
+uint8_t* getMac(){
+    return currentNIC.MAC;
+}
+
+uint8_t* getIPv4(){
+    return currentNIC.IPv4;
+}
+
+uint16_t* getIPv6(){
+    return currentNIC.IPv6;
 }

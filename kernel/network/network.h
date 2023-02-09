@@ -32,3 +32,6 @@ typedef struct {
 static NetwotkAdapter currentNIC;
 
 void initNetworking();
+uint8_t* getMac();
+uint8_t* getIPv4();
+uint16_t* getIPv6();

@@ -3,7 +3,7 @@
 #include "../network.h"
 #include "ip.h"
 
-const uint8_t MAC_BROADCAST[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+const uint8_t MAC_BROADCAST[MAC_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 uint32_t calcFCS(void* ptr, uint32_t size) { return 0;} // for now
 

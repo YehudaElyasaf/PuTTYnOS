@@ -1,5 +1,7 @@
 #include "convert.h"
 #include "string.h"
+#include "../kernel/io/print.h"
+#include"memory.h"
 
 #define BASE10 10
 #define BASE16 0x10
@@ -31,17 +33,9 @@ void itoa(long n, char* buffer){
     strrev(&buffer[start]);
 }
 
-#include "../kernel/io/print.h"
 void itoh(unsigned long n, char* buffer){
-    int start = 0;
-
-    //write 0x
-    buffer[start] = '0';
-    start++;
-    buffer[1] = 'x';
-    start++;
-
-    for(int i = start; n != 0; i++){
+    int i;
+    for(i = 0; n != 0; i++){
         int digit = n % BASE16;
 
         if(digit <= LAST_DIGIT)
@@ -54,12 +48,14 @@ void itoh(unsigned long n, char* buffer){
         n /= BASE16;
     }
 
-    if(buffer[start] == STRING_TERMINATOR){
-        buffer[start] = '0';
-        buffer[start + 1] = STRING_TERMINATOR;
+    buffer[i] = '\0';
+    if(buffer[0] == '\0'){
+        buffer[0] = '0';
+        buffer[1] = '\0';
     }
 
-    strrev(&buffer[start]); //reverse string from start
+
+    strrev(buffer); //reverse string from start
 }
 
 char between(int i, int a, int b) {
@@ -96,4 +92,45 @@ int stoi(char* buffer) {
         out += *buffer - '0';
     }
     return out * sign;
+}
+
+void IPv4tos(uint8_t IPv4[IPv4_LENGTH], char* buffer){
+    int offset = 0;
+
+    for(int i = 0; i < IPv4_LENGTH; i++){
+        itoa(IPv4[i], buffer + offset);
+        offset = strlen(buffer);
+
+        if(i < IPv4_LENGTH - 1){
+            buffer[offset] = '.';
+            offset++;
+            buffer[offset] = '\0';
+        }
+    }
+}
+
+void MACtos(uint8_t MAC[MAC_LENGTH], char* buffer){
+    int offset = 0;
+
+    if(MAC[0] < 0x10){
+        //first field has only one digit
+        buffer[0] = '0';
+        offset++;
+    }
+
+    for(int i = 0; i < MAC_LENGTH; i++){
+        itoh(MAC[i], buffer + offset);
+        offset = strlen(buffer);
+
+        if(i < MAC_LENGTH - 1){
+            buffer[offset] = ':';
+            offset++;
+            buffer[offset] = '\0';
+            if(MAC[i + 1] < 0x10){
+                buffer[offset] = '0';
+                offset++;
+                buffer[offset] = '\0';
+            }
+        }
+    }
 }
