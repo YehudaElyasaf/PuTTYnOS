@@ -1,9 +1,11 @@
 #include "arp.h"
+#include "../nic/rtl8139.h"
 #include "../../memory/pagingHandler.h"
 #include "../../io/print.h"
 #include "../../../lib/string.h"
 #include "../../../lib/convert.h"
 #include "../../../lib/printf.h"
+#include "../../../lib/memory.h"
 
 const uint8_t BROADCAST_MAC[MAC_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 const uint8_t BROADCAST_IP[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
@@ -83,6 +85,42 @@ void printARPTable(int offset){
     kprint("\n");
 }
 
-uint8_t* IPv4toMAC(uint8_t IP[IPv4_LENGTH]){
+uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]){
+    ArpTableEntry* mov = arpTable;
+
+    while (mov)
+    {
+        if(mov->IPv4[0] == IP[0] && mov->IPv4[1] == IP[1] &&
+        mov->IPv4[2] == IP[2] && mov->IPv4[3] == IP[3])
+            return mov->MACAdress;
+
+        mov = mov->next;
+    }
+    
+    return NULL;
+}
+
+void ARPSend(uint8_t IP[IPv4_LENGTH]){
+    ArpPacket* packet = allocPage();
+
+    packet->HWType = HW_TYPE_ETHERNET;
+    packet->protocolType = ET_IPV4;
+    packet->HWAddrLen = MAC_LENGTH;
+    packet->protocolAddrLen = IPv4_LENGTH;
+
+    packet->opcode = ARP_REQUEST;
+    
+    memcpy(getMac(), packet->srcMAC, MAC_LENGTH);
+    
+    //TODO: my ip from NIC, setted with DHCP
+    memcpy(getIPv4(), packet->srcIP, IPv4_LENGTH);
+    memcpy(BROADCAST_MAC, packet->dstMAC, MAC_LENGTH);
+    //TODO: router ip with DHCP
+    memcpy(getDefaultGatewayIPv4(), packet->dstIP, IPv4_LENGTH);
+
+    etherSend(packet, sizeof(packet), BROADCAST_MAC);
+}
+
+void ARPRecieve(uint8_t IP[IPv4_LENGTH]){
 
 }
