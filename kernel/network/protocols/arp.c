@@ -101,6 +101,7 @@ uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]){
 }
 
 void ARPSend(uint8_t IP[IPv4_LENGTH]){
+    //FIXME: no dinamic memory. like ethernet.c:42
     ArpPacket* packet = allocPage();
 
     packet->HWType = HW_TYPE_ETHERNET;
@@ -121,6 +122,25 @@ void ARPSend(uint8_t IP[IPv4_LENGTH]){
     etherSend(packet, sizeof(packet), BROADCAST_MAC);
 }
 
-void ARPRecieve(uint8_t IP[IPv4_LENGTH]){
+void ARPRecieve(ArpPacket* packet){
+    if(packet->HWType != HW_TYPE_ETHERNET){
+        printf("%CERROR!\nUnsupported hardware type received: %h\n", LIGHT_RED, DEFAULT_COLOR, packet->HWType);
+        return;
+    }
+    if(packet->protocolType != ET_IPV4){
+        printf("%CERROR!\nUnsupported protocol type received: %h\n", LIGHT_RED, DEFAULT_COLOR, packet->protocolType);
+        return;
+    }
+    if(packet->opcode != ARP_REPLY){
+        printf("%CERROR!\nUnsupported opcode received: %h\n", LIGHT_RED, DEFAULT_COLOR, packet->opcode);
+        return;
+    }
 
+    addToArpTable(packet->srcIP, packet->HWType, packet->srcMAC);
+    char newIP[20];
+    char newMAC[20];
+    IPv4tos(packet->srcIP, newIP);
+    MACtos(packet->srcMAC, newMAC);
+    printf("%CARP packet has been received!\n", LIGHT_GREEN, DEFAULT_COLOR);
+    printf("%C\tIP: %s, MAC: %s\n", LIGHT_GREEN, DEFAULT_COLOR, newIP, newMAC);
 }

@@ -42,6 +42,9 @@ void etherRecv(void* data) {
     memcpy(data, &packet, sizeof(EtherPacket));
     
     if (packet.type == ET_IPV4) {
-        ipRecv(packet.dataAndFCS, sizeof(packet.dataAndFCS)-4);
+        ipRecv(packet.dataAndFCS, sizeof(packet.dataAndFCS) - 4);
+    }
+    if (packet.type == ET_ARP){
+        ARPRecieve(packet.dataAndFCS);
     }
 }

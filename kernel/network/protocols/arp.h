@@ -44,4 +44,4 @@ void printARPTable(int offset);
 uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]);
 
 void ARPSend(uint8_t IP[IPv4_LENGTH]);
-void ARPRecieve(uint8_t IP[IPv4_LENGTH]);
+void ARPRecieve(ArpPacket* packet);
