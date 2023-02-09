@@ -13,11 +13,6 @@ static ArpTableEntry* arpTable;
 void initARP(uint8_t MACAddr[MAC_LENGTH]){
     arpTable = NULL;
 
-
-    uint8_t m[MAC_LENGTH] = {3, 0, 42, 3, 243, 42};
-    uint8_t i[IPv4_LENGTH] = {22, 42, 42, 324};
-    addToArpTable(i, HW_TYPE_ETHERNET, m);
-    addToArpTable(BROADCAST_IP, HW_TYPE_ETHERNET, BROADCAST_MAC);
     addToArpTable(BROADCAST_IP, HW_TYPE_ETHERNET, BROADCAST_MAC);
 }
 

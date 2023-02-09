@@ -17,7 +17,7 @@
 #include "../lib/heap.h"
 #include "../lib/tasking.h"
 
-//#define _DEBUG
+#define _DEBUG
 
 static void printDone(){
     setCursorCol(NUMBER_OF_COLS / 2);
@@ -66,23 +66,23 @@ void initialize(){
 void main(){
     initialize();
     
+    clearScreen();
     createProcess(&shellMain);
 
     killProcess(CURRENT_TASK);
 }
 #else
 
-void t(){
+void t1(){
     while (true)
     {
-        printf("a");
-        for(long i=0;i<50000;i++);
+        printf("1");
+        for(long i=0;i<5000000;i++);
     }
 }
 void main(){
     initialize();
 
-    clearScreen();
     createProcess(&shellMain);
     
     killProcess(CURRENT_TASK);

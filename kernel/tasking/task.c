@@ -1,8 +1,9 @@
 #include "task.h"
+#include "scheduler.h"
 #include "../asm.h"
 #include "../../lib/linkedList.h"
 #include "../../lib/memory.h"
-#include "scheduler.h"
+#include "../../lib/printf.h"
 
 extern void startTask(uint32_t, void(*startAddress)(void));
 extern void switchTo(uint32_t, uint32_t);
@@ -46,7 +47,6 @@ uint32_t createTask(void(*startAddress)(void)){
     cli();
     
     Task* newTask = allocateNewTask();
-
     newTask->pid = ++lastTaskPid;
     newTask->esp = createStack();
     newTask->ebp = newTask->esp;
@@ -116,14 +116,7 @@ Task* allocateNewTask(){
 uint32_t createStack(){
     //FIXME: maybe a task space is needed?
     //TODO: when a task is killed, unreserve it's stack in the array
-    int stackIndex = 1;
-    for(stackIndex; stackIndex < MAX_TASK; stackIndex++)
-        if(reservedStacksIndexes[stackIndex] == false){ //stack is unused
-            reservedStacksIndexes[stackIndex] = true;
-            break;
-        }
-
-    return KERNEL_STACK_START + (stackIndex * STACK_SIZE_BYTES);
+    return allocPage();
 }
 
 bool hasTaskStarted(Task* task){
