@@ -1,5 +1,6 @@
 #pragma once
 #include "stdint.h"
+#include "spinlock.h"
 
 typedef struct {
     uint8_t* ptr;
@@ -7,6 +8,7 @@ typedef struct {
     
     uint16_t bufferSize;
     uint8_t itemSize;
+    Spinlock lock;
 } Queue;
 
 void queuePush(Queue* q, void* item);
