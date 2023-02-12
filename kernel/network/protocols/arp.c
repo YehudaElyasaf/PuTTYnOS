@@ -82,7 +82,6 @@ void printARPTable(int offset){
     }
 
     printARPEntry(offset, NULL, NULL, NULL);
-    kprint("\n");
 }
 
 uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]){

@@ -5,6 +5,8 @@
 void initNetworking(){
     kprint("\n\tInitializing NIC:\n");
     initRTL8139();
-    kprint("\tInitializing ARP table...");
+    kprint("\tInitializing ARP table...\n");
     initARP(getMac());
+    kprint("ARP table:");
+    printARPTable(2);
 }

@@ -55,8 +55,6 @@ void initialize(){
     kprint("Initializing networking...");
     initNetworking();
     printDone();
-    kprint("ARP table:");
-    printARPTable(2);
     
     setColor(WHITE);
     sti();
