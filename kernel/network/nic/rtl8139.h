@@ -35,3 +35,5 @@ uint8_t RTLSendNextPacketInQueue();
 
 // This is the IRQ handler that handles recieving packets
 void RTLIrqHandler(IsrFrame registers);
+
+uint8_t* getMac();

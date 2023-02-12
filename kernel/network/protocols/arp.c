@@ -109,7 +109,7 @@ void ARPSend(uint8_t IP[IPv4_LENGTH]){
     packet->HWAddrLen = MAC_LENGTH;
     packet->protocolAddrLen = IPv4_LENGTH;
 
-    packet->opcode = ARP_REQUEST;
+    packet->opcode = REQUEST_OPCODE;
     
     memcpy(getMac(), packet->srcMAC, MAC_LENGTH);
     
@@ -131,7 +131,7 @@ void ARPRecieve(ArpPacket* packet){
         printf("%CERROR!\nUnsupported protocol type received: %h\n", LIGHT_RED, DEFAULT_COLOR, packet->protocolType);
         return;
     }
-    if(packet->opcode != ARP_REPLY){
+    if(packet->opcode != REPLY_OPCODE){
         printf("%CERROR!\nUnsupported opcode received: %h\n", LIGHT_RED, DEFAULT_COLOR, packet->opcode);
         return;
     }

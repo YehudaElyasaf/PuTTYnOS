@@ -9,8 +9,8 @@
 #define HW_TYPE_ETHERNET 0x1
 
 enum OPERATION_CODES{
-    ARP_REQUEST = 0x1,
-    ARP_REPLY   = 0x2
+    REQUEST_OPCODE = 0x1,
+    REPLY_OPCODE   = 0x2
 };
 
 typedef struct
@@ -32,6 +32,7 @@ typedef struct {
 
     uint16_t    opcode;
 
+    //FIXME: is src-dst IP's actually client-server IP's?
     uint8_t     srcMAC[MAC_LENGTH];
     uint8_t     srcIP[IPv4_LENGTH];
     uint8_t     dstMAC[MAC_LENGTH];

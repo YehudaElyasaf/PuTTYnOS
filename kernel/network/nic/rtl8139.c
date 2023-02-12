@@ -116,7 +116,13 @@ uint8_t* getMac(){
 uint8_t* getIPv4(){
     return currentNIC.IPv4;
 }
+void setIPv4(uint8_t ip[IPv4_LENGTH]){
+    memcpy(ip, currentNIC.IPv6, IPv6_LENGTH);
+}
 
 uint16_t* getIPv6(){
     return currentNIC.IPv6;
+}
+void setIPv6(uint8_t ip[IPv6_LENGTH]){
+    memcpy(ip, currentNIC.IPv6, IPv6_LENGTH);
 }
