@@ -76,10 +76,6 @@ typedef struct{
     uint8_t endmark;
 } __attribute__((packed)) DHCPRequestOptions;
 
-static uint8_t defaultGatewayIPv4[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
-
-uint8_t* getDefaultGatewayIPv4();
-
 void DHCPDiscover(uint8_t MAC[MAC_LENGTH]);
 void DHCPGetOffer();
 void DHCPRequest(uint8_t MAC[MAC_LENGTH]);

@@ -2,10 +2,6 @@
 #include "../../../lib/memory.h"
 #include "../../memory/pagingHandler.h"
 
-uint8_t* getDefaultGatewayIPv4(){
-    return defaultGatewayIPv4;
-}
-
 static uint8_t emptyIP[IPv4_LENGTH] = {0, 0, 0, 0};
 
 static DHCPPacket* newDhcpPacket(uint8_t MAC[MAC_LENGTH], uint8_t serverIP[IPv4_LENGTH]){
