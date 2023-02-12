@@ -11,11 +11,11 @@ uint32_t firstHole = KERNEL_END, headOfPages = KERNEL_END;
 int initPT(int size) {
     uint32_t pt = allocPage();
     int i = 0, cr0 = 0;
-    for (; i < PDT_SIZE && !(*(uint32_t*)(0xfffff000+i) & PRESENT); i++);
+    for (; i < PDT_SIZE && !(*(uint32_t*)(0xfffff000+i*4) & PRESENT); i++);
     if (i >= PDT_SIZE) // PDT full
         return NULL;
     
-    *(uint32_t*)(0xfffff000+i) = PRESENT | USER | READWRITE | pt;
+    *(uint32_t*)(0xfffff000+i*4) = PRESENT | USER | READWRITE | pt;
 
     size = size > 0 ? size : DEFAULT_PAGE_NUM;
     size *= PAGE_SIZE;
