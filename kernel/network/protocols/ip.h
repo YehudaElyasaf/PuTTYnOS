@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #define IPv4_LENGTH 4
+#define ETHER_MAX_LENGTH 1500
 #define IPv4_MIN_DATA_SIZE ETHER_MAX_LENGTH - 20
 
 static uint8_t defaultGatewayIPv4[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
