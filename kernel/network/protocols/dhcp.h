@@ -9,6 +9,8 @@
 #define DHCP_MAGIC_COOKIE   0x63825363
 #define MAC_LENGTH          6
 
+#define IPv4_LENGTH 4 // for some reason it doesnt work with ip.h
+
 enum DHCP_PACKET_TYPES{
     DHCP_DISCOVER_TYPE =    0x1,
     DHCP_OFFER_TYPE =       0x2,

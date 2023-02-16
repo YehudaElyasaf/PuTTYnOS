@@ -1,11 +1,15 @@
 #pragma once
-
-#include <stdint.h>
+#include "stdint.h"
+#include "ethernet.h"
+#include "udp.h"
 
 #define IPv4_LENGTH 4
-#define IPv4_MIN_DATA_SIZE ETHER_MAX_LENGTH - 20
+#define IPv4_MAX_DATA_SIZE 1980 // ETHER_MAX - 20
+#define MIN_IHL 5
 
 static uint8_t defaultGatewayIPv4[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
+
+const uint8_t IP_BROADCAST[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
 
 uint8_t* getDefaultGatewayIPv4();
 
@@ -27,7 +31,7 @@ typedef struct __attribute__((__packed__)){
     uint8_t srcAddr[IPv4_LENGTH];
     uint8_t dstAddr[IPv4_LENGTH];
 
-    uint8_t data[IPv4_MIN_DATA_SIZE];
+    uint8_t data[IPv4_MAX_DATA_SIZE];
 } IpHeaders;
 
 void ipRecv(void* data, uint32_t size);
