@@ -65,9 +65,10 @@ void main(){
     initialize();
     
     clearScreen();
-    createProcess(&shellMain);
-
-    killProcess(CURRENT_TASK);
+    shellMain();
+    //createProcess(&shellMain);
+//
+    //killProcess(CURRENT_TASK);
 }
 #else
 
@@ -81,9 +82,10 @@ void t1(){
 void main(){
     initialize();
 
-    createProcess(&shellMain);
-    
-    killProcess(CURRENT_TASK);
+    shellMain();
+    //createProcess(&shellMain);
+    //
+    //killProcess(CURRENT_TASK);
 }
 
 #endif
