@@ -2,6 +2,8 @@
 #include "../../../lib/memory.h"
 #include "../network.h"
 
+const uint8_t IP_BROADCAST[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
+
 uint8_t* getDefaultGatewayIPv4(){
     return defaultGatewayIPv4;
 }

@@ -8,6 +8,8 @@
 #define MAC_LENGTH 6
 #define HW_TYPE_ETHERNET 0x1
 
+#define IPv4_LENGTH 4
+
 enum OPERATION_CODES{
     REQUEST_OPCODE = 0x1,
     REPLY_OPCODE   = 0x2

@@ -9,8 +9,6 @@
 
 static uint8_t defaultGatewayIPv4[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
 
-const uint8_t IP_BROADCAST[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
-
 uint8_t* getDefaultGatewayIPv4();
 
 enum IP_PROTOCOL_NUMBER {
