@@ -33,3 +33,12 @@ typedef struct __attribute__((__packed__)){
 } IpHeaders;
 
 void ipRecv(void* data, uint32_t size);
+
+// the function recieves a pointer to an IP packet, and whether or not you should verify the checksum
+
+// if you want to receive a checksum for your packet, toVerify = 0, it adds up the headers in 16-bit
+// and without the checksum field, and returns the one's complement to that.
+
+// if you want to verify the checksum, toVerify = 1, it adds WITH the checksum field,
+// and returns 0 if it's valid and something else if it's not valid.
+uint16_t ipChecksum(IpHeaders* packet, uint8_t toVerify);

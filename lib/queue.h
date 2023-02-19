@@ -8,6 +8,7 @@ typedef struct {
     
     uint16_t bufferSize;
     uint8_t itemSize;
+    
     Spinlock lock;
 } Queue;
 

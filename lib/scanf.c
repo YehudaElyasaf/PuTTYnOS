@@ -43,7 +43,7 @@ void seek(uint32_t offset) {
 char getchar() {
     uint8_t scancode = syscall(SYSCALL_GETCHAR, 0, 0, 0, 0);
     
-    while (!scancode || scancode >= sizeof(scancode_ascii) || scancode_ascii[scancode] == '?') {
+    while (!scancode) {
         if (scancode == BACKSPACE_SC) {
             return scancode;
         }
