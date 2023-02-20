@@ -1,5 +1,6 @@
 #include "ip.h"
 #include "../../../lib/memory.h"
+#include "../../../lib/printf.h"
 #include "../network.h"
 
 #define SEND_TTL 1024
