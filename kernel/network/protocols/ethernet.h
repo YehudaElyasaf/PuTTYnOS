@@ -24,3 +24,5 @@ typedef struct _EtherPacket{
 
 void etherSend(void* data, uint32_t size, uint8_t* dstMAC);
 void etherRecv(void* data);
+
+uint32_t calcFCS(void* ptr, uint32_t size);

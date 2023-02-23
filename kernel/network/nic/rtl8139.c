@@ -40,7 +40,7 @@ uint8_t initRTL8139() {
         return -1;
     }
     else{
-        printf("\tFound device: RTL8139\n");
+        kprint("\tFound device: RTL8139\n");
     }
 
     //power on

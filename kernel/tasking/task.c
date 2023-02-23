@@ -21,7 +21,7 @@ static Task tasksContainer[MAX_TASK + 5];
 static char reservedStacksIndexes[MAX_TASK];
 
 void initTasking(){
-    cli();
+    //cli();
 
     memset(0, reservedStacksIndexes, sizeof(reservedStacksIndexes));
     lastTaskPid = 0;
@@ -40,11 +40,11 @@ void initTasking(){
     kmain->next = NULL;
     initScheduler(kmain);
 
-    sti();
+    //sti();
 }
 
 uint32_t createTask(void(*startAddress)(void)){
-    cli();
+    //cli();
     
     Task* newTask = allocateNewTask();
     newTask->pid = ++lastTaskPid;
@@ -65,7 +65,7 @@ uint32_t createTask(void(*startAddress)(void)){
 }
 
 bool switchTask(){
-    cli();
+    //cli();
 
     decreaseSleepTimes();
 
@@ -81,7 +81,7 @@ bool switchTask(){
     Task* newTask = getNextTask();
     if(newTask == NULL){
         //shouldn't switch task
-        sti();
+        //sti();
 
         if(currentTask != NULL && currentTask->isBlocked){
             //Ho no! Task is blocked but we don't have any other task. We'll wait to next interrupt
