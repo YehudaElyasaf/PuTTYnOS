@@ -35,7 +35,8 @@ static void keyboardIrqHandler(IrqFrame reg) {
 }
 
 void initKeyboard() {
-    keyQueue = (Queue){key_buffer, 0, KEY_BUFFER_LEN, 1, {0}};
+    // for some reason if makes sti() to make the system crash
+    //keyQueue = (Queue){key_buffer, 0, KEY_BUFFER_LEN, 1, {0}};
     irqInstallHandler(IRQ1_KEYBOARD, keyboardIrqHandler);
     in8bit(0x60); //clean port 0x60
 }

@@ -49,7 +49,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing tasking...");
-    //initTasking();
+    initTasking();
     printDone();
 
     kprint("Initializing networking...");
