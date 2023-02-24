@@ -7,6 +7,10 @@ void initNetworking(){
     initRTL8139();
     kprint("\tInitializing ARP table...\n");
     initARP(getMac());
+    kprint("\tConnecting to router...\n");
+    DHCPState = NONE;
+    connectToRouter();
+
     kprint("ARP table:");
     printARPTable(2);
 }

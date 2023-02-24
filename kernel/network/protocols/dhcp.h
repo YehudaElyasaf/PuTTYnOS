@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdbool.h>
 #include "ip.h"
 #include "arp.h"
 #include "ethernet.h"
@@ -9,28 +10,51 @@
 #define DHCP_MAGIC_COOKIE   0x63825363
 #define MAC_LENGTH          6
 
+#define DHCP_TYMEOUT_MS     3000
+
 #define IPv4_LENGTH 4 // for some reason it doesnt work with ip.h
 
-enum DHCP_PACKET_TYPES{
-    DHCP_DISCOVER_TYPE =    0x1,
-    DHCP_OFFER_TYPE =       0x2,
-    DHCP_REQUEST_TYPE =     0x3,
-    DHCP_ACK_TYPE =         0x5
-};
+typedef enum{
+    NONE,
+    DHCP_DISCOVER_TYPE,
+    DHCP_OFFER_TYPE,
+    DHCP_REQUEST_TYPE,
+    DHCP_DECLINE_TYPE,
+    DHCP_ACK_TYPE
+} DhcpPacketType;
 
-enum DHCP_EXTENSION_CODES{
-    DHCP_MESSAGE_TYPE =             53,
+typedef enum{
+    DHCP_OPTION_SUBNET_MASK =       1,
+    DHCP_OPTION_ROUTER =            3,
+    DHCP_OPTION_DNS_SERVERS =       6,
+    DHCP_OPTION_DOMAIN_NAME =       15,
+    DHCP_OPTION_IP_LEASE_TIME_SEC = 51,
+    DHCP_OPTION_MESSSAGE_TYPE =     53,
+} DhcpOptions;
+
+enum DHCP_REQUSETS_OPTIONAL_CODES{
+    DHCP_MESSAGE_TYPE =             DHCP_OPTION_MESSSAGE_TYPE,
     DHCP_MESSAGE_TYPE_LENGTH =      1,
 
     DHCP_REQUEST_LIST_CODE =        55,
     DHCP_REQUEST_LIST_LENGTH =      4,
     //01 - subnet mask, 03 - list of routers, 0f - ask to get my domain name, 06 - list of DNS servers
+    //TODO: get more info (time servers, etc.)
     DHCP_REQUEST_LIST =             0x01030f06,
     DHCP_END =                      0xff,
-
-    DHCP_SERVER_IDENTIFIER_CODE =   54,
-    DHCP_SERVER_IDENTIFIER_LENGTH = 4
 };
+
+typedef struct{
+    uint8_t packetTypeCode;
+    uint8_t packetTypeLength;
+    uint8_t packetType;
+
+    uint8_t requestListCode;
+    uint8_t requestListLength;
+    uint32_t requestList;
+
+    uint8_t endmark;
+} __attribute__((packed)) DHCPRequestOptions;
 
 typedef struct
 {
@@ -51,35 +75,21 @@ typedef struct
     uint8_t reserverd[DHCP_PADDING_SIZE];
     uint32_t magicCookie;
 
-    //options inserted here
+    //only for Discover and Request!
+    DHCPRequestOptions options;
 } __attribute__((packed)) DHCPPacket;
 
-typedef struct{
-    uint8_t packetTypeCode;
-    uint8_t packetTypeLength;
-    uint8_t packetType;
+//return: is successful
+bool connectToRouter();
 
-    uint8_t requestListCode;
-    uint8_t requestListLength;
-    uint32_t requestList;
-
-    uint8_t endmark;
-} __attribute__((packed)) DHCPDiscoverOptions;
-
-typedef struct{
-    uint8_t packetTypeCode;
-    uint8_t packetTypeLength;
-    uint8_t packetType;
-
-    uint8_t serverIdentifierCode;
-    uint8_t serverIdentifierLength;
-    uint32_t serverIdentifier;
-
-    uint8_t endmark;
-} __attribute__((packed)) DHCPRequestOptions;
-
-void DHCPDiscover(uint8_t MAC[MAC_LENGTH]);
-void DHCPGetOffer();
-void DHCPRequest(uint8_t MAC[MAC_LENGTH]);
-void DHCPGetAck();
+//return: is successful
+static bool DHCPWaitForReply(DhcpPacketType replyType);
+//return: is successful
+static bool DHCPDiscover();
+static void DHCPGetOffer(DHCPPacket* packet, uint8_t* options);
+//return: is successful
+static bool DHCPRequest();
+static void DHCPGetAck(DHCPPacket* packet, uint8_t* pOptions);
 void DHCPRecv();
+
+static DhcpPacketType DHCPState;

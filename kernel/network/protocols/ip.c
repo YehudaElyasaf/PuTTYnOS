@@ -76,7 +76,7 @@ void ipSend(void* data, uint32_t size, uint8_t dst[IPv4_LENGTH], uint8_t protoco
     memcpy(currentNIC.IPv4, packet.srcAddr, IPv4_LENGTH);
     memcpy(dst, packet.dstAddr, IPv4_LENGTH);
     
-    packet.headerChecksum = ipChecksum(&packet);
+    packet.headerChecksum = ipChecksum(&packet, 0);
 
     memcpy(data, packet.data, size);
 

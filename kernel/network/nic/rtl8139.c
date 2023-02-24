@@ -117,7 +117,7 @@ uint8_t* getIPv4(){
     return currentNIC.IPv4;
 }
 void setIPv4(uint8_t ip[IPv4_LENGTH]){
-    memcpy(ip, currentNIC.IPv6, IPv6_LENGTH);
+    memcpy(ip, currentNIC.IPv6, IPv4_LENGTH);
 }
 
 uint16_t* getIPv6(){

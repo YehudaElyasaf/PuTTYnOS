@@ -18,6 +18,7 @@
 #include "../lib/tasking.h"
 
 #define _DEBUG
+#define _NETWORKING_ENABLED
 
 static void printDone(){
     setCursorCol(NUMBER_OF_COLS / 2);
@@ -52,9 +53,11 @@ void initialize(){
     initTasking();
     printDone();
 
+    #ifdef _NETWORKING_ENABLED
     kprint("Initializing networking...");
     initNetworking();
     printDone();
+    #endif
     
     setColor(WHITE);
     sti();
