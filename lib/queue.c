@@ -40,7 +40,7 @@ void* queueHead(Queue q) {
     if (!len) {
         return 0;
     }
-    // spin_unlock(&q.lock);
+    //spin_unlock(&q.lock);
     return q.ptr + q.curPtr*q.itemSize;
 }
 

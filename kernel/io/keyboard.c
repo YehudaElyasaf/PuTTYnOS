@@ -32,10 +32,8 @@ static void keyboardIrqHandler(IrqFrame reg) {
 
 void initKeyboard() {
     // for some reason if makes sti() to make the system crash
-    keyQueue.ptr = key_buffer;
-    keyQueue.curPtr = 0;
-    keyQueue.bufferSize = KEY_BUFFER_LEN;
-    keyQueue.itemSize = 1;
+    keyQueue = (Queue){key_buffer, 0, KEY_BUFFER_LEN, 1};
+
     irqInstallHandler(IRQ1_KEYBOARD, keyboardIrqHandler);
     in8bit(0x60); //clean port 0x60
 }
