@@ -3,7 +3,7 @@
 #include "string.h"
 
 void queuePush(Queue* q, void* item) {
-    spin_lock(&q->lock);
+    //spin_lock(&q->lock);
     int len = queueLen(*q);
     if (len == 0) {
         q->curPtr = 0;
@@ -16,11 +16,11 @@ void queuePush(Queue* q, void* item) {
 
     memcpy(item, q->ptr + q->curPtr*q->itemSize + len, q->itemSize);
     memset(0, q->ptr + q->curPtr*q->itemSize + len + 1, q->itemSize);
-    spin_unlock(&q->lock);
+    //spin_unlock(&q->lock);
 }
 
 void queuePop(Queue* q, void* item) {
-    spin_lock(&q->lock);
+    //spin_lock(&q->lock);
     int len = queueLen(*q);
     if (!len) {
         memset(0, item, q->itemSize);
@@ -28,19 +28,19 @@ void queuePop(Queue* q, void* item) {
     }
     
     if (item)
-        memcpy(item, q->ptr + q->curPtr*q->itemSize, q->itemSize);
+        memcpy(q->ptr + q->curPtr*q->itemSize, item, q->itemSize);
     memset(0, q->ptr + q->curPtr*q->itemSize, q->itemSize);
     q->curPtr = q->curPtr < q->bufferSize - q->itemSize-1 ? q->curPtr + q->itemSize : 0;
-    spin_unlock(&q->lock);
+    //spin_unlock(&q->lock);
 }
 
 void* queueHead(Queue q) {
-    spin_lock(&q.lock);
+    //spin_lock(&q.lock);
     int len = queueLen(q);
     if (!len) {
         return 0;
     }
-    spin_unlock(&q.lock);
+    // spin_unlock(&q.lock);
     return q.ptr + q.curPtr*q.itemSize;
 }
 
