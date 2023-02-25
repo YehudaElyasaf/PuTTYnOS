@@ -7,14 +7,10 @@
 #include "print.h"
 #include "../../lib/queue.h"
 
-#define KEY_BUFFER_LEN 1024
-
 #define LSHIFT_SC 0x2a + 0x80
 #define RSHIFT_SC 0x36 + 0x80
 
-static uint8_t key_buffer[KEY_BUFFER_LEN] = {0};
-
-Queue keyQueue = {key_buffer, 0, KEY_BUFFER_LEN, 1};
+Queue keyQueue;
 
 char kgetc() {
     char tmp = 0;
@@ -35,6 +31,9 @@ static void keyboardIrqHandler(IrqFrame reg) {
 }
 
 void initKeyboard() {
+    // for some reason if makes sti() to make the system crash
+    keyQueue = (Queue){key_buffer, 0, KEY_BUFFER_LEN, 1};
+
     irqInstallHandler(IRQ1_KEYBOARD, keyboardIrqHandler);
     in8bit(0x60); //clean port 0x60
 }
