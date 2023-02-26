@@ -35,7 +35,7 @@ uint8_t initRTL8139() {
 
     ioAddr = PCI_Read(pciAddr + 0x10);
 
-    if(ioAddr == 0xFFFFFFFF){
+    if(ioAddr == ~0){
         kprint("\tCouldn't find NIC!");
         return -1;
     }
@@ -117,7 +117,7 @@ uint8_t* getIPv4(){
     return currentNIC.IPv4;
 }
 void setIPv4(uint8_t ip[IPv4_LENGTH]){
-    memcpy(ip, currentNIC.IPv6, IPv4_LENGTH);
+    memcpy(ip, currentNIC.IPv4, IPv4_LENGTH);
 }
 
 uint16_t* getIPv6(){
