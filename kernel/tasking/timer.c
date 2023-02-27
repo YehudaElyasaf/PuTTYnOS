@@ -39,7 +39,6 @@ void initTimer(){
 void timerIrqHandler(){
     //inform that interrupt was handled
     out8bit(PIC_MASTER_CONTROL_REGISTER, PIC_EOI_CMD);
-    
     ticks++;
     
     switchTask();

@@ -66,7 +66,6 @@ uint32_t createTask(void(*startAddress)(void)){
 
 bool switchTask(){
     cli();
-
     decreaseSleepTimes();
 
     Task* currentTask = getCurrentTask();

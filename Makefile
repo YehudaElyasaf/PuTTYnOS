@@ -2,7 +2,7 @@
 
 OS_NAME=PuTTYnOS
 OS_VERSION=$(OS_NAME)-i386
-OS_MAC_ADDR=
+OS_MAC_ADDR='aa:bb:cc:dd:ee:ff'
 #32m = green
 #37m = white
 #35m = purple
@@ -43,7 +43,7 @@ AUTO_GENERATED_H_FILES=kernel/cpu/isrs.h kernel/cpu/irqs.h
 all: build
 
 run: all
-	@echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
+	@ echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
 	@ $(QEMU) $(QEMUFLAGS) $(QUIET_RUN)
 
 	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"

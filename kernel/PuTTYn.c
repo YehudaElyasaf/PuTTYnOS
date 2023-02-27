@@ -78,16 +78,16 @@ void main(){
 void t1(){
     while (true)
     {
-        printf("1");
+        printf("4");
         for(long i=0;i<5000000;i++);
     }
 }
 void main(){
     initialize();
-
     shellMain();
-    //createProcess(&shellMain);
-    //
+    //ARPSend(NULL);
+    while(true);
+    
     //killProcess(CURRENT_TASK);
 }
 

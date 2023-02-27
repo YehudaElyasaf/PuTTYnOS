@@ -1,7 +1,9 @@
 #include "ethernet.h"
+#include "../nic/rtl8139.h"
 #include "../../../lib/memory.h"
 #include "../network.h"
 #include "ip.h"
+#include "../../io/print.h"
 
 uint32_t calcFCS(void* ptr, uint32_t size) { return 0;} // for now
 
@@ -34,7 +36,9 @@ void etherSend(void* data, uint32_t size, uint8_t* dstMAC) {
     memcpy(&FCS, toSend.dataAndFCS + size, 4);
     memcpy(&toSend, &p.data, sizeof(toSend));
     p.size = size;
+    
     currentNIC.send(p);
+    kprint("aaa");
 }
 
 void etherRecv(void* data) {

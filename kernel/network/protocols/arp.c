@@ -100,25 +100,24 @@ uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]){
 }
 
 void ARPSend(uint8_t IP[IPv4_LENGTH]){
-    //FIXME: no dinamic memory. like ethernet.c:42
-    ArpPacket* packet = allocPage();
+    ArpPacket packet;
 
-    packet->HWType = HW_TYPE_ETHERNET;
-    packet->protocolType = ET_IPV4;
-    packet->HWAddrLen = MAC_LENGTH;
-    packet->protocolAddrLen = IPv4_LENGTH;
+    packet.HWType = HW_TYPE_ETHERNET;
+    packet.protocolType = ET_IPV4;
+    packet.HWAddrLen = MAC_LENGTH;
+    packet.protocolAddrLen = IPv4_LENGTH;
 
-    packet->opcode = REQUEST_OPCODE;
+    packet.opcode = REQUEST_OPCODE;
     
-    memcpy(getMac(), packet->srcMAC, MAC_LENGTH);
+    memcpy(getMac(), packet.srcMAC, MAC_LENGTH);
     
     //TODO: my ip from NIC, setted with DHCP
-    memcpy(getIPv4(), packet->srcIP, IPv4_LENGTH);
-    memcpy(BROADCAST_MAC, packet->dstMAC, MAC_LENGTH);
+    memcpy(getIPv4(), packet.srcIP, IPv4_LENGTH);
+    memcpy(BROADCAST_MAC, packet.dstMAC, MAC_LENGTH);
     //TODO: router ip with DHCP
-    memcpy(getDefaultGatewayIPv4(), packet->dstIP, IPv4_LENGTH);
+    memcpy(getDefaultGatewayIPv4(), packet.dstIP, IPv4_LENGTH);
 
-    etherSend(packet, sizeof(packet), BROADCAST_MAC);
+    etherSend(&packet, sizeof(packet), BROADCAST_MAC);
 }
 
 void ARPRecieve(ArpPacket* packet){

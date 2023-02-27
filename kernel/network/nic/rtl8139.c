@@ -33,7 +33,7 @@ uint8_t initRTL8139() {
         return -1;
     }
 
-    ioAddr = PCI_Read(pciAddr + 0x10);
+    ioAddr = PCI_Read(pciAddr + 0x10) - 1;
 
     if(ioAddr == ~0){
         kprint("\tCouldn't find NIC!");
@@ -42,6 +42,8 @@ uint8_t initRTL8139() {
     else{
         kprint("\tFound device: RTL8139\n");
     }
+    out8bit(ioAddr+0x37, 1<<3);
+    return 0;
 
     //power on
     out8bit(ioAddr + INIT_RTL_CONTROL_REGISTER, POWER_ON_CODE);
