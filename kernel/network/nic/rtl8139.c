@@ -61,7 +61,7 @@ uint8_t initRTL8139() {
 
     // mac finding doesnt work for now.
     for (int i = 0; i < 6; i++) {
-        currentNIC.MAC[i] = in8bit(ioAddr+i);
+        currentNIC.MAC[i] = in8bit(ioAddr+i-1);
     }
 
     //print MAC adress
