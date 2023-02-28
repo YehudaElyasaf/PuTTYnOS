@@ -17,15 +17,15 @@ uint32_t calcFCS(void* ptr, uint32_t size) { return 0;} // for now
 void etherSend(uint8_t* data, uint32_t size, uint8_t* dstMAC) {
     EtherPacket toSend;
     NICPacket p;
-    toSend.preamble1 = PREAMBLE_BYTE;
-    toSend.preamble2AndSFD = PREAMBLE_BYTE|1;
+    toSend.preamble1 = switchEndian32bit(PREAMBLE_BYTE);
+    toSend.preamble2AndSFD = switchEndian32bit(PREAMBLE_BYTE|1);
     
     memcpy(dstMAC, toSend.dstMAC, MAC_LENGTH);
     memcpy(currentNIC.MAC, toSend.srcMAC, MAC_LENGTH);
-    toSend.type = ET_ARP;
+    toSend.type = switchEndian16bit(ET_ARP);
     
-    while (size > ETHER_MAX_LENGTH) {
-        memcpy(&data, toSend.dataAndFCS, ETHER_MAX_LENGTH);
+    if (size > ETHER_MAX_LENGTH) {
+        memcpy(data, toSend.dataAndFCS, ETHER_MAX_LENGTH);
 
         uint32_t FCS = calcFCS(&data, ETHER_MAX_LENGTH);
         memcpy(&FCS, toSend.dataAndFCS + ETHER_MAX_LENGTH, 4);
@@ -49,7 +49,7 @@ void etherSend(uint8_t* data, uint32_t size, uint8_t* dstMAC) {
     RTLSendPacket(p);
 
     #ifdef _NETWORKING_DEBUG_LOG
-    printPacket("Sent", data, sizeof(ArpPacket));
+    printPacket("Sent", &toSend, size + 14);
     #endif
 }
 

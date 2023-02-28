@@ -79,11 +79,12 @@ void t1(){
 }
 void main(){
     initialize();
-    //shellMain();
 
     uint8_t IP[IPv4_LENGTH] = {69, 78, 68, 33};
     ARPSend(IP);
     //createTask(t1);
+    
+    //shellMain();
     while(true);
     
     //killProcess(CURRENT_TASK);

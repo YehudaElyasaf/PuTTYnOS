@@ -6,6 +6,7 @@
 #include "../../../lib/convert.h"
 #include "../../../lib/printf.h"
 #include "../../../lib/memory.h"
+#include "../../../lib/heap.h"
 
 const uint8_t BROADCAST_MAC[MAC_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 const uint8_t BROADCAST_IP[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
@@ -16,16 +17,16 @@ void initARP(uint8_t MACAddr[MAC_LENGTH]){
     arpTable = NULL;
 
     addToArpTable(BROADCAST_IP, HW_TYPE_ETHERNET, BROADCAST_MAC);
+    alloc(sizeof(arpTable));
 }
 
 void addToArpTable(uint8_t IPv4[IPv4_LENGTH], uint16_t HWType, uint8_t MACAdress[MAC_LENGTH]){
     //FIXME: avoid paging. use LinkedList.h?
-    ArpTableEntry* newEntry = allocPage();
-    for(int i=0; i < IPv4_LENGTH; i++)
-        newEntry->IPv4[i] = IPv4[i];
+    ArpTableEntry* newEntry = alloc(sizeof(arpTable));
+    memcpy(IPv4, newEntry->IPv4, IPv4_LENGTH);
     newEntry->HWType = HWType;
-    for(int i=0; i < MAC_LENGTH; i++)
-        newEntry->MACAdress[i] = MACAdress[i];
+    memcpy(MACAdress, newEntry->MACAdress, MAC_LENGTH);
+    
     newEntry->next = NULL;
 
     if(!arpTable)
