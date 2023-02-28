@@ -6,8 +6,10 @@
 
 //int to ascii
 void itoa(long n, char* buffer);
-//int to hex ascii
+//int to hex string
 void itoh(unsigned long n, char* buffer);
+//int to binary string
+void itob(unsigned long n, char* buffer);
 
 // hex ascii to int
 int stoh(char* buffer);
@@ -20,3 +22,7 @@ long reverseNum(long n, int base);
 void IPv4tos(uint8_t IPv4[IPv4_LENGTH], char* buffer);
 //MAC to string
 void MACtos(uint8_t MAC[MAC_LENGTH], char* buffer);
+
+//little to big endian and via versa
+uint16_t switchEndian16bit(uint16_t n);
+uint32_t switchEndian32bit(uint32_t n);

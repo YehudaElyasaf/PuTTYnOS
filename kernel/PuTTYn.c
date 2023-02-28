@@ -17,11 +17,8 @@
 #include "../lib/heap.h"
 #include "../lib/tasking.h"
 
-#define _DEBUG
-#define _NETWORKING_ENABLED
-
 static void printDone(){
-    setCursorCol(NUMBER_OF_COLS / 2);
+    setCursorCol(SCREEN_WIDTH / 2);
     kcprint("Done!\n", GREEN, getBackgroundColor());
 }
 
@@ -53,11 +50,9 @@ void initialize(){
     initTasking();
     printDone();
 
-    #ifdef _NETWORKING_ENABLED
     kprint("Initializing networking...");
     initNetworking();
     printDone();
-    #endif
     
     setColor(WHITE);
     sti();
@@ -84,8 +79,12 @@ void t1(){
 }
 void main(){
     initialize();
-    shellMain();
-    //ARPSend(NULL);
+
+    uint8_t IP[IPv4_LENGTH] = {69, 78, 68, 33};
+    ARPSend(IP);
+    //createTask(t1);
+    
+    //shellMain();
     while(true);
     
     //killProcess(CURRENT_TASK);

@@ -6,6 +6,7 @@
 #include "../../../lib/convert.h"
 #include "../../../lib/printf.h"
 #include "../../../lib/memory.h"
+#include "../../../lib/heap.h"
 
 const uint8_t BROADCAST_MAC[MAC_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 const uint8_t BROADCAST_IP[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
@@ -16,15 +17,16 @@ void initARP(uint8_t MACAddr[MAC_LENGTH]){
     arpTable = NULL;
 
     addToArpTable(BROADCAST_IP, HW_TYPE_ETHERNET, BROADCAST_MAC);
+    alloc(sizeof(arpTable));
 }
 
 void addToArpTable(uint8_t IPv4[IPv4_LENGTH], uint16_t HWType, uint8_t MACAdress[MAC_LENGTH]){
-    ArpTableEntry* newEntry = allocPage();
-    for(int i=0; i < IPv4_LENGTH; i++)
-        newEntry->IPv4[i] = IPv4[i];
+    //FIXME: avoid paging. use LinkedList.h?
+    ArpTableEntry* newEntry = alloc(sizeof(arpTable));
+    memcpy(IPv4, newEntry->IPv4, IPv4_LENGTH);
     newEntry->HWType = HWType;
-    for(int i=0; i < MAC_LENGTH; i++)
-        newEntry->MACAdress[i] = MACAdress[i];
+    memcpy(MACAdress, newEntry->MACAdress, MAC_LENGTH);
+    
     newEntry->next = NULL;
 
     if(!arpTable)
@@ -99,23 +101,21 @@ uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]){
     return NULL;
 }
 
-void ARPSend(uint8_t IP[IPv4_LENGTH]){
+void ARPSend(uint8_t targetIP[IPv4_LENGTH]){
     ArpPacket packet;
 
-    packet.HWType = HW_TYPE_ETHERNET;
-    packet.protocolType = ET_IPV4;
+    packet.HWType = switchEndian16bit(HW_TYPE_ETHERNET);
+    packet.protocolType = switchEndian16bit(ET_IPV4);
     packet.HWAddrLen = MAC_LENGTH;
     packet.protocolAddrLen = IPv4_LENGTH;
 
-    packet.opcode = REQUEST_OPCODE;
+    packet.opcode = switchEndian16bit(REQUEST_OPCODE);
     
     memcpy(getMac(), packet.srcMAC, MAC_LENGTH);
     
-    //TODO: my ip from NIC, setted with DHCP
     memcpy(getIPv4(), packet.srcIP, IPv4_LENGTH);
-    memcpy(BROADCAST_MAC, packet.dstMAC, MAC_LENGTH);
-    //TODO: router ip with DHCP
-    memcpy(getDefaultGatewayIPv4(), packet.dstIP, IPv4_LENGTH);
+    memset(0, packet.targetMAC, MAC_LENGTH);
+    memcpy(targetIP, packet.targetIP, IPv4_LENGTH);
 
     etherSend(&packet, sizeof(packet), BROADCAST_MAC);
 }

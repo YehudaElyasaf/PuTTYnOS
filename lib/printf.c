@@ -82,6 +82,13 @@ __attribute__((__cdecl__)) int printf(char* format, /*uint8_t color, uint8_t bac
 
                 pArgumnet++;
                 break;
+                
+            case PRINTF_SPECIFIER_BINARY:
+                itob(*pArgumnet, conversionBuffer);
+                printString(conversionBuffer, color, backgroundColor);
+
+                pArgumnet++;
+                break;
 
             case PRINTF_SPECIFIER_STRING:
                 printString((char*)(*pArgumnet), color, backgroundColor);

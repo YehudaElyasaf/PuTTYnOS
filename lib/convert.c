@@ -4,13 +4,22 @@
 #include"memory.h"
 
 #define BASE10 10
+#define BASE2 2
 #define BASE16 0x10
 #define LAST_DIGIT 9
+#define OCTET_SIZE 8
 
 #define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
 
-void itoa(long n, char* buffer){
+static void basetoa(long n, char* buffer, int base){
     int start = 0;
+
+    //reset buffer
+    char* mov = buffer;
+    while(*mov != '\0'){
+        *mov = '\0';
+        mov++;
+    }
     
     if(n < 0){
         //the first char is '-'
@@ -19,10 +28,12 @@ void itoa(long n, char* buffer){
         n *= -1;
     }
     
-    for(int i = start; n != 0; i++){
-        buffer[i] = '0' + (n % BASE10);
-        n /= BASE10;
+    int i = start;
+    for(i; n != 0; i++){
+        buffer[i] = '0' + (n % base);
+        n /= base;
     }
+    buffer[i] = 0;
 
     if(buffer[start] == STRING_TERMINATOR){
         //n is zero
@@ -31,6 +42,10 @@ void itoa(long n, char* buffer){
     }
 
     strrev(&buffer[start]);
+}
+
+void itoa(long n, char* buffer){
+    basetoa(n, buffer, BASE10);
 }
 
 void itoh(unsigned long n, char* buffer){
@@ -56,6 +71,10 @@ void itoh(unsigned long n, char* buffer){
 
 
     strrev(buffer); //reverse string from start
+}
+
+void itob(unsigned long n, char* buffer){
+    basetoa(n, buffer, BASE2);
 }
 
 char between(int i, int a, int b) {
@@ -134,3 +153,18 @@ void MACtos(uint8_t MAC[MAC_LENGTH], char* buffer){
         }
     }
 }
+
+uint16_t switchEndian16bit(uint16_t n){
+    return
+    n >> OCTET_SIZE |
+    n << OCTET_SIZE;
+}
+
+uint32_t switchEndian32bit(uint32_t n){
+    return
+    (n & 0xff000000) >> (3 * OCTET_SIZE) |
+    (n & 0x00ff0000) >> (1 * OCTET_SIZE) |
+    (n & 0x0000ff00) << (1 * OCTET_SIZE) |
+    (n & 0x000000ff) << (3 * OCTET_SIZE);
+}
+
