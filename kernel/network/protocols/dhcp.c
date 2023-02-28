@@ -62,7 +62,7 @@ static bool DHCPWaitForReply(DhcpPacketType replyType){
             return true;
         
         //FIXME: sleep 1 ms
-        for(int i=0; i<30000; i++);
+        //for(int i=0; i<30000; i++);
     }
 
     return false;

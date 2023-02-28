@@ -81,7 +81,7 @@ void main(){
     initialize();
     //shellMain();
 
-    uint8_t IP[IPv4_LENGTH] = {0xaa, 0xbb, 0xcc, 0xdd};
+    uint8_t IP[IPv4_LENGTH] = {69, 78, 68, 33};
     ARPSend(IP);
     //createTask(t1);
     while(true);

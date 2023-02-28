@@ -7,6 +7,7 @@
 #define BASE2 2
 #define BASE16 0x10
 #define LAST_DIGIT 9
+#define OCTET_SIZE 8
 
 #define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
 
@@ -152,3 +153,18 @@ void MACtos(uint8_t MAC[MAC_LENGTH], char* buffer){
         }
     }
 }
+
+uint16_t switchEndian16bit(uint16_t n){
+    return
+    n >> OCTET_SIZE |
+    n << OCTET_SIZE;
+}
+
+uint32_t switchEndian32bit(uint32_t n){
+    return
+    (n & 0xff000000) >> (3 * OCTET_SIZE) |
+    (n & 0x00ff0000) >> (1 * OCTET_SIZE) |
+    (n & 0x0000ff00) << (1 * OCTET_SIZE) |
+    (n & 0x000000ff) << (3 * OCTET_SIZE);
+}
+

@@ -8,6 +8,8 @@
 #include "../../../lib/convert.h"
 #include "../../../lib/string.h"
 
+#define BYTES_PER_LINE 4
+
 static void printPacket(char* title, uint8_t* pData, int size);
 
 uint32_t calcFCS(void* ptr, uint32_t size) { return 0;} // for now
@@ -68,13 +70,22 @@ void printPacket(char* title, uint8_t* pData, int size){
     for(int i=0; i<60; i++)
         kcprintc('-', PURPLE, DEFAULT_COLOR);
 
-    for(int i=0; i<size; i+=4){
+    for(int i=0; i<size; i += BYTES_PER_LINE){
         //print line
+        int bytesToPrint = BYTES_PER_LINE;
+
         kcprint("\n\t| ", PURPLE, DEFAULT_COLOR);
 
-        for(int j = 0; j<4;j++){
+        for(int j = 0; j < BYTES_PER_LINE;j++){
             char convertBuffer[10];
             itob(pData[j], convertBuffer);
+
+            //check if packet ended
+            if(i + j >= size){
+                kprint("         ");
+                continue;
+            }
+
             //print padding
             for(int k=strlen(convertBuffer); k < 8; k++)
                 kprintc('0');
@@ -83,9 +94,16 @@ void printPacket(char* title, uint8_t* pData, int size){
         
         kcprint("| ", PURPLE, DEFAULT_COLOR);
         
-        for(int j = 0; j<4;j++){
+        for(int j = 0; j < BYTES_PER_LINE;j++){
             char converBuffer[10];
             itoh(pData[j], converBuffer);
+            
+            //check if packet ended
+            if(i + j >= size){
+                kprint("   ");
+                continue;
+            }
+
             //print padding
             for(int k=strlen(converBuffer); k < 2; k++)
                 kprintc('0');
@@ -94,7 +112,13 @@ void printPacket(char* title, uint8_t* pData, int size){
 
         kcprint("| ", PURPLE, DEFAULT_COLOR);
         
-        for(int j = 0; j<4;j++){
+        for(int j = 0; j < BYTES_PER_LINE;j++){
+            //check if packet ended
+            if(i + j >= size){
+                kprintc(' ');
+                continue;
+            }
+
             kcprintc(pData[j], getBackgroundColor(), GRAY);
         }
 
@@ -105,4 +129,6 @@ void printPacket(char* title, uint8_t* pData, int size){
     kprint("\n\t");
     for(int i=0; i<60; i++)
         kcprintc('-', PURPLE, DEFAULT_COLOR);
+    
+    kprintc('\n');
 }

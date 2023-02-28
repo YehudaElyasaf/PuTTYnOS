@@ -103,12 +103,12 @@ uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]){
 void ARPSend(uint8_t targetIP[IPv4_LENGTH]){
     ArpPacket packet;
 
-    packet.HWType = HW_TYPE_ETHERNET;
-    packet.protocolType = ET_IPV4;
+    packet.HWType = switchEndian16bit(HW_TYPE_ETHERNET);
+    packet.protocolType = switchEndian16bit(ET_IPV4);
     packet.HWAddrLen = MAC_LENGTH;
     packet.protocolAddrLen = IPv4_LENGTH;
 
-    packet.opcode = REQUEST_OPCODE;
+    packet.opcode = switchEndian16bit(REQUEST_OPCODE);
     
     memcpy(getMac(), packet.srcMAC, MAC_LENGTH);
     
