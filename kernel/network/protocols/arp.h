@@ -37,8 +37,8 @@ typedef struct {
     //FIXME: is src-dst IP's actually client-server IP's?
     uint8_t     srcMAC[MAC_LENGTH];
     uint8_t     srcIP[IPv4_LENGTH];
-    uint8_t     dstMAC[MAC_LENGTH];
-    uint8_t     dstIP[IPv4_LENGTH];
+    uint8_t     targetMAC[MAC_LENGTH];
+    uint8_t     targetIP[IPv4_LENGTH];
 } __attribute__((packed)) ArpPacket;
 
 void initARP(uint8_t MACAddr[MAC_LENGTH]);
@@ -46,5 +46,5 @@ void addToArpTable(uint8_t IPv4[IPv4_LENGTH], uint16_t HWType, uint8_t HWAdress[
 void printARPTable(int offset);
 uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]);
 
-void ARPSend(uint8_t IP[IPv4_LENGTH]);
+void ARPSend(uint8_t targetIP[IPv4_LENGTH]);
 void ARPRecieve(ArpPacket* packet);

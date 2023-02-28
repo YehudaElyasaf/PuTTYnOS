@@ -19,6 +19,7 @@ void initARP(uint8_t MACAddr[MAC_LENGTH]){
 }
 
 void addToArpTable(uint8_t IPv4[IPv4_LENGTH], uint16_t HWType, uint8_t MACAdress[MAC_LENGTH]){
+    //FIXME: avoid paging. use LinkedList.h?
     ArpTableEntry* newEntry = allocPage();
     for(int i=0; i < IPv4_LENGTH; i++)
         newEntry->IPv4[i] = IPv4[i];
@@ -99,7 +100,7 @@ uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]){
     return NULL;
 }
 
-void ARPSend(uint8_t IP[IPv4_LENGTH]){
+void ARPSend(uint8_t targetIP[IPv4_LENGTH]){
     ArpPacket packet;
 
     packet.HWType = HW_TYPE_ETHERNET;
@@ -111,11 +112,9 @@ void ARPSend(uint8_t IP[IPv4_LENGTH]){
     
     memcpy(getMac(), packet.srcMAC, MAC_LENGTH);
     
-    //TODO: my ip from NIC, setted with DHCP
     memcpy(getIPv4(), packet.srcIP, IPv4_LENGTH);
-    memcpy(BROADCAST_MAC, packet.dstMAC, MAC_LENGTH);
-    //TODO: router ip with DHCP
-    memcpy(getDefaultGatewayIPv4(), packet.dstIP, IPv4_LENGTH);
+    memset(0, packet.targetMAC, MAC_LENGTH);
+    memcpy(targetIP, packet.targetIP, IPv4_LENGTH);
 
     etherSend(&packet, sizeof(packet), BROADCAST_MAC);
 }

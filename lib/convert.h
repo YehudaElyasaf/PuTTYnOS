@@ -6,8 +6,10 @@
 
 //int to ascii
 void itoa(long n, char* buffer);
-//int to hex ascii
+//int to hex string
 void itoh(unsigned long n, char* buffer);
+//int to binary string
+void itob(unsigned long n, char* buffer);
 
 // hex ascii to int
 int stoh(char* buffer);

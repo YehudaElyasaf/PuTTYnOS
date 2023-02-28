@@ -22,7 +22,7 @@ typedef struct _EtherPacket{
     uint8_t dataAndFCS[ETHER_MAX_LENGTH + 4];
 } EtherPacket;
 
-void etherSend(void* data, uint32_t size, uint8_t* dstMAC);
-void etherRecv(void* data);
+void etherSend(uint8_t* data, uint32_t size, uint8_t* dstMAC);
+void etherRecv(uint8_t* data);
 
 uint32_t calcFCS(void* ptr, uint32_t size);

@@ -33,7 +33,8 @@ uint8_t initRTL8139() {
         return -1;
     }
 
-    ioAddr = PCI_Read(pciAddr + 0x10) - 1;
+    ioAddr = PCI_Read(pciAddr + 0x10) - 1; //TODO: Why -1?
+    printf("\nMMIO: %x\n", ioAddr);
 
     if(ioAddr == ~0){
         kprint("\tCouldn't find NIC!");
@@ -42,8 +43,6 @@ uint8_t initRTL8139() {
     else{
         kprint("\tFound device: RTL8139\n");
     }
-    out8bit(ioAddr+0x37, 1<<3);
-    return 0;
 
     //power on
     out8bit(ioAddr + INIT_RTL_CONTROL_REGISTER, POWER_ON_CODE);
@@ -53,17 +52,20 @@ uint8_t initRTL8139() {
 
     out32bit(ioAddr + RBSTART, rx_buffer); // send uint32_t memory location to RBSTART (0x30)
     
-    out32bit(ioAddr + IMR_ISR_FLAGS, 0x0005); // Sets the TOK and ROK bits high
+    out16bit(ioAddr + IMR_ISR_FLAGS, 0x0005); // Sets the TOK and ROK bits high
 
-    out8bit(ioAddr + RCR, 0xf); // accept all packets
+    
+    //YE. TODO: delete comments
+    out64bit(ioAddr + RCR, 0xf /*| (1 << 7)*/);
+    //original: out8bit(ioAddr + RCR, 0xf); // accept all packets
+    //YEEND
 
-    irqInstallHandler(IRQ10_NETWORK_ADAPTER, RTLIrqHandler);   
+    irqInstallHandler(IRQ10_NETWORK_ADAPTER, RTLIrqHandler);
 
     out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
 
-    // mac finding doesnt work for now.
     for (int i = 0; i < 6; i++) {
-        currentNIC.MAC[i] = in8bit(ioAddr+i-1);
+        currentNIC.MAC[i] = in8bit(ioAddr+i);
     }
 
     //print MAC adress
@@ -88,6 +90,7 @@ void RTLSendPacket(NICPacket packet) {
     queuePush(&RTLQueue, &packet);
     NICPacket* packetAddr = queueHead(RTLQueue);
     memcpy(packet.data.dataAndFCS, packetAddr->data.dataAndFCS, packet.size); // deep copy
+    RTLSendNextPacketInQueue();
 }
 
 uint8_t RTLSendNextPacketInQueue() {
@@ -96,6 +99,7 @@ uint8_t RTLSendNextPacketInQueue() {
     if (i == 4) // no pairs which arent used
         return 0; // return false, it couldn't send the next packet.
 
+    printf("PACKET SENT\n\n");
     NICPacket *packet = queueHead(RTLQueue);
     if (!packet) // no packet in queue
         return 0;

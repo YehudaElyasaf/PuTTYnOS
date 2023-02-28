@@ -1,6 +1,7 @@
 #pragma once
 
 #include "protocols/ethernet.h"
+
 #define MAC_LENGTH      6
 #define IPv4_LENGTH     4
 #define IPv6_LENGTH     8
