@@ -19,7 +19,7 @@ enum RTL8139{
 };
 
 // initiates RTL device, returns true if successful.
-uint8_t initRTL8139();
+uint8_t initRTL8139(NetwotkAdapter* nic);
 
 // this function is the way for software to send packets
 void RTLSendPacket(NICPacket packet);

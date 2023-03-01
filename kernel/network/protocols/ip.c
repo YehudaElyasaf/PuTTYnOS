@@ -49,7 +49,7 @@ void ipRecv(void* data, uint32_t size) {
 
     memcpy((uint8_t*)data, &packet.data, packet.totalLength-MIN_IHL*4);
 
-    if (memeq(packet.dstAddr, currentNIC.IPv4, IPv4_LENGTH) || memeq(packet.dstAddr, IP_BROADCAST, IPv4_LENGTH)) {
+    if (memeq(packet.dstAddr, getIPv4(), IPv4_LENGTH) || memeq(packet.dstAddr, IP_BROADCAST, IPv4_LENGTH)) {
         if (packet.protocol == UDP)
             udpRecv(packet.data, packet.totalLength-packet.IHL*4);
     } else {
@@ -73,7 +73,7 @@ void ipSend(void* data, uint32_t size, uint8_t dst[IPv4_LENGTH], uint8_t protoco
     packet.TTL = SEND_TTL;
     packet.protocol = protocol;
 
-    memcpy(currentNIC.IPv4, packet.srcAddr, IPv4_LENGTH);
+    memcpy(getIPv4(), packet.srcAddr, IPv4_LENGTH);
     memcpy(dst, packet.dstAddr, IPv4_LENGTH);
     
     packet.headerChecksum = ipChecksum(&packet, 0);

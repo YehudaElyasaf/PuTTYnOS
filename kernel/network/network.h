@@ -25,15 +25,14 @@ typedef struct {
     uint16_t IPv6[IPv6_LENGTH];
 
     void (*send)(NICPacket);
-    void (*recv)(NICPacket);
 
     uint32_t sendMaxLen;
 } NetwotkAdapter;
-
-static NetwotkAdapter currentNIC;
 
 void initNetworking();
 uint8_t* getIPv4();
 void setIPv4(uint8_t* ip);
 uint16_t* getIPv6();
 void setIPv6(uint8_t* ip);
+
+void NicSend(NICPacket packet);

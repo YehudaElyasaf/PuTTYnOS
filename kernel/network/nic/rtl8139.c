@@ -25,7 +25,7 @@ Queue RTLQueue = {RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(NICPacket)};
 
 uint32_t ioAddr = 0;
 
-uint8_t initRTL8139() {
+uint8_t initRTL8139(NetwotkAdapter* nic){
     kprint("\tScanning for NIC...\n");
     int pciAddr = PCI_ScanForDevice(VENDOR_ID, DEVICE_ID);
     if (pciAddr == -1){
@@ -34,9 +34,8 @@ uint8_t initRTL8139() {
     }
 
     ioAddr = PCI_Read(pciAddr + 0x10) - 1; //TODO: Why -1?
-    printf("\nMMIO: %x\n", ioAddr);
 
-    if(ioAddr == ~0){
+    if(ioAddr == -1){
         kprint("\tCouldn't find NIC!");
         return -1;
     }
@@ -54,29 +53,24 @@ uint8_t initRTL8139() {
     
     out16bit(ioAddr + IMR_ISR_FLAGS, 0x0005); // Sets the TOK and ROK bits high
 
-    
-    //YE. TODO: delete comments
-    out64bit(ioAddr + RCR, 0xf /*| (1 << 7)*/);
-    //original: out8bit(ioAddr + RCR, 0xf); // accept all packets
-    //YEEND
+    out64bit(ioAddr + RCR, 0xf);
 
     irqInstallHandler(IRQ10_NETWORK_ADAPTER, RTLIrqHandler);
 
     out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
 
     for (int i = 0; i < 6; i++) {
-        currentNIC.MAC[i] = in8bit(ioAddr+i);
+        nic->MAC[i] = in8bit(ioAddr+i);
     }
 
     //print MAC adress
     char MACStr[20];
-    MACtos(currentNIC.MAC, MACStr);
+    MACtos(nic->MAC, MACStr);
     printf("\tMAC: %s\n", MACStr);
 
-    currentNIC.IOBase = ioAddr;
-    currentNIC.recv = RTLIrqHandler;
-    currentNIC.send = RTLSendPacket;
-    currentNIC.sendMaxLen = SEND_MAX_SIZE;
+    nic->IOBase = ioAddr;
+    nic->send = RTLSendPacket;
+    nic->sendMaxLen = SEND_MAX_SIZE;
 }
 
 void RTLIrqHandler(IsrFrame registers) {
@@ -113,22 +107,4 @@ uint8_t RTLSendNextPacketInQueue() {
     queuePop(&RTLQueue, 0);
 
     return 1;
-}
-
-uint8_t* getMac(){
-    return currentNIC.MAC;
-}
-
-uint8_t* getIPv4(){
-    return currentNIC.IPv4;
-}
-void setIPv4(uint8_t ip[IPv4_LENGTH]){
-    memcpy(ip, currentNIC.IPv4, IPv4_LENGTH);
-}
-
-uint16_t* getIPv6(){
-    return currentNIC.IPv6;
-}
-void setIPv6(uint8_t ip[IPv6_LENGTH]){
-    memcpy(ip, currentNIC.IPv6, IPv6_LENGTH);
 }
