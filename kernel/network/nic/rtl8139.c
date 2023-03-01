@@ -21,7 +21,7 @@ NICPacket RTLQueueBuffer[QUEUE_BUFFER_LEN] = {0};
 
 char rx_buffer[BUFFER_LEN] = {0};
 
-Queue RTLQueue = {RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(NICPacket)};
+Queue RTLQueue;
 
 uint32_t ioAddr = 0;
 
@@ -71,6 +71,8 @@ uint8_t initRTL8139(NetwotkAdapter* nic){
     nic->IOBase = ioAddr;
     nic->send = RTLSendPacket;
     nic->sendMaxLen = SEND_MAX_SIZE;
+
+    RTLQueue = (Queue){RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(NICPacket)};
 }
 
 void RTLIrqHandler(IsrFrame registers) {
