@@ -23,21 +23,23 @@ char rx_buffer[BUFFER_LEN] = {0};
 
 Queue RTLQueue;
 
+uint8_t RTL8139IrqNumber = 0;
 uint32_t ioAddr = 0;
 
-uint8_t initRTL8139(NetwotkAdapter* nic){
+bool initRTL8139(NetwotkAdapter* nic){
     kprint("\tScanning for NIC...\n");
     int pciAddr = PCI_ScanForDevice(VENDOR_ID, DEVICE_ID);
     if (pciAddr == -1){
         kprint("\tCouldn't find NIC address on PCI!");
-        return -1;
+        return false;
     }
 
     ioAddr = PCI_Read(pciAddr + 0x10) - 1; //TODO: Why -1?
+    RTL8139IrqNumber = PCI_Read(pciAddr + 0x3C);
 
     if(ioAddr == -1){
         kprint("\tCouldn't find NIC!");
-        return -1;
+        return false;
     }
     else{
         kprint("\tFound device: RTL8139\n");
@@ -55,7 +57,7 @@ uint8_t initRTL8139(NetwotkAdapter* nic){
 
     out64bit(ioAddr + RCR, 0xf);
 
-    irqInstallHandler(IRQ10_NETWORK_ADAPTER, RTLIrqHandler);
+    irqInstallHandler(RTL8139IrqNumber, RTLIrqHandler);
 
     out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
 
@@ -73,6 +75,8 @@ uint8_t initRTL8139(NetwotkAdapter* nic){
     nic->sendMaxLen = SEND_MAX_SIZE;
 
     RTLQueue = (Queue){RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(NICPacket)};
+
+    return true;
 }
 
 void RTLIrqHandler(IsrFrame registers) {
@@ -85,19 +89,19 @@ void RTLSendPacket(NICPacket packet) {
     // TODO: implement locking task switch (cli and sti?)
     queuePush(&RTLQueue, &packet);
     NICPacket* packetAddr = queueHead(RTLQueue);
-    memcpy(packet.data.dataAndFCS, packetAddr->data.dataAndFCS, packet.size); // deep copy
+    memcpy(packet.data, packetAddr->data, packet.size); // deep copy
     RTLSendNextPacketInQueue();
 }
 
-uint8_t RTLSendNextPacketInQueue() {
+bool RTLSendNextPacketInQueue() {
     int i = 0;
     for (; i < 4 && in16bit(ioAddr + RTL_TRANSMIT_COMMAND[i]) & (1 << 15); i++);
     if (i == 4) // no pairs which arent used
-        return 0; // return false, it couldn't send the next packet.
+        return false; // return false, it couldn't send the next packet.
 
     NICPacket *packet = queueHead(RTLQueue);
     if (!packet) // no packet in queue
-        return 0;
+        return false;
 
     out16bit(ioAddr + RTL_TRANSMIT_COMMAND[i], packet->size | 1 << 13 | 1 << 15);
 
@@ -106,7 +110,5 @@ uint8_t RTLSendNextPacketInQueue() {
     out16bit(ioAddr + RTL_TRANSMIT_COMMAND[i], packet->size | 1 << 13); // clear 1 from send bit, it will start to send the packet
 
     queuePop(&RTLQueue, 0);
-
-    printf("PACKET SENT\n\n");
-    return 1;
+    return true;
 }

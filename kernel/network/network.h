@@ -6,10 +6,8 @@
 #define IPv4_LENGTH     4
 #define IPv6_LENGTH     8
 
-struct _EtherPacket;
-
 typedef struct {
-    struct _EtherPacket data;
+    uint8_t* data;
     uint16_t size;
 } NICPacket;
 

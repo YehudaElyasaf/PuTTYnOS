@@ -21,7 +21,6 @@ void initARP(uint8_t MACAddr[MAC_LENGTH]){
 }
 
 void addToArpTable(uint8_t IPv4[IPv4_LENGTH], uint16_t HWType, uint8_t MACAdress[MAC_LENGTH]){
-    //FIXME: avoid paging. use LinkedList.h?
     ArpTableEntry* newEntry = alloc(sizeof(arpTable));
     memcpy(IPv4, newEntry->IPv4, IPv4_LENGTH);
     newEntry->HWType = HWType;
@@ -117,7 +116,7 @@ void ARPSend(uint8_t targetIP[IPv4_LENGTH]){
     memset(0, packet.targetMAC, MAC_LENGTH);
     memcpy(targetIP, packet.targetIP, IPv4_LENGTH);
 
-    etherSend(&packet, sizeof(packet), BROADCAST_MAC);
+    etherSend(&packet, sizeof(packet), BROADCAST_MAC, ET_ARP);
 }
 
 void ARPRecieve(ArpPacket* packet){

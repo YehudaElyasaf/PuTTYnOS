@@ -19,7 +19,7 @@ enum RTL8139{
 };
 
 // initiates RTL device, returns true if successful.
-uint8_t initRTL8139(NetwotkAdapter* nic);
+bool initRTL8139(NetwotkAdapter* nic);
 
 // this function is the way for software to send packets
 void RTLSendPacket(NICPacket packet);
@@ -31,7 +31,7 @@ void RTLSendPacket(NICPacket packet);
     which transmit register is available, and sends the next packet in the queue in it.
     if nothing is available, or other error occured, it returns false and dont send. else, it returns true.
 */
-uint8_t RTLSendNextPacketInQueue();
+bool RTLSendNextPacketInQueue();
 
 // This is the IRQ handler that handles recieving packets
 void RTLIrqHandler(IsrFrame registers);

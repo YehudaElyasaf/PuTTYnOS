@@ -13,15 +13,17 @@ static NetwotkAdapter currentNIC;
 
 void initNetworking(){
     kprint("\n\tInitializing NIC:\n");
-    initRTL8139(&currentNIC);
-    kprint("\tInitializing ARP table...\n");
-    initARP(getMac());
-    kprint("\tConnecting to router...\n");
-    DHCPState = NONE;
-    connectToRouter();
 
-    kprint("ARP table:");
-    printARPTable(2);
+    if(initRTL8139(&currentNIC)){
+        kprint("\tInitializing ARP table...\n");
+        initARP(getMac());
+        kprint("\tConnecting to router...\n");
+        DHCPState = NONE;
+        connectToRouter();
+
+        kprint("ARP table:");
+        printARPTable(2);
+    }
 }
 
 
@@ -117,6 +119,6 @@ void NicSend(NICPacket packet){
     currentNIC.send(packet);
 
     #ifdef _NETWORKING_DEBUG_LOG
-    printPacket("Sent", &packet.data, packet.size + 14+8);
+    printPacket("Sent", packet.data, packet.size);
     #endif
 }

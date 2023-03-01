@@ -32,7 +32,7 @@ typedef struct __attribute__((__packed__)){
     uint8_t data[IPv4_MAX_DATA_SIZE];
 } IpHeaders;
 
-void ipRecv(void* data, uint32_t size);
+void ipRecv(void* data);
 
 // the function recieves a pointer to an IP packet, and whether or not you should verify the checksum
 

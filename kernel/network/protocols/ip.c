@@ -32,7 +32,7 @@ uint16_t ipChecksum(IpHeaders* packet, uint8_t toVerify) {
     return ~(uint16_t)output; // make it a one's complement of the sum
 }
 
-void ipRecv(void* data, uint32_t size) {
+void ipRecv(void* data) {
     IpHeaders packet;
     
     memcpy((uint8_t*)data, &packet, MIN_IHL*4);
@@ -54,7 +54,7 @@ void ipRecv(void* data, uint32_t size) {
             udpRecv(packet.data, packet.totalLength-packet.IHL*4);
     } else {
         // reroute packet to default gateway 
-        etherSend(&packet, packet.totalLength, findInArpTable(getDefaultGatewayIPv4()));
+        etherSend(&packet, packet.totalLength, findInArpTable(getDefaultGatewayIPv4()), ET_IPV4);
     }
 }
 
@@ -81,7 +81,7 @@ void ipSend(void* data, uint32_t size, uint8_t dst[IPv4_LENGTH], uint8_t protoco
     memcpy(data, packet.data, size);
 
     if (findInArpTable(dst))
-        etherSend(&packet, packet.totalLength, findInArpTable(dst));
+        etherSend(&packet, packet.totalLength, findInArpTable(dst), ET_IPV4);
     else
-        etherSend(&packet, packet.totalLength, findInArpTable(getDefaultGatewayIPv4()));
+        etherSend(&packet, packet.totalLength, findInArpTable(getDefaultGatewayIPv4()), ET_IPV4);
 }
