@@ -4,7 +4,7 @@
 
 void queuePush(Queue* q, void* item) {
     //spin_lock(&q->lock);
-    int len = queueLen(*q);
+    int len = queueLen(*q) * q->itemSize;
     if (len == 0) {
         q->curPtr = 0;
     }
@@ -14,8 +14,8 @@ void queuePush(Queue* q, void* item) {
         q->curPtr = 0;
     }
 
-    memcpy(item, q->ptr + q->curPtr*q->itemSize + len, q->itemSize);
-    memset(0, q->ptr + q->curPtr*q->itemSize + len + 1, q->itemSize);
+    memcpy(item, q->ptr + q->curPtr*q->itemSize, q->itemSize);
+    memset(0, q->ptr + q->curPtr*q->itemSize + q->itemSize, q->itemSize);
     //spin_unlock(&q->lock);
 }
 
@@ -50,7 +50,7 @@ uint32_t queueLen(Queue q) {
         uint8_t* emptyChecker;
         for (emptyChecker = ptr; *emptyChecker == 0 && emptyChecker < q.ptr + q.itemSize; emptyChecker++);
         
-        if (*emptyChecker == 0)
+        if (emptyChecker == q.ptr + q.itemSize)
             return len; // all of the bytes in itemSize are empty
         len++;
     }

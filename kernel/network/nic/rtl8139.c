@@ -91,11 +91,10 @@ void RTLSendPacket(NICPacket packet) {
 
 uint8_t RTLSendNextPacketInQueue() {
     int i = 0;
-    for (; i < 4 && !(in16bit(ioAddr + RTL_TRANSMIT_COMMAND[i]) & 1 << 15); i++);
+    for (; i < 4 && in16bit(ioAddr + RTL_TRANSMIT_COMMAND[i]) & (1 << 15); i++);
     if (i == 4) // no pairs which arent used
         return 0; // return false, it couldn't send the next packet.
 
-    printf("PACKET SENT\n\n");
     NICPacket *packet = queueHead(RTLQueue);
     if (!packet) // no packet in queue
         return 0;
@@ -108,5 +107,6 @@ uint8_t RTLSendNextPacketInQueue() {
 
     queuePop(&RTLQueue, 0);
 
+    printf("PACKET SENT\n\n");
     return 1;
 }
