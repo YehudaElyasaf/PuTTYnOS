@@ -81,7 +81,7 @@ void main(){
     initialize();
 
     uint8_t IP[IPv4_LENGTH] = {69, 78, 68, 33};
-    ARPSend(IP);
+    //ARPSend(IP);
     //asm volatile("int $11+32");
     //createTask(t1);
     
