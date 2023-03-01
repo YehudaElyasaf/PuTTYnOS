@@ -7,7 +7,7 @@
 #include "../../lib/convert.h"
 #include "../../lib/printf.h"
 
-#define BYTES_PER_LINE 4
+#define BYTES_PER_LINE 16
 
 static NetwotkAdapter currentNIC;
 
@@ -44,8 +44,11 @@ void setIPv6(uint8_t ip[IPv6_LENGTH]){
 }
 
 static void printPacket(char* title, uint8_t* pData, int size){
+    uint8_t saveColor = getColor();
+    setColor(YELLOW);
+
     printf("%C\n\t%s\tSize: %d\n\t", LIGHT_PURPLE, DEFAULT_COLOR, title, size);
-    for(int i=0; i<60; i++)
+    for(int i=0; i<72; i++)
         kcprintc('-', PURPLE, DEFAULT_COLOR);
 
     for(int i=0; i<size; i += BYTES_PER_LINE){
@@ -54,28 +57,15 @@ static void printPacket(char* title, uint8_t* pData, int size){
 
         kcprint("\n\t| ", PURPLE, DEFAULT_COLOR);
 
-        for(int j = 0; j < BYTES_PER_LINE;j++){
-            char convertBuffer[10];
-            itob(pData[j], convertBuffer);
-
-            //check if packet ended
-            if(i + j >= size){
-                kprint("         ");
-                continue;
-            }
-
-            //print padding
-            for(int k=strlen(convertBuffer); k < 8; k++)
-                kprintc('0');
-            printf("%s ", convertBuffer);
-        }
-        
-        kcprint("| ", PURPLE, DEFAULT_COLOR);
         
         for(int j = 0; j < BYTES_PER_LINE;j++){
             char converBuffer[10];
             itoh(pData[j], converBuffer);
             
+            //seperator space
+            if(j == BYTES_PER_LINE / 2)
+                kprintc(' ');
+
             //check if packet ended
             if(i + j >= size){
                 kprint("   ");
@@ -86,29 +76,41 @@ static void printPacket(char* title, uint8_t* pData, int size){
             for(int k=strlen(converBuffer); k < 2; k++)
                 kprintc('0');
             printf("%s ", converBuffer);
+
         }
 
         kcprint("| ", PURPLE, DEFAULT_COLOR);
         
         for(int j = 0; j < BYTES_PER_LINE;j++){
+            //seperator space
+            if(j == BYTES_PER_LINE / 2)
+                kprintc(' ');
+
             //check if packet ended
             if(i + j >= size){
                 kprintc(' ');
                 continue;
             }
-
-            kcprintc(pData[j], getBackgroundColor(), GRAY);
+            
+            if( pData[j] == 0 ||
+                pData[j] == '\t' ||
+                pData[j] == '\n' ||
+                pData[j] == 0xff)
+                kcprintc('.', GRAY, getBackgroundColor());
+            else
+                kprintc(pData[j]);
         }
 
         kcprint(" |", PURPLE, DEFAULT_COLOR);
-        pData+=4;
+        pData += BYTES_PER_LINE;
     }
 
     kprint("\n\t");
-    for(int i=0; i<60; i++)
+    for(int i=0; i<72; i++)
         kcprintc('-', PURPLE, DEFAULT_COLOR);
     
     kprintc('\n');
+    setColor(saveColor);
 }
 
 void NicSend(NICPacket packet){
