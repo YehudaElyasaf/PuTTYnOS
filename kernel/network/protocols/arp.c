@@ -17,11 +17,10 @@ void initARP(uint8_t MACAddr[MAC_LENGTH]){
     arpTable = NULL;
 
     addToArpTable(BROADCAST_IP, HW_TYPE_ETHERNET, BROADCAST_MAC);
-    alloc(sizeof(arpTable));
 }
 
 void addToArpTable(uint8_t IPv4[IPv4_LENGTH], uint16_t HWType, uint8_t MACAdress[MAC_LENGTH]){
-    ArpTableEntry* newEntry = alloc(sizeof(arpTable));
+    ArpTableEntry* newEntry = alloc(sizeof(ArpTableEntry));
     memcpy(IPv4, newEntry->IPv4, IPv4_LENGTH);
     newEntry->HWType = HWType;
     memcpy(MACAdress, newEntry->MACAdress, MAC_LENGTH);
