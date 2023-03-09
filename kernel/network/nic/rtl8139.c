@@ -117,11 +117,9 @@ bool RTLSendNextPacketInQueue() {
 
     printPacket("aaaaa", packet->data, packet->size);
 
-    out32bit(ioAddr + RTL_TRANSMIT_START[i], (uint32_t)packet->data);
-
-    //out32bit(ioAddr + RTL_TRANSMIT_COMMAND[i], ((uint32_t)packet->size) | (48 << 16));
-    //while(true) kprint("a");
-    
+    out32bit(ioAddr + RTL_TRANSMIT_START[i], packet->data);
+    out32bit(ioAddr + RTL_TRANSMIT_COMMAND[i], ((uint32_t)packet->size) | (48 << 16));
+    while(true) kprint("a");
 
     queuePop(&RTLQueue, 0);
     return true;
