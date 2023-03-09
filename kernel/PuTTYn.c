@@ -39,7 +39,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing PDT...");
-    initPDT();
+    //initPDT();
     printDone();
 
     kprint("Initializing PIT...");
