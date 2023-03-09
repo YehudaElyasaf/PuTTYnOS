@@ -44,16 +44,16 @@ all: build
 
 run: all
 	@ echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
-	@ $(QEMU) $(QEMUFLAGS) $(QUIET_RUN)
+	@ $(QEMU) $(QEMUFLAGS)
 
-	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
+	@ echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 debug: build $(OS_VERSION)-symbols.elf
 	@ echo "${DEBUG_COLOR}RUNNING ${OS_NAME} IN DEBUG MODE!${DEFAULT_COLOR}"
-	@ $(QEMU) $(QEMUFLAGS_DEBUG) $(QUIET_RUN) &
+	@ $(QEMU) $(QEMUFLAGS_DEBUG) &
 	@ ${GDB} $(GDBFLAGS) $(GDBCMDS)
 
-	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
+	@ echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 build: $(OS_VERSION).img
 

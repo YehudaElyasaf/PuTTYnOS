@@ -39,9 +39,7 @@ bool initRTL8139(NetwotkAdapter* nic){
     ioAddr = PCI_Read(pciAddr + 0x10);
     //two last bits reperesent address type
     ioAddr &= (~0x3);
-    printf("\nIOADDR: %x\n", ioAddr);
     RTL8139IrqNumber = PCI_Read(pciAddr + 0x3C);
-    printf("\nIRQ NUMBER IS %d\n", RTL8139IrqNumber);
 
     if(ioAddr == -1){
         kprint("\tCouldn't find NIC!");
@@ -121,7 +119,9 @@ bool RTLSendNextPacketInQueue() {
 
     out32bit(ioAddr + RTL_TRANSMIT_START[i], (uint32_t)packet->data);
 
-    out32bit(ioAddr + RTL_TRANSMIT_COMMAND[i], ((uint32_t)packet->size) | (48 << 16)); // clear 1 from send bit, it will start to send the packet
+    //out32bit(ioAddr + RTL_TRANSMIT_COMMAND[i], ((uint32_t)packet->size) | (48 << 16));
+    //while(true) kprint("a");
+    
 
     queuePop(&RTLQueue, 0);
     return true;
