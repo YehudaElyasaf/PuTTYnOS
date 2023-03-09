@@ -59,7 +59,7 @@ bool initRTL8139(NetwotkAdapter* nic){
 
     irqInstallHandler(RTL8139IrqNumber, RTLIrqHandler);
 
-    //out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
+    out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
 
     for (int i = 0; i < 6; i++) {
         nic->MAC[i] = in8bit(ioAddr+i);

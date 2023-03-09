@@ -39,7 +39,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing PDT...");
-    //initPDT();
+    initPDT();
     printDone();
 
     kprint("Initializing PIT...");
@@ -51,7 +51,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing networking...");
-    initNetworking();
+    //initNetworking();
     printDone();
     
     setColor(WHITE);

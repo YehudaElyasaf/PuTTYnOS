@@ -128,12 +128,12 @@ void initPDT() {
     }
 
     // identity mapping stack physical address to virtual address
-    *(kernelPTAddr + 0x8f) = PRESENT | READWRITE | DIRTY | 0x8f000;
+    *(kernelPTAddr + 0x8f) = PRESENT | USER | READWRITE | DIRTY | 0x8f000;
 
     // identity mapping video memory 
     *(kernelPTAddr + 0xb8) = PRESENT | READWRITE | DIRTY | 0xb8000;
 
-    for (int i = 0; i <= getIDTR().idtSize/0x1000; i++) {
+    for (int i = 0; i <= getIDTR().idtSize/PAGE_SIZE + (getIDTR().idtSize%PAGE_SIZE !=0); i++) {
         *(kernelPTAddr + (uint32_t)getIDTR().idtAdress + i) = PRESENT | READWRITE | DIRTY |(uint32_t)getIDTR().idtAdress + i;
     }
 
