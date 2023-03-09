@@ -72,10 +72,8 @@ bool initRTL8139(NetwotkAdapter* nic){
 
     out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
     
-
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++)
         nic->MAC[i] = in8bit(ioAddr+i);
-    }
 
     //print MAC adress
     char MACStr[20];
