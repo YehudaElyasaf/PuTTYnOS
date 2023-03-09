@@ -40,23 +40,6 @@ void out8bit(uint16_t port, uint8_t buffer){
     portWait();
 }
 
-uint32_t in32bit(uint16_t port){
-    uint32_t buffer;
-    //syntax: IN    port, accumulator
-    //read from port stored in dx to al
-    asm("in %%dx, %%eax" : "=a"(buffer) : "d"(port));
-    portWait();
-
-    return buffer;
-}
-
-void out32bit(uint16_t port, uint32_t buffer){
-    //syntax: OUT   accumulator. port
-    //write from al to port stored in dx
-    asm("out %%eax, %%dx" : : "a"(buffer), "d"(port));
-    portWait();
-}
-
 uint16_t in16bit(uint16_t port){
     uint16_t buffer;
     //syntax: IN    port, accumulator
@@ -74,19 +57,19 @@ void out16bit(uint16_t port, uint16_t buffer){
     portWait();
 }
 
-uint64_t in64bit(uint16_t port){
-    unsigned long int buffer;
+uint32_t in32bit(uint16_t port){
+    uint32_t buffer;
     //syntax: IN    port, accumulator
     //read from port stored in dx to al
-    asm("inl %%dx, %%eax" : "=a" (buffer) : "d" (port));
+    asm("inl %%dx, %%eax" : "=a"(buffer) : "d"(port));
     portWait();
 
     return buffer;
 }
 
-void out64bit(uint16_t port, uint64_t buffer){
+void out32bit(uint16_t port, uint32_t buffer){
     //syntax: OUT   accumulator. port
     //write from al to port stored in dx
-    asm("outl %%eax, %%dx" : : "a"((unsigned long)buffer), "d"(port));
+    asm("outl %%eax, %%dx" : : "a"(buffer), "d"(port));
     portWait();
 }

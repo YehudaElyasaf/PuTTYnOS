@@ -66,7 +66,7 @@ void isrHandler(IsrFrame isrFrame){
         kcprint("\n\tError Code: " , GRAY, getBackgroundColor());
         kcprinti(isrFrame.errorCode, GRAY, getBackgroundColor());
     }
-    kprintc('\n');
+    kprintc('\n');        
     
     exit();
 }

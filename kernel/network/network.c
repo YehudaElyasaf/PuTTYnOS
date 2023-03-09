@@ -9,12 +9,11 @@
 
 #define BYTES_PER_LINE 16
 
-static NetwotkAdapter currentNIC;
-
 void initNetworking(){
     kprint("\n\tInitializing NIC:\n");
 
     if(initRTL8139(&currentNIC)){
+        
         kprint("\tInitializing ARP table...\n");
         initARP(getMac());
         kprint("\tConnecting to router...\n");
@@ -45,7 +44,7 @@ void setIPv6(uint8_t ip[IPv6_LENGTH]){
     memcpy(ip, currentNIC.IPv6, IPv6_LENGTH);
 }
 
-static void printPacket(char* title, uint8_t* pData, int size){
+void printPacket(char* title, uint8_t* pData, int size){
     uint8_t saveColor = getColor();
     setColor(YELLOW);
 

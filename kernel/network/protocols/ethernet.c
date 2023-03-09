@@ -5,6 +5,9 @@
 #include "../../../lib/memory.h"
 #include "../../../lib/convert.h"
 #include "../../../lib/string.h"
+#include "../../../lib/heap.h"
+
+#define MIN_PACKET_SIZE 60
 
 void etherSend(uint8_t* data, uint32_t size, uint8_t* dstMAC, EtherType type) {
     EtherPacket etherPacket;
@@ -16,11 +19,19 @@ void etherSend(uint8_t* data, uint32_t size, uint8_t* dstMAC, EtherType type) {
     memcpy(getMac(), etherPacket.srcMAC, MAC_LENGTH);
     etherPacket.type = switchEndian16bit(type);
 
+    nicPacket.size = size + sizeof(etherPacket);
+    if(nicPacket.size < MIN_PACKET_SIZE)
+        nicPacket.size = MIN_PACKET_SIZE;
+
+    nicPacket.data = alloc(size);
+    memset(0, nicPacket.data, nicPacket.size);
+
     memcpy(&etherPacket, nicPacket.data, sizeof(etherPacket));
     memcpy(data, nicPacket.data + sizeof(etherPacket), size);
-    nicPacket.size = sizeof(etherPacket) + size;
     
     NicSend(nicPacket);
+    
+    free(nicPacket.data);
 }
 
 void etherRecv(uint8_t* data) {

@@ -22,11 +22,6 @@ void out16bit(uint16_t port, uint16_t buffer);
 uint32_t in32bit(uint16_t port);
 void out32bit(uint16_t port, uint32_t buffer);
 
-uint64_t in64bit(uint16_t port);
-void out64bit(uint16_t port, uint64_t buffer);
-
-
-
 typedef struct
 {
     uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
