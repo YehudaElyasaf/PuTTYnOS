@@ -19,6 +19,7 @@ GCCWARNINGS=-Wno-incompatible-pointer-types -Wno-int-conversion -Wno-int-to-poin
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386
+#QEMU=/home/yehuda/YEHUDA/Desktop/OS/qemu/build/i386-softmmu/qemu-system-i386
 QEMUFLAGS= -fda $(OS_VERSION).img  -boot c -nic model=rtl8139,mac=$(OS_MAC_ADDR) -m 4G $(QAF) --no-reboot
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 QUIET_RUN= > /dev/null 2>&1
