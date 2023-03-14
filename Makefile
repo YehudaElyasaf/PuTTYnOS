@@ -1,8 +1,13 @@
 .PHONY: all clean run build debug
 
+#OS config
 OS_NAME=PuTTYnOS
 OS_VERSION=$(OS_NAME)-i386
-OS_MAC_ADDR='aa:bb:cc:dd:ee:ff'
+
+#network config
+MAC_ADDR='aa:bb:cc:dd:ee:ff'
+NIC_MODEL=rtl8139
+
 #32m = green
 #37m = white
 #35m = purple
@@ -20,7 +25,11 @@ LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386
 #QEMU=/home/yehuda/YEHUDA/Desktop/OS/qemu/build/i386-softmmu/qemu-system-i386
-QEMUFLAGS= -fda $(OS_VERSION).img  -boot c -nic model=rtl8139,mac=$(OS_MAC_ADDR) -m 4G $(QAF) --no-reboot
+QEMUFLAGS= -fda $(OS_VERSION).img \
+	-net nic,model=$(NIC_MODEL),netdev=network0 -netdev user,id=network0 -nic mac=$(MAC_ADDR),model=$(NIC_MODEL) \
+	-object filter-dump,id=id,netdev=network0,file=network-dump.pcap \
+	-m 4G --no-reboot \
+	$(QAF)
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 QUIET_RUN= > /dev/null 2>&1
 NASM=nasm
@@ -95,6 +104,7 @@ clean:
 	@rm -f -r $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto generated file
 	@rm -f -r $(shell find -name "*.vscode")
 	@rm -f -r $(shell find -name "*__pycache__")
+	@rm -f -r $(shell find -name "*.pcap")
 	@rm -f -r $(AUTO_GENERATED_ASM_FILES) $(AUTO_GENERATED_H_FILES)
 
 	@echo "${SUCESS_COLOR}\c"

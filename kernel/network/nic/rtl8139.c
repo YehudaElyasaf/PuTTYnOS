@@ -30,7 +30,7 @@ uint32_t ioAddr = 0;
 bool initRTL8139(NetwotkAdapter* nic){
     kprint("\tScanning for NIC...\n");
     uint32_t pciAddr = PCI_ScanForDevice(VENDOR_ID, DEVICE_ID);
-    printf("\npcidev: %x\n", pciAddr);
+    
     if (pciAddr == -1){
         kprint("\tCouldn't find NIC address on PCI!");
         return false;
