@@ -62,7 +62,7 @@ bool initRTL8139(NetwotkAdapter* nic){
     out32bit(ioAddr + RBSTART, rx_buffer); // send uint32_t memory location to RBSTART (0x30)
     memset(0, rx_buffer, BUFFER_LEN);
     
-    out16bit(ioAddr + IMR_ISR_FLAGS, 0x0005); // Sets the TOK and ROK bits high
+    out16bit(ioAddr + IMR_ISR_FLAGS, 0xFFFF); // Sets the TOK and ROK bits high
 
     out32bit(ioAddr + RCR, 0xf);
 
@@ -90,11 +90,14 @@ bool initRTL8139(NetwotkAdapter* nic){
 void RTLIrqHandler(IsrFrame registers) {
     kcprint("I GOT A MESSAGE\n", GREEN, DEFAULT_COLOR);
     //printPacket("MSG", rx_buffer, 100);
+    while(1)
+    printf("GOT!\n");
     for(int i=0; i<BUFFER_LEN; i++)
         if(rx_buffer[i]!=0)
             kprinti(i);
     out8bit(ioAddr + IMR_ISR_FLAGS + 2, 0);
     out8bit(ioAddr + IMR_ISR_FLAGS + 3, 0x5);
+
 }
 
 void RTLSendPacket(NICPacket packet) {
