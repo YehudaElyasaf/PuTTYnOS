@@ -11,7 +11,7 @@
 #define VENDOR_ID  0x10EC
 #define DEVICE_ID  0x8139
 
-#define RX_BUFFER_LEN 8192 + 16
+#define RX_BUFFER_LEN 0x10000
 #define TX_BUFFER_LEN 4096
 #define QUEUE_BUFFER_LEN 128
 #define SEND_MAX_SIZE   0x700
@@ -63,17 +63,17 @@ bool initRTL8139(NetwotkAdapter* nic){
     out8bit( ioAddr + RTL_CONTROL_REGISTER, RESET_CODE);
     while( (in8bit(ioAddr + RTL_CONTROL_REGISTER) & RESET_CODE));
 
-    out32bit(ioAddr + RBSTART, rx_buffer); // send uint32_t memory location to RBSTART (0x30)
     memset(0, rx_buffer, RX_BUFFER_LEN);
     
-    out16bit(ioAddr + IMR_ISR_FLAGS, 0xFFFF); // Sets the TOK and ROK bits high
-
-    out32bit(ioAddr + TX_CONFIG, 0x03000700);
-    out32bit(ioAddr + RCR, 0xf);
-
-    irqInstallHandler(RTL8139IrqNumber, RTLIrqHandler);
 
     out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
+    out32bit(ioAddr + TX_CONFIG, 0x03000700);
+    out32bit(ioAddr + RX_CONFIG, /*0xf*/0x01001e3e); //TODO: why?
+
+    irqInstallHandler(RTL8139IrqNumber, RTLIrqHandler);
+    out32bit(ioAddr + RBSTART, rx_buffer); // send uint32_t memory location to RBSTART (0x30)
+    out16bit(ioAddr + IMR_ISR_FLAGS, 0xFFFF); // Sets the TOK and ROK bits high
+
     
     for (int i = 0; i < 6; i++)
         nic->MAC[i] = in8bit(ioAddr+i);
@@ -123,9 +123,11 @@ bool RTLSendNextPacketInQueue() {
     if (!packet) // no packet in queue
         return false;
 
-    printPacket("aaaaa", packet->data, packet->size);
+    memcpy(packet->data, tx_buffer, packet->size);
 
-    out32bit(ioAddr + RTL_TRANSMIT_START[i], packet->data);
+    printPacket("aaaaa", tx_buffer, packet->size);
+
+    out32bit(ioAddr + RTL_TRANSMIT_START[i], tx_buffer);
     out32bit(ioAddr + RTL_TRANSMIT_COMMAND[i], ((uint32_t)packet->size) | (48 << 16));
     while(true) kprint("a");
 

@@ -25,9 +25,14 @@ LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
 QEMU=qemu-system-i386
 #QEMU=/home/yehuda/YEHUDA/Desktop/OS/qemu/build/i386-softmmu/qemu-system-i386
+#TODO: sniff
+#QEMUFLAGS= -fda $(OS_VERSION).img \
+#	-net nic,model=$(NIC_MODEL),netdev=network0 -netdev user,id=network0 -nic mac=$(MAC_ADDR),model=$(NIC_MODEL) \
+#	-object filter-dump,id=id,netdev=network0,file=network-dump.pcap \
+#	-m 4G --no-reboot \
+#	$(QAF)
 QEMUFLAGS= -fda $(OS_VERSION).img \
-	-net nic,model=$(NIC_MODEL),netdev=network0 -netdev user,id=network0 -nic mac=$(MAC_ADDR),model=$(NIC_MODEL) \
-	-object filter-dump,id=id,netdev=network0,file=network-dump.pcap \
+	-nic mac=$(MAC_ADDR),model=$(NIC_MODEL) \
 	-m 4G --no-reboot \
 	$(QAF)
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
@@ -54,7 +59,7 @@ all: build
 
 run: all
 	@ echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
-	@ $(QEMU) $(QEMUFLAGS)
+	 $(QEMU) $(QEMUFLAGS)
 
 	@ echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
