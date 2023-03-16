@@ -12,6 +12,7 @@ enum RTL8139{
     RBSTART                     = 0x30,
     RTL_CONTROL_REGISTER        = 0x37,
     IMR_ISR_FLAGS               = 0x3C,
+    TX_CONFIG                   = 0x40,
     RCR                         = 0x44, // what packets to accept. Broadcast, Multicast, Physical match, All packets
  
     POWER_ON_CODE               = 0x0,

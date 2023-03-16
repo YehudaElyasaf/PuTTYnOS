@@ -11,7 +11,8 @@
 #define VENDOR_ID  0x10EC
 #define DEVICE_ID  0x8139
 
-#define BUFFER_LEN 8192 + 16
+#define RX_BUFFER_LEN 8192 + 16
+#define TX_BUFFER_LEN 4096
 #define QUEUE_BUFFER_LEN 128
 #define SEND_MAX_SIZE   0x700
 
@@ -20,8 +21,8 @@ const int RTL_TRANSMIT_START[]   = {0x20, 0x24, 0x28, 0x2C};
 
 NICPacket RTLQueueBuffer[QUEUE_BUFFER_LEN] = {0};
 
-char rx_buffer[BUFFER_LEN] = {0};
-
+char buffer[RX_BUFFER_LEN + TX_BUFFER_LEN];
+char *rx_buffer, *tx_buffer;
 Queue RTLQueue;
 
 uint8_t RTL8139IrqNumber = 0;
@@ -53,6 +54,9 @@ bool initRTL8139(NetwotkAdapter* nic){
     pciCommand |= 1 << 2; 
     PCI_Write(pciAddr, pciCommand);
 
+    rx_buffer = buffer;
+    tx_buffer = buffer + RX_BUFFER_LEN;
+
     //power on
     out8bit(ioAddr + INIT_RTL_CONTROL_REGISTER, POWER_ON_CODE);
     //reset card
@@ -60,10 +64,11 @@ bool initRTL8139(NetwotkAdapter* nic){
     while( (in8bit(ioAddr + RTL_CONTROL_REGISTER) & RESET_CODE));
 
     out32bit(ioAddr + RBSTART, rx_buffer); // send uint32_t memory location to RBSTART (0x30)
-    memset(0, rx_buffer, BUFFER_LEN);
+    memset(0, rx_buffer, RX_BUFFER_LEN);
     
     out16bit(ioAddr + IMR_ISR_FLAGS, 0xFFFF); // Sets the TOK and ROK bits high
 
+    out32bit(ioAddr + TX_CONFIG, 0x03000700);
     out32bit(ioAddr + RCR, 0xf);
 
     irqInstallHandler(RTL8139IrqNumber, RTLIrqHandler);
@@ -92,7 +97,7 @@ void RTLIrqHandler(IsrFrame registers) {
     //printPacket("MSG", rx_buffer, 100);
     while(1)
     printf("GOT!\n");
-    for(int i=0; i<BUFFER_LEN; i++)
+    for(int i=0; i<RX_BUFFER_LEN; i++)
         if(rx_buffer[i]!=0)
             kprinti(i);
     out8bit(ioAddr + IMR_ISR_FLAGS + 2, 0);
