@@ -50,9 +50,9 @@ bool initRTL8139(NetwotkAdapter* nic){
         kprint("\tFound device: RTL8139\n");
     }
 
-    uint16_t pciCommand = PCI_Read(pciAddr + 0x6);
+    uint32_t pciCommand = PCI_Read(pciAddr+0x4);
     pciCommand |= 1 << 2; 
-    PCI_Write(pciAddr, pciCommand);
+    PCI_Write(pciAddr, pciCommand+0x4);
 
     rx_buffer = buffer;
     tx_buffer = buffer + RX_BUFFER_LEN;
