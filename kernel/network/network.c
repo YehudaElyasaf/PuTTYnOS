@@ -19,9 +19,6 @@ void initNetworking(){
         kprint("\tConnecting to router...\n");
         DHCPState = NONE;
         connectToRouter();
-
-        kprint("ARP table:");
-        printARPTable(2);
     }
 }
 

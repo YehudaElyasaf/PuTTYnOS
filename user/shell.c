@@ -5,15 +5,17 @@
 #include "../lib/string.h"
 #include "../lib/power.h"
 #include "../lib/tasking.h"
+#include "../lib/memory.h"
+#include "../lib/heap.h"
 #include "../kernel/network/network.h"
-#include <stdbool.h>
 
 //TODO: use syscall, it's user mode
 #include "../kernel/tasking/task.h"
 
-static inline void printShellEntry(){
+static Command* commandsHead;
+
+static void printShellEntry(){
     int SHELL_COLOR = GRAY;
-    cputchar('\n', SHELL_COLOR, DEFAULT_COLOR);
     cputchar(244, SHELL_COLOR, DEFAULT_COLOR);
     cputchar('P', LIGHT_RED, DEFAULT_COLOR);
     cputchar('u', LIGHT_BLUE, DEFAULT_COLOR);
@@ -31,12 +33,44 @@ static inline void printShellEntry(){
     cputchar(212, SHELL_COLOR, DEFAULT_COLOR);
     for(int i=0;i<strlen("PuTTynOS ") + strlen(folder); i++)
         cputchar(205, SHELL_COLOR, DEFAULT_COLOR);
-    cputchar(181, SHELL_COLOR, DEFAULT_COLOR);
+    printf("> ", SHELL_COLOR, DEFAULT_COLOR);
 
     uint8_t color = GREEN;
 }
 
+
+static void addCommand(char* name, char* description, uint32_t* programAddress){
+    //allocate command
+    Command* newCommand = alloc(sizeof(Command));
+    newCommand->name = alloc(strlen(name) + 1);
+    newCommand->description = alloc(strlen(description) + 1);
+
+    strcpy(newCommand->name, name);
+    strcpy(newCommand->description, description);
+    newCommand->address = programAddress;
+    newCommand->next = NULL;
+
+    //insert command
+    if(commandsHead == NULL)
+        commandsHead = newCommand;
+    else{
+        Command* mov = commandsHead;
+        while(mov->next)
+            mov = mov->next;
+
+        mov->next = newCommand;
+    }
+}
+
 int shellMain(){
+    commandsHead = NULL;
+
+    addCommand("help", "show system manual", showHelp);
+    addCommand("reboot", "reboot the system", reboot);
+    addCommand("shutdown", "power off the system", shutdown);
+    addCommand("arp", "show ARP table", printARPTable);
+    addCommand("clear", "clear the screen", clearScreen);
+
     clearScreen();
     printPuTTYnOS(0);
 
@@ -52,6 +86,7 @@ int shellMain(){
         int i = 0;
         char* ch = command;
         scanf("%1024s", command);
+        printf("\n");
 
         //trim spaces in beginning
         for(i = 0; *ch == ' ' || *ch == '\t'; i++) ch++;
@@ -77,9 +112,8 @@ int shellMain(){
         if(strcmp(programName, "") == STRCMP_EQUALS)
             //no program
             continue;
-
+        
         runProgram(programName);
-        printf("\n");
     }
     
     return 0;
@@ -88,23 +122,18 @@ int shellMain(){
 void runProgram(char* programName){
         uint32_t* programAddress = NULL;
 
-        if(strcmp(programName, "reboot") == 0){
-            reboot();
+        Command* mov = commandsHead;
+        while(mov){
+            if(strcmp(mov->name, programName) == 0){
+                mov->address();
+                return;
+            }
+            mov = mov->next;
         }
-        else if(strcmp(programName, "shutdown") == 0){
-            shutdown();
-        }
-        else if(strcmp(programName, "help") == 0){
-            showHelp();
-        }
-        else if(strcmp(programName, "arp") == 0){
-            printARPTable(2);
-        }
-        
-        else{
-            printf("%C\nCommand '%s' not found!", LIGHT_RED, DEFAULT_COLOR, programName);
-        }
+        printf("%CCommand '%s' not found!\n", LIGHT_RED, DEFAULT_COLOR, programName);
+        printf("%CType 'help' to see the command list.\n\n", GRAY, DEFAULT_COLOR, programName);
 }
+
 
 inline static void printCommand(char* commandName, char* description){
     printf("%C\t%s ", LIGHT_GREEN, DEFAULT_COLOR, commandName);
@@ -116,9 +145,20 @@ inline static void printCommand(char* commandName, char* description){
     printf("%C %s\n", YELLOW, DEFAULT_COLOR, description);
 }
 void showHelp(){
-    printf("\nUsage: help <command> <parameters>\n");
-    printCommand("help", "show system manual");
-    printCommand("reboot", "reboot the system");
-    printCommand("shutdown", "power off the system");
-    printCommand("arp", "show ARP table");
+    printf("To run a command, type: <command> [<parameters>]\n");
+
+    Command* mov = commandsHead;
+    while(mov){
+        printf("%C\t%s ", LIGHT_GREEN, DEFAULT_COLOR, mov->name);
+        
+        int indent = 10 - strlen(mov->name);
+        for(int i=0; i < indent; i++)
+            printf("%C%c", DARK_GRAY, DEFAULT_COLOR, 196);
+
+        printf("%C %s\n", YELLOW, DEFAULT_COLOR, mov->description);
+
+        mov = mov->next;
+    }
+
+    printf("\n");
 }

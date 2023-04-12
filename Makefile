@@ -5,7 +5,7 @@ OS_NAME=PuTTYnOS
 OS_VERSION=$(OS_NAME)-i386
 
 #network config
-MAC_ADDR='aa:bb:cc:dd:ee:ff'
+MAC_ADDR=#'aa:bb:cc:dd:ee:ff'
 NIC_MODEL=rtl8139
 
 #32m = green

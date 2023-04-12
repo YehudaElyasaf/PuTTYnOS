@@ -51,7 +51,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing networking...");
-    //initNetworking();
+    initNetworking();
     printDone();
     
     setColor(WHITE);
@@ -62,6 +62,8 @@ void initialize(){
 void main(){
     initialize();
     
+    printf("\n\n\t\tPuTTYnOS Booted Successfully. Press any key to continue...");
+    getchar();
     shellMain();
 }
 #else
@@ -79,11 +81,6 @@ void main(){
     //uint8_t IP[IPv4_LENGTH] = {69, 78, 68, 33};
     //ARPSend(IP);
     
-    //createTask(&t1);
-    //createTask(&shellMain);
-    
-    createProcess(&t1);
-    kprint("a");
     shellMain();
     while(true)
         nop();

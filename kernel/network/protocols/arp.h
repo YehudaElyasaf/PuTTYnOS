@@ -43,7 +43,7 @@ typedef struct {
 
 void initARP(uint8_t MACAddr[MAC_LENGTH]);
 void addToArpTable(uint8_t IPv4[IPv4_LENGTH], uint16_t HWType, uint8_t HWAdress[MAC_LENGTH]);
-void printARPTable(int offset);
+void printARPTable();
 uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]);
 
 void ARPSend(uint8_t targetIP[IPv4_LENGTH]);

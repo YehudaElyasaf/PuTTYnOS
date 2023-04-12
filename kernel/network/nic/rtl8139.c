@@ -53,7 +53,10 @@ bool initRTL8139(NetwotkAdapter* nic){
     uint32_t pciCommand = PCI_Read(pciAddr + 0x4);
     pciCommand |= (1 << 2);
     PCI_Write(pciAddr + 0x4, pciCommand);
+
+    #ifdef _DEBUG
     printf("PCICMD: %x\n", pciCommand);
+    #endif
 
     rx_buffer = buffer;
     tx_buffer = buffer + RX_BUFFER_LEN;

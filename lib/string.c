@@ -51,3 +51,11 @@ int strcmp(char* str1, char* str2){
         str2++;
     }
 }
+
+void strcpy(char* dst, char* src){
+    int i = 0;
+    for(i; src[i] != STRING_TERMINATOR; i++){
+        dst[i] = src[i];
+    }
+    dst[i] = STRING_TERMINATOR;
+}

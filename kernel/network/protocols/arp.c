@@ -11,6 +11,8 @@
 const uint8_t BROADCAST_MAC[MAC_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 const uint8_t BROADCAST_IP[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
 
+#define ARP_TABLE_PRINT_PFFSET 4
+
 static ArpTableEntry* arpTable;
 
 void initARP(uint8_t MACAddr[MAC_LENGTH]){
@@ -38,7 +40,8 @@ void addToArpTable(uint8_t IPv4[IPv4_LENGTH], uint16_t HWType, uint8_t MACAdress
     }
 }
 
-void static printARPEntry(int offset, char* IPAddress, char* hardwareType, char* hardwareAdress){
+void static printARPEntry(char* IPAddress, char* hardwareType, char* hardwareAdress){
+    int offset = ARP_TABLE_PRINT_PFFSET;
     setCursorCol(offset);
     if(IPAddress && hardwareType && hardwareAdress){
         printf("%c %s",186, IPAddress);
@@ -60,11 +63,10 @@ void static printARPEntry(int offset, char* IPAddress, char* hardwareType, char*
         kprint("\n");
     }
 }
-void printARPTable(int offset){ 
-    kprint("\n");
-    printARPEntry(offset, NULL, NULL, NULL);
-    printARPEntry(offset, "IPv4 Adsress", "Hardware Type", "MAC Address");
-    printARPEntry(offset, NULL, NULL, NULL);
+void printARPTable(){ 
+    printARPEntry(NULL, NULL, NULL);
+    printARPEntry("IPv4 Adsress", "Hardware Type", "MAC Address");
+    printARPEntry(NULL, NULL, NULL);
     
     ArpTableEntry* mov = arpTable;
     while(mov){
@@ -74,14 +76,14 @@ void printARPTable(int offset){
         MACtos(mov->MACAdress, MACAdress);
         
         if(mov->HWType == HW_TYPE_ETHERNET)
-            printARPEntry(offset, IPAddress, "Ethernet", MACAdress);
+            printARPEntry(IPAddress, "Ethernet", MACAdress);
         else
-            printARPEntry(offset, IPAddress, "Unknown", MACAdress);
+            printARPEntry(IPAddress, "Unknown", MACAdress);
         
         mov = mov->next;
     }
 
-    printARPEntry(offset, NULL, NULL, NULL);
+    printARPEntry(NULL, NULL, NULL);
 }
 
 uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]){
