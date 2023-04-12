@@ -37,6 +37,7 @@ void initTasking(){
     kmain->ebp = ebp;
     kmain->startAddress = NULL; //task already started
     kmain->isBlocked = false;
+    kmain->sleepTimeMS = 0;
     kmain->next = NULL;
     initScheduler(kmain);
 
@@ -52,6 +53,7 @@ uint32_t createTask(void(*startAddress)(void)){
     newTask->ebp = newTask->esp;
     newTask->startAddress = startAddress;
     newTask->isBlocked = false;
+    newTask->sleepTimeMS = 0;
     newTask->next = NULL;
     
     insertTask(newTask);

@@ -66,7 +66,7 @@ void main(){
 }
 #else
 
-void t1(){
+void t1(int a){
     while (true)
     {
         printf("4");
@@ -82,6 +82,8 @@ void main(){
     //createTask(&t1);
     //createTask(&shellMain);
     
+    createProcess(&t1);
+    kprint("a");
     shellMain();
     while(true)
         nop();
