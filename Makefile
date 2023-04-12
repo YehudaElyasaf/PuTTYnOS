@@ -29,11 +29,11 @@ QEMU=qemu-system-i386
 #QEMUFLAGS= -fda $(OS_VERSION).img \
 #	-net nic,model=$(NIC_MODEL),netdev=network0 -netdev user,id=network0 -nic mac=$(MAC_ADDR),model=$(NIC_MODEL) \
 #	-object filter-dump,id=id,netdev=network0,file=network-dump.pcap \
-#	-m 4G --no-reboot \
+#	-m 4G \
 #	$(QAF)
 QEMUFLAGS= -fda $(OS_VERSION).img \
 	-nic mac=$(MAC_ADDR),model=$(NIC_MODEL) \
-	-m 4G --no-reboot \
+	-m 4G \
 	$(QAF)
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 QUIET_RUN= > /dev/null 2>&1
@@ -59,7 +59,7 @@ all: build
 
 run: all
 	@ echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
-	 $(QEMU) $(QEMUFLAGS)
+	@ $(QEMU) $(QEMUFLAGS)
 
 	@ echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 

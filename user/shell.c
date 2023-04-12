@@ -3,6 +3,9 @@
 #include "../lib/printf.h"
 #include "../lib/scanf.h"
 #include "../lib/string.h"
+#include "../lib/power.h"
+#include "../lib/tasking.h"
+#include "../kernel/network/network.h"
 #include <stdbool.h>
 
 //TODO: use syscall, it's user mode
@@ -34,6 +37,7 @@ static inline void printShellEntry(){
 }
 
 int shellMain(){
+    clearScreen();
     printPuTTYnOS(0);
 
     while (true)
@@ -70,19 +74,51 @@ int shellMain(){
             programArg[i] = '\0';
         }
 
-
         if(strcmp(programName, "") == STRCMP_EQUALS)
             //no program
             continue;
 
-
-        printf("\nRunning program %s", programName);
-        if(strcmp(programArg, "") != STRCMP_EQUALS)
-            printf(" with argument %s", programArg);
-        printf("!");
-            
+        runProgram(programName);
         printf("\n");
     }
     
     return 0;
+}
+
+void runProgram(char* programName){
+        uint32_t* programAddress = NULL;
+
+        if(strcmp(programName, "reboot") == 0){
+            reboot();
+        }
+        else if(strcmp(programName, "shutdown") == 0){
+            shutdown();
+        }
+        else if(strcmp(programName, "help") == 0){
+            showHelp();
+        }
+        else if(strcmp(programName, "arp") == 0){
+            printARPTable(2);
+        }
+        
+        else{
+            printf("%C\nCommand '%s' not found!", LIGHT_RED, DEFAULT_COLOR, programName);
+        }
+}
+
+inline static void printCommand(char* commandName, char* description){
+    printf("%C\t%s ", LIGHT_GREEN, DEFAULT_COLOR, commandName);
+    
+    int indent = 10 - strlen(commandName);
+    for(int i=0; i < indent; i++)
+        printf("%C%c", DARK_GRAY, DEFAULT_COLOR, 196);
+
+    printf("%C %s\n", YELLOW, DEFAULT_COLOR, description);
+}
+void showHelp(){
+    printf("\nUsage: help <command> <parameters>\n");
+    printCommand("help", "show system manual");
+    printCommand("reboot", "reboot the system");
+    printCommand("shutdown", "power off the system");
+    printCommand("arp", "show ARP table");
 }

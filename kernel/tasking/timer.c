@@ -2,6 +2,7 @@
 #include "../io/print.h"
 #include "../asm.h"
 #include "../tasking/task.h"
+#include "../../lib/power.h"
 
 #define PIT_TIMER_CONTROL_REGISTER  0x43
 #define PIT_TIMER_INIT_BYTE         0x36
@@ -40,7 +41,7 @@ void timerIrqHandler(){
     //inform that interrupt was handled
     out8bit(PIC_MASTER_CONTROL_REGISTER, PIC_EOI_CMD);
     ticks++;
-    
+
     switchTask();
 }
 

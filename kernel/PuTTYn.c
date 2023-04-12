@@ -51,7 +51,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing networking...");
-    initNetworking();
+    //initNetworking();
     printDone();
     
     setColor(WHITE);
@@ -62,11 +62,7 @@ void initialize(){
 void main(){
     initialize();
     
-    clearScreen();
     shellMain();
-    //createProcess(&shellMain);
-//
-    //killProcess(CURRENT_TASK);
 }
 #else
 
@@ -80,12 +76,13 @@ void t1(){
 void main(){
     initialize();
 
-    uint8_t IP[IPv4_LENGTH] = {69, 78, 68, 33};
-    ARPSend(IP);
+    //uint8_t IP[IPv4_LENGTH] = {69, 78, 68, 33};
+    //ARPSend(IP);
     
-    //asm volatile("int $11+32");
-    //createTask(t1);
+    //createTask(&t1);
+    //createTask(&shellMain);
     
+    shellMain();
     while(true)
         nop();
     

@@ -18,6 +18,9 @@ void initSyscalls(){
     syscallHandlers[SYSCALL_CREATE_TASK]  = createTaskSyscallHandler;
     syscallHandlers[SYSCALL_KILL_TASK]    = killTaskSyscallHandler;
     syscallHandlers[SYSCALL_SLEEP]        = sleepSyscallHandler;
+
+    syscallHandlers[SYSCALL_REBOOT]       = rebootSyscallHandler;
+    syscallHandlers[SYSCALL_SHUTDOWN]     = shutdownSyscallHandler;
 }
 
 void syscallIrqHandler(IrqFrame irqFrame){
