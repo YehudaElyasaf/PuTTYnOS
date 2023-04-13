@@ -1,7 +1,7 @@
 #include "tasking.h"
 
-void createProcess(void(*startAddress)(void)){
-    syscall(SYSCALL_CREATE_TASK, startAddress, 0, 0, 0);
+void createProcess(void(*startAddress)(int, char**), int argc, char** argv){
+    syscall(SYSCALL_CREATE_TASK, startAddress, argc, argv, 0);
 }
 
 bool killProcess(uint32_t pid){

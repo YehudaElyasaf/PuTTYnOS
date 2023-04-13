@@ -85,3 +85,44 @@ __- - {            \
            /            |  __/| |_| || |   | |   | || | | | |_| |___) |
           /             |_|    \__,_||_|   |_|   |_||_| |_|\___/|____/ 
 */
+
+
+void print42(){
+    /*
+    printf("%C       444444444  ", YELLOW, DEFAULT_COLOR); printf("%C222222222222222    ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C      4::::::::4  ", YELLOW, DEFAULT_COLOR); printf("%C:::::::::::::::22  ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C     4:::::::::4  ", YELLOW, DEFAULT_COLOR); printf("%C::::::222222:::::2 ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C    4::::44::::4  ", YELLOW, DEFAULT_COLOR); printf("%C222222     2:::::2 ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C   4::::4 4::::4  ", YELLOW, DEFAULT_COLOR); printf("%C           2:::::2 ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C  4::::4  4::::4  ", YELLOW, DEFAULT_COLOR); printf("%C           2:::::2 ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C 4::::4   4::::4  ", YELLOW, DEFAULT_COLOR); printf("%C        2222::::2  ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C4::::444444::::444", YELLOW, DEFAULT_COLOR); printf("%C   22222::::::22   ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C4::::::::::::::::4", YELLOW, DEFAULT_COLOR); printf("%C 22::::::::222     ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C4444444444:::::444", YELLOW, DEFAULT_COLOR); printf("%C2:::::22222        ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C          4::::4  ", YELLOW, DEFAULT_COLOR); printf("%C:::::2             ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C          4::::4  ", YELLOW, DEFAULT_COLOR); printf("%C:::::2             ", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C          4::::4  ", YELLOW, DEFAULT_COLOR); printf("%C:::::2       222222", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C        44::::::44", YELLOW, DEFAULT_COLOR); printf("%C::::::2222222:::::2", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C        4::::::::4", YELLOW, DEFAULT_COLOR); printf("%C::::::::::::::::::2", LIGHT_CYAN, DEFAULT_COLOR);
+    printf("%C        4444444444", YELLOW, DEFAULT_COLOR); printf("%C2222222222222222222", LIGHT_CYAN, DEFAULT_COLOR);
+    */
+}
+
+/*
+       444444444   222222222222222    
+      4::::::::4  2:::::::::::::::22  
+     4:::::::::4  2::::::222222:::::2 
+    4::::44::::4  2222222     2:::::2 
+   4::::4 4::::4              2:::::2 
+  4::::4  4::::4              2:::::2 
+ 4::::4   4::::4           2222::::2  
+4::::444444::::444    22222::::::22   
+4::::::::::::::::4  22::::::::222     
+4444444444:::::444 2:::::22222        
+          4::::4  2:::::2             
+          4::::4  2:::::2             
+          4::::4  2:::::2       222222
+        44::::::442::::::2222222:::::2
+        4::::::::42::::::::::::::::::2
+        444444444422222222222222222222
+*/

@@ -53,8 +53,8 @@ uint32_t seekSyscallHandler(uint32_t param1, uint32_t param2, uint32_t param3, u
     setCursorOffset(getCursorOffset() + param1);
 }
 
-uint32_t createTaskSyscallHandler(uint32_t startAddress, uint32_t param2, uint32_t param3, uint32_t param4){
-    createTask(startAddress);
+uint32_t createTaskSyscallHandler(uint32_t startAddress, uint32_t argc, uint32_t argv, uint32_t param4){
+    createTask(startAddress, argc, argv);
 
     return 0;
 }

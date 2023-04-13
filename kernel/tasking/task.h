@@ -18,6 +18,8 @@ struct Task
 
     //when a task is created, 
     void(*startAddress)(void);
+    uint32_t argc;
+    uint32_t argv;
 
     bool isBlocked;
     uint32_t sleepTimeMS; //to sleep syscall, in miliseconds
@@ -28,7 +30,7 @@ typedef struct Task Task;
 
 
 void initTasking();
-uint32_t createTask(void(*startAddress)(void));
+uint32_t createTask(void(*startAddress)(int, char**), int argc, char** argv);
 //return value: has switched
 bool switchTask();
 //allocate task struct

@@ -6,7 +6,7 @@
 #include "../../lib/printf.h"
 #include "../../lib/heap.h"
 
-extern void startTask(uint32_t, void(*startAddress)(void));
+extern void startTask(uint32_t, void(*startAddress)(int, char**), int, char**);
 extern void switchTo(uint32_t, uint32_t);
 
 #define DEFAULT_PAGE_DIRECTORY_SIZE 0
@@ -45,7 +45,7 @@ void initTasking(){
     sti();
 }
 
-uint32_t createTask(void(*startAddress)(void)){
+uint32_t createTask(void(*startAddress)(int, char**), int argc, char** argv){
     cli();
     
     Task* newTask = allocateNewTask();
@@ -56,6 +56,8 @@ uint32_t createTask(void(*startAddress)(void)){
     newTask->isBlocked = false;
     newTask->sleepTimeMS = 0;
     newTask->next = NULL;
+    newTask->argc = argc;
+    newTask->argv = argv;
     
     insertTask(newTask);
     
@@ -87,8 +89,7 @@ bool switchTask(){
 
         if(currentTask != NULL && currentTask->isBlocked){
             //Ho no! Task is blocked but we don't have any other task. We'll wait to next interrupt
-            
-                kprint("a");
+            hlt();
         }
 
         return false;
@@ -102,7 +103,7 @@ bool switchTask(){
         void(*startAddress)(void) = newTask->startAddress;
         newTask->startAddress = NULL;
 
-        startTask(newTask->esp, startAddress);
+        startTask(newTask->esp, startAddress, newTask->argc, newTask->argv);
     }
     else{
         //switch to next task

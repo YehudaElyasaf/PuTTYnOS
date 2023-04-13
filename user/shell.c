@@ -70,6 +70,7 @@ int shellMain(){
     addCommand("shutdown", "power off the system", shutdown);
     addCommand("arp", "show ARP table", printARPTable);
     addCommand("clear", "clear the screen", clearScreen);
+    //addCommand("ask", "ask any question you want", print42);
 
     clearScreen();
     printPuTTYnOS(0);
@@ -130,7 +131,7 @@ void runProgram(char* programName){
             }
             mov = mov->next;
         }
-        printf("%CCommand '%s' not found!\n", LIGHT_RED, DEFAULT_COLOR, programName);
+        printf("%CCommand '%s' not found!\n", RED, DEFAULT_COLOR, programName);
         printf("%CType 'help' to see the command list.\n\n", GRAY, DEFAULT_COLOR, programName);
 }
 

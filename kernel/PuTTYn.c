@@ -58,13 +58,21 @@ void initialize(){
     sti();
 }
 
+void  __attribute__((__cdecl__)) a(uint32_t argc, char** argv){
+    for(int i=0; i < argc; i++)
+        printf("\n%s", argv[i]);
+    while(true);
+}
+
 #ifndef _DEBUG
 void main(){
     initialize();
     
     printf("\n\n\t\tPuTTYnOS Booted Successfully. Press any key to continue...");
     getchar();
-    shellMain();
+
+    createProcess(&shellMain, 0, NULL);
+    //TODO: kill kmain thread
 }
 #else
 
