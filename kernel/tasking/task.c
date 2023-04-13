@@ -39,6 +39,7 @@ void initTasking(){
     kmain->startAddress = NULL; //task already started
     kmain->isBlocked = false;
     kmain->sleepTimeMS = 0;
+    kmain->joinedTo = 0;
     kmain->next = NULL;
     initScheduler(kmain);
 
@@ -55,6 +56,7 @@ uint32_t createTask(void(*startAddress)(int, char**), int argc, char** argv){
     newTask->startAddress = startAddress;
     newTask->isBlocked = false;
     newTask->sleepTimeMS = 0;
+    newTask->joinedTo = 0;
     newTask->next = NULL;
     newTask->argc = argc;
     newTask->argv = argv;

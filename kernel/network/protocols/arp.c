@@ -6,6 +6,7 @@
 #include "../../../lib/convert.h"
 #include "../../../lib/printf.h"
 #include "../../../lib/memory.h"
+#include "../../../lib/tasking.h"
 #include "../../../lib/heap.h"
 
 const uint8_t BROADCAST_MAC[MAC_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -84,6 +85,7 @@ void printARPTable(){
     }
 
     printARPEntry(NULL, NULL, NULL);
+    exit(0);
 }
 
 uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]){

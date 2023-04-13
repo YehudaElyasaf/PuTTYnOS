@@ -65,12 +65,11 @@ static void addCommand(char* name, char* description, uint32_t* programAddress){
 int shellMain(){
     commandsHead = NULL;
 
-    addCommand("help", "show system manual", showHelp);
+    addCommand("help", "show system manual", shellShowHelp);
     addCommand("reboot", "reboot the system", reboot);
     addCommand("shutdown", "power off the system", shutdown);
     addCommand("arp", "show ARP table", printARPTable);
-    addCommand("clear", "clear the screen", clearScreen);
-    //addCommand("ask", "ask any question you want", print42);
+    addCommand("clear", "clear the screen", shellClear);
 
     clearScreen();
     printPuTTYnOS(0);
@@ -126,7 +125,8 @@ void runProgram(char* programName){
         Command* mov = commandsHead;
         while(mov){
             if(strcmp(mov->name, programName) == 0){
-                mov->address();
+                int processId = createProcess(mov->address, 0, 0); //TODO: params
+                join(processId);
                 return;
             }
             mov = mov->next;
@@ -135,8 +135,7 @@ void runProgram(char* programName){
         printf("%CType 'help' to see the command list.\n\n", GRAY, DEFAULT_COLOR, programName);
 }
 
-
-inline static void printCommand(char* commandName, char* description){
+static void printCommand(char* commandName, char* description){
     printf("%C\t%s ", LIGHT_GREEN, DEFAULT_COLOR, commandName);
     
     int indent = 10 - strlen(commandName);
@@ -145,7 +144,8 @@ inline static void printCommand(char* commandName, char* description){
 
     printf("%C %s\n", YELLOW, DEFAULT_COLOR, description);
 }
-void showHelp(){
+
+void shellShowHelp(){
     printf("To run a command, type: <command> [<parameters>]\n");
 
     Command* mov = commandsHead;
@@ -162,4 +162,10 @@ void showHelp(){
     }
 
     printf("\n");
+    exit(0);
+}
+
+void shellClear(){
+    clearScreen();
+    exit(0);
 }

@@ -14,4 +14,5 @@ typedef struct
 
 int shellMain();
 void runProgram();
-void showHelp();
+void shellShowHelp();
+void shellClear();

@@ -50,10 +50,6 @@ static void initIsrExceptionMessages(){
         isrExceptionMassages[isr] = isrExceptionMessagesInitializer[isr];
 }
 
-static inline void exit(){
-    cli();
-    hlt();
-}
 void isrHandler(IsrFrame isrFrame){
     kcprint("\nERROR!\n", LIGHT_RED, getBackgroundColor());
     kprint("\tISR ");
@@ -68,7 +64,8 @@ void isrHandler(IsrFrame isrFrame){
     }
     kprintc('\n');        
     
-    exit();
+    cli();
+    hlt();
 }
 
 void initIsr(){

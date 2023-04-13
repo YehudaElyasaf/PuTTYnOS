@@ -7,7 +7,7 @@
 
 #define MAX_TASK 100
 
-struct Task
+typedef struct
 {
     //task ID
     uint32_t pid;
@@ -22,12 +22,11 @@ struct Task
     uint32_t argv;
 
     bool isBlocked;
-    uint32_t sleepTimeMS; //to sleep syscall, in miliseconds
+    uint32_t sleepTimeMS;   //to sleep syscall, in miliseconds
+    uint32_t joinedTo;      //which task this task is waiting for (by PID). if none - value us 0.
     PTEntry* pt; //TODO: delete?
     struct Task* next;
-};
-typedef struct Task Task;
-
+} Task;
 
 void initTasking();
 uint32_t createTask(void(*startAddress)(int, char**), int argc, char** argv);

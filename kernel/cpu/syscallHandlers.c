@@ -5,6 +5,8 @@
 #include "../io/keyboard.h"
 #include "../tasking/task.h"
 #include "../tasking/scheduler.h"
+#include "../../lib/heap.h"
+#include "../../lib/memory.h"
 
 #define REBOOT_PORT         0x64
 #define REBOOT_CODE         0xfe
@@ -54,9 +56,11 @@ uint32_t seekSyscallHandler(uint32_t param1, uint32_t param2, uint32_t param3, u
 }
 
 uint32_t createTaskSyscallHandler(uint32_t startAddress, uint32_t argc, uint32_t argv, uint32_t param4){
-    createTask(startAddress, argc, argv);
+    return createTask(startAddress, argc, argv);
+}
 
-    return 0;
+uint32_t exitSyscallHandler(uint32_t returnValue, uint32_t param2, uint32_t param3, uint32_t param4){
+    killTask(getCurrentTask()->pid);
 }
 
 uint32_t killTaskSyscallHandler(uint32_t pid, uint32_t param2, uint32_t param3, uint32_t param4){
@@ -67,6 +71,9 @@ uint32_t sleepSyscallHandler(uint32_t ms, uint32_t param2, uint32_t param3, uint
     delayCurrentTask(ms);
 
     return 0;
+}
+uint32_t joinTaskSyscallHandler(uint32_t pid, uint32_t param2, uint32_t param3, uint32_t param4){
+    joinTask(pid);
 }
 
 uint32_t rebootSyscallHandler(uint32_t ms, uint32_t param2, uint32_t param3, uint32_t param4){
