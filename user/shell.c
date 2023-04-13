@@ -68,13 +68,13 @@ static void addCommand(char* name, char* description, uint32_t* programAddress, 
 int shellMain(){
     commandsHead = NULL;
 
-    addCommand("help", "show system manual", shellShowHelp, "help [<command>]");
+    addCommand("help", "show system manual", shellShowHelp, "[<command>]");
     addCommand("reboot", "reboot the system", reboot, "");
     addCommand("shutdown", "power off the system", shutdown, "");
     addCommand("arp", "show ARP table", printARPTable, "");
     addCommand("clear", "clear the screen", shellClear, "");
     addCommand("tasks", "show runnings tasks", printProcessList, "");
-    addCommand("kill", "stop execution of a task", shellKillProcess, "kill <pid> [<pid>...]");
+    addCommand("kill", "stop execution of a task", shellKillProcess, "<pid> [<pid>...]");
 
     clearScreen();
     printPuTTYnOS(0);
@@ -118,19 +118,44 @@ int shellMain(){
             //no program
             continue;
         
-        runProgram(programName);
+        runProgram(programName, programArg);
     }
     
     return 0;
 }
 
-void runProgram(char* programName){
+int parseArguments(char* strToParse, char** argv){
+    int argc = 0;
+    char buffer[BUFFER_LEN];
+
+    for(argc; *strToParse != STRING_TERMINATOR; argc++){
+        while(*strToParse == ' ')
+            strToParse++;
+        
+        strcpy(buffer, strToParse);
+        int i = 0;
+        while(buffer[i] != STRING_TERMINATOR && buffer[i] != ' ')
+            i++;
+        buffer[i] = STRING_TERMINATOR;
+        strToParse += i; //goto next argument
+
+        //now the buffer stores the next argument
+        argv[argc] = alloc(strlen(buffer) + 1);
+        strcpy(argv[argc], buffer);
+    }
+
+    return argc;
+}
+
+void runProgram(char* programName, char* programArg){
         uint32_t* programAddress = NULL;
+        char* argv[10] = { NULL };
+        int argc = parseArguments(programArg, argv);
 
         Command* mov = commandsHead;
         while(mov){
             if(strcmp(mov->name, programName) == 0){
-                int processId = createProcess(mov->address, 0, 0, mov->name); //TODO: params
+                int processId = createProcess(mov->address, argc, argv, mov->name); //TODO: params
                 join(processId);
                 return;
             }
@@ -175,10 +200,10 @@ void shellShowHelp(int argc, char** argv){
         while(mov){
             if(strcmp(mov->name, argv[0]) == STRCMP_EQUALS){
                 printf("%C%s", LIGHT_GREEN, DEFAULT_COLOR, mov->name);
-                printf("%C - ", DARK_GRAY, DEFAULT_COLOR);
+                printf("%C - ", GRAY, DEFAULT_COLOR);
                 printf("%C%s\n\n", YELLOW, DEFAULT_COLOR, mov->description);
 
-                printf("%CUsage: %s %s\n", LIGHT_CYAN, DEFAULT_COLOR, mov->name, mov->usage);
+                printf("%CUsage:\n%s %s\n\n", LIGHT_CYAN, DEFAULT_COLOR, mov->name, mov->usage);
 
                 exit(0);
             }
@@ -187,7 +212,8 @@ void shellShowHelp(int argc, char** argv){
         }
 
         //if we landed here, command not found
-        printf("%CCommand %s not found!", RED, DEFAULT_COLOR, argv[0]);
+        printf("%CCommand '%s' not found!\n", RED, DEFAULT_COLOR, argv[0]);
+        printf("%CType 'help' to see the command list.\n\n", GRAY, DEFAULT_COLOR);
         exit(1);
     }
     
@@ -206,19 +232,19 @@ void shellKillProcess(int argc, char** argv){
 
     for(int i = 0; i<argc; i++){
         if(strlen(argv[i]) > 9){
-            printf("%C%s is not an valid pid.", RED, DEFAULT_COLOR, argv[i]);
+            printf("%C%s is not an valid pid.\n\n", RED, DEFAULT_COLOR, argv[i]);
         }
         char pid[10];
         strcpy(pid, argv[i]);
-        if(!isInteger(pid)){
-            printf("%C%s is not an valid pid.", RED, DEFAULT_COLOR, pid);
+        if(!isInteger(pid) || stoi(pid) < 1){
+            printf("%C%s is not an valid pid.\n\n", RED, DEFAULT_COLOR, pid);
             exit(1);
         }
         else if(kill(stoi(pid))){
             exit(0);
         }
         else{
-            printf("%CProcess %s doesn't exist.", RED, DEFAULT_COLOR);
+            printf("%CProcess %s doesn't exist.\n\n", RED, DEFAULT_COLOR, pid);
             exit(2);
         }
     }

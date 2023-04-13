@@ -71,6 +71,7 @@ uint32_t allocPage() {
     return addr;
 }
 
+/*
 void deallocPage(uint32_t page) {
     int cr0 = 0, wasInPagingMode = 0;
 
@@ -117,6 +118,7 @@ void startVirtualMode(uint32_t address) {
 }
 
 void initPDT() {
+    /*
     PDEntry* table = allocPage();
     kernelPTAddr = allocPage();
 
@@ -145,8 +147,10 @@ void initPDT() {
 
     startVirtualMode((uint32_t)table);
 }
+*/
 
 void pagefault(IsrFrame regs) {
+    /*
     // A page fault has occurred.
    // The faulting address is stored in the CR2 register.
    uint32_t faulting_address;
@@ -170,4 +174,5 @@ void pagefault(IsrFrame regs) {
    kprinth(faulting_address);
    kprint("\n");
    setColor(WHITE);
+   */
 }

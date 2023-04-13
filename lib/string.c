@@ -61,13 +61,15 @@ void strcpy(char* dst, char* src){
 }
 
 bool isDigit(char ch){
-    return ch >= '0' && ch <= 9;
+    return ch >= '0' && ch <= '9';
 }
 
 bool isInteger(char* str){
     if(strlen(str) < 1)
         return false;
     if((!isDigit(str[0])) && str[0] != '-')
+        return false;
+    if(strlen(str) == 1 && str[0] == '-')
         return false;
 
     for(str++; *str != STRING_TERMINATOR; str++){

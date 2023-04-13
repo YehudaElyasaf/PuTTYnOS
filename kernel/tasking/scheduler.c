@@ -100,6 +100,10 @@ bool killTask(uint32_t pid){
     
     task->pid = 1000;//removeTask(pid);
     task->isBlocked = true;
+
+    //call irq 0 (isr 32) - timer interrupt
+    //to push regiters and switch task
+    asm volatile("int $32");
 }
 
 void decreaseSleepTimes(){
@@ -125,6 +129,7 @@ void joinTask(uint32_t pid){
         currentTask->joinedTo = pid;
         currentTask->isBlocked = true;
     }
+
     //call irq 0 (isr 32) - timer interrupt
     //to push regiters and switch task
     asm volatile("int $32");
