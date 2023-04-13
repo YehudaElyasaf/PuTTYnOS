@@ -12,7 +12,7 @@
 const uint8_t BROADCAST_MAC[MAC_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 const uint8_t BROADCAST_IP[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
 
-#define ARP_TABLE_PRINT_PFFSET 4
+#define ARP_TABLE_PRINT_OFFSET 4
 
 static ArpTableEntry* arpTable;
 
@@ -42,7 +42,7 @@ void addToArpTable(uint8_t IPv4[IPv4_LENGTH], uint16_t HWType, uint8_t MACAdress
 }
 
 void static printARPEntry(char* IPAddress, char* hardwareType, char* hardwareAdress){
-    int offset = ARP_TABLE_PRINT_PFFSET;
+    int offset = ARP_TABLE_PRINT_OFFSET;
     setCursorCol(offset);
     if(IPAddress && hardwareType && hardwareAdress){
         printf("%c %s",186, IPAddress);

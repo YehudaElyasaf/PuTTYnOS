@@ -3,13 +3,14 @@
 #include "../lib/printf.h"
 #include "../lib/scanf.h"
 #include "../lib/string.h"
+#include "../lib/convert.h"
 #include "../lib/power.h"
 #include "../lib/tasking.h"
 #include "../lib/memory.h"
 #include "../lib/heap.h"
-#include "../kernel/network/network.h"
 
 //TODO: use syscall, it's user mode
+#include "../kernel/network/network.h"
 #include "../kernel/tasking/task.h"
 
 static Command* commandsHead;
@@ -39,14 +40,16 @@ static void printShellEntry(){
 }
 
 
-static void addCommand(char* name, char* description, uint32_t* programAddress){
+static void addCommand(char* name, char* description, uint32_t* programAddress, char* usage){
     //allocate command
     Command* newCommand = alloc(sizeof(Command));
     newCommand->name = alloc(strlen(name) + 1);
     newCommand->description = alloc(strlen(description) + 1);
+    newCommand->usage = alloc(strlen(usage) + 1);
 
     strcpy(newCommand->name, name);
     strcpy(newCommand->description, description);
+    strcpy(newCommand->usage, usage);
     newCommand->address = programAddress;
     newCommand->next = NULL;
 
@@ -65,11 +68,13 @@ static void addCommand(char* name, char* description, uint32_t* programAddress){
 int shellMain(){
     commandsHead = NULL;
 
-    addCommand("help", "show system manual", shellShowHelp);
-    addCommand("reboot", "reboot the system", reboot);
-    addCommand("shutdown", "power off the system", shutdown);
-    addCommand("arp", "show ARP table", printARPTable);
-    addCommand("clear", "clear the screen", shellClear);
+    addCommand("help", "show system manual", shellShowHelp, "help [<command>]");
+    addCommand("reboot", "reboot the system", reboot, "");
+    addCommand("shutdown", "power off the system", shutdown, "");
+    addCommand("arp", "show ARP table", printARPTable, "");
+    addCommand("clear", "clear the screen", shellClear, "");
+    addCommand("tasks", "show runnings tasks", printProcessList, "");
+    addCommand("kill", "stop execution of a task", shellKillProcess, "kill <pid> [<pid>...]");
 
     clearScreen();
     printPuTTYnOS(0);
@@ -125,7 +130,7 @@ void runProgram(char* programName){
         Command* mov = commandsHead;
         while(mov){
             if(strcmp(mov->name, programName) == 0){
-                int processId = createProcess(mov->address, 0, 0); //TODO: params
+                int processId = createProcess(mov->address, 0, 0, mov->name); //TODO: params
                 join(processId);
                 return;
             }
@@ -145,27 +150,76 @@ static void printCommand(char* commandName, char* description){
     printf("%C %s\n", YELLOW, DEFAULT_COLOR, description);
 }
 
-void shellShowHelp(){
-    printf("To run a command, type: <command> [<parameters>]\n");
+void shellShowHelp(int argc, char** argv){
+    if(argc == 0){
+        printf("To run a command, type: <command> [<parameters>]\n");
 
-    Command* mov = commandsHead;
-    while(mov){
-        printf("%C\t%s ", LIGHT_GREEN, DEFAULT_COLOR, mov->name);
-        
-        int indent = 10 - strlen(mov->name);
-        for(int i=0; i < indent; i++)
-            printf("%C%c", DARK_GRAY, DEFAULT_COLOR, 196);
+        Command* mov = commandsHead;
+        while(mov){
+            printf("%C\t%s ", LIGHT_GREEN, DEFAULT_COLOR, mov->name);
+            
+            int indent = 10 - strlen(mov->name);
+            for(int i=0; i < indent; i++)
+                printf("%C%c", DARK_GRAY, DEFAULT_COLOR, 196);
 
-        printf("%C %s\n", YELLOW, DEFAULT_COLOR, mov->description);
+            printf("%C\t%s\n", YELLOW, DEFAULT_COLOR, mov->description);
 
-        mov = mov->next;
+            mov = mov->next;
+        }
+
+        printf("%C\nType 'help <command>' to see command usage and info.\n\n", CYAN, DEFAULT_COLOR);
+        exit(0);
     }
+    else if(argc == 1){
+        Command* mov = commandsHead;
+        while(mov){
+            if(strcmp(mov->name, argv[0]) == STRCMP_EQUALS){
+                printf("%C%s", LIGHT_GREEN, DEFAULT_COLOR, mov->name);
+                printf("%C - ", DARK_GRAY, DEFAULT_COLOR);
+                printf("%C%s\n\n", YELLOW, DEFAULT_COLOR, mov->description);
 
-    printf("\n");
-    exit(0);
+                printf("%CUsage: %s %s\n", LIGHT_CYAN, DEFAULT_COLOR, mov->name, mov->usage);
+
+                exit(0);
+            }
+            
+            mov = mov->next;
+        }
+
+        //if we landed here, command not found
+        printf("%CCommand %s not found!", RED, DEFAULT_COLOR, argv[0]);
+        exit(1);
+    }
+    
+    //more than one parameter
+    exit(BAD_USAGE_EXIT_CODE);
 }
 
 void shellClear(){
     clearScreen();
     exit(0);
+}
+
+void shellKillProcess(int argc, char** argv){
+    if(argc < 1)
+        exit(BAD_USAGE_EXIT_CODE);
+
+    for(int i = 0; i<argc; i++){
+        if(strlen(argv[i]) > 9){
+            printf("%C%s is not an valid pid.", RED, DEFAULT_COLOR, argv[i]);
+        }
+        char pid[10];
+        strcpy(pid, argv[i]);
+        if(!isInteger(pid)){
+            printf("%C%s is not an valid pid.", RED, DEFAULT_COLOR, pid);
+            exit(1);
+        }
+        else if(kill(stoi(pid))){
+            exit(0);
+        }
+        else{
+            printf("%CProcess %s doesn't exist.", RED, DEFAULT_COLOR);
+            exit(2);
+        }
+    }
 }

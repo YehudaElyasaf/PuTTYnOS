@@ -65,7 +65,7 @@ void main(){
     printf("\n\n\t\tPuTTYnOS Booted Successfully. Press any key to continue...");
     getchar();
 
-    createProcess(&shellMain, 0, NULL);
+    createProcess(&shellMain, 0, NULL, "shell");
     exit(0);
 }
 #else

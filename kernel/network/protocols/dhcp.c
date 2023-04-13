@@ -69,14 +69,16 @@ static bool DHCPWaitForReply(DhcpPacketType replyType){
 }
 
 static bool DHCPDiscover(){
+    return false;
+    /*
     DHCPPacket packet;
     initDHCPPacket(&packet, getMac(), emptyIP);
     DHCPState = DHCP_DISCOVER_TYPE;
     
     //TODO: send to UDP
     return DHCPWaitForReply(DHCP_OFFER_TYPE);
+    */
 }
-
 static bool DHCPRequest(){
     DHCPPacket packet;
     initDHCPPacket(&packet, getMac(), getDefaultGatewayIPv4());
@@ -85,6 +87,7 @@ static bool DHCPRequest(){
     //TODO: send to UDP
     return DHCPWaitForReply(DHCP_ACK_TYPE);
 }
+/*
 
 void DHCPRecv(DHCPPacket* packet){
     if(packet->operation!=REPLY_OPCODE){
@@ -188,3 +191,4 @@ static void DHCPGetAck(DHCPPacket* packet, uint8_t* pOptions){
 
     DHCPState = DHCP_ACK_TYPE;
 }
+    */

@@ -40,7 +40,7 @@ uint32_t putcharSyscallHandler(uint32_t ch, uint32_t color, uint32_t backgroundC
 uint32_t getcharSyscallHandler(uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4);
 uint32_t seekSyscallHandler(uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4);
 //return: pid
-uint32_t createTaskSyscallHandler(uint32_t startAddress, uint32_t param2, uint32_t param3, uint32_t param4);
+uint32_t createTaskSyscallHandler(uint32_t startAddress, uint32_t argc, uint32_t argv, uint32_t name);
 //return: is successful
 uint32_t exitSyscallHandler(uint32_t returnValue, uint32_t param2, uint32_t param3, uint32_t param4);
 //return: is successful

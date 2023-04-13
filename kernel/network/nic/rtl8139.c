@@ -49,7 +49,6 @@ bool initRTL8139(NetwotkAdapter* nic){
     else{
         kprint("\tFound device: RTL8139\n");
     }
-
     uint32_t pciCommand = PCI_Read(pciAddr + 0x4);
     pciCommand |= (1 << 2);
     PCI_Write(pciAddr + 0x4, pciCommand);
@@ -72,7 +71,7 @@ bool initRTL8139(NetwotkAdapter* nic){
 
     out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
     out32bit(ioAddr + TX_CONFIG, 0x03000700);
-    out32bit(ioAddr + RX_CONFIG, /*0xf*/0x01001e3e); //TODO: why?
+    out32bit(ioAddr + RX_CONFIG, 0x01001e3e); //TODO: why?
 
     irqInstallHandler(RTL8139IrqNumber, RTLIrqHandler);
     out32bit(ioAddr + RBSTART, rx_buffer); // send uint32_t memory location to RBSTART (0x30)
@@ -88,7 +87,7 @@ bool initRTL8139(NetwotkAdapter* nic){
     printf("\tMAC: %s\n", MACStr);
 
     nic->IOBase = ioAddr;
-    nic->send = RTLSendPacket;
+    //nic->send = RTLSendPacket; TODO: enable this line
     nic->sendMaxLen = SEND_MAX_SIZE;
 
     RTLQueue = (Queue){RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(NICPacket)};
@@ -97,6 +96,7 @@ bool initRTL8139(NetwotkAdapter* nic){
 }
 
 void RTLIrqHandler(IsrFrame registers) {
+    /*
     kcprint("I GOT A MESSAGE\n", GREEN, DEFAULT_COLOR);
     //printPacket("MSG", rx_buffer, 100);
     while(1)
@@ -106,8 +106,9 @@ void RTLIrqHandler(IsrFrame registers) {
             kprinti(i);
     out8bit(ioAddr + IMR_ISR_FLAGS + 2, 0);
     out8bit(ioAddr + IMR_ISR_FLAGS + 3, 0x5);
-
+    */
 }
+    /*
 
 void RTLSendPacket(NICPacket packet) {
     // TODO: implement locking task switch (cli and sti?)
@@ -138,3 +139,4 @@ bool RTLSendNextPacketInQueue() {
     queuePop(&RTLQueue, 0);
     return true;
 }
+    */

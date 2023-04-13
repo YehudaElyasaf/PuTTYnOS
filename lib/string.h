@@ -1,6 +1,7 @@
 #pragma once
 
 #define STRING_TERMINATOR '\0'
+#include <stdbool.h>
 
 //reverse
 void strrev(char* str);
@@ -19,3 +20,5 @@ enum STRCMP{
 };
 int strcmp(char* str1, char* str2);
 void strcpy(char* dst, char* src);
+bool isDigit(char ch);
+bool isInteger(char* str);
