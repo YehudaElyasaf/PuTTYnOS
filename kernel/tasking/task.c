@@ -22,7 +22,7 @@ static uint32_t lastTaskPid;
 
 //TODO: delete this
 static Task tasksContainer[MAX_TASK + 5];
-static char reservedStacksIndexes[MAX_TASK];
+static bool reservedStacksIndexes[MAX_TASK];
 
 void initTasking(){
     cli();
@@ -41,6 +41,7 @@ void initTasking(){
 
     kmain->esp = esp;
     kmain->ebp = ebp;
+    kmain->stackID = 0; //no ID
 
     kmain->startAddress = NULL; //task already started
     kmain->argc = 0;
@@ -64,7 +65,7 @@ uint32_t createTask(void(*startAddress)(int, char**), int argc, char** argv, cha
     newTask->pid = ++lastTaskPid;
     strcpy(newTask->name, name);
 
-    newTask->esp = createStack();
+    createStack(newTask);
     newTask->ebp = newTask->esp;
 
     newTask->startAddress = startAddress;
@@ -134,7 +135,7 @@ Task* allocateNewTask(){
     return tasksContainer + lastTaskPid;
 }
 
-uint32_t createStack(){
+void createStack(Task* task){
     //FIXME: maybe a task space is needed?
     //TODO: when a task is killed, unreserve it's stack in the array
     int stackIndex = 1;
@@ -144,7 +145,11 @@ uint32_t createStack(){
             break;
         }
 
-    return KERNEL_STACK_START + (stackIndex * STACK_SIZE_BYTES);
+    task->esp = KERNEL_STACK_START + (stackIndex * STACK_SIZE_BYTES);
+    task->stackID = stackIndex;
+}
+void killStack(Task* task){
+    reservedStacksIndexes[task->stackID] = false;
 }
 
 bool hasTaskStarted(Task* task){

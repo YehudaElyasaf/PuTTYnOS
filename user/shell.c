@@ -118,7 +118,11 @@ int shellMain(){
             //no program
             continue;
         
-        runProgram(programName, programArg);
+        //if program starts in '&', run as parallel process
+        bool isParallelProcess = (programName[0] == '&');
+        if(isParallelProcess)
+            strcpy(programName, programName + 1); // delete '&' from program name
+        runProgram(programName, programArg, isParallelProcess);
     }
     
     return 0;
@@ -147,7 +151,7 @@ int parseArguments(char* strToParse, char** argv){
     return argc;
 }
 
-void runProgram(char* programName, char* programArg){
+void runProgram(char* programName, char* programArg, bool isParallelProcess){
         uint32_t* programAddress = NULL;
         char* argv[10] = { NULL };
         int argc = parseArguments(programArg, argv);
@@ -156,7 +160,8 @@ void runProgram(char* programName, char* programArg){
         while(mov){
             if(strcmp(mov->name, programName) == 0){
                 int processId = createProcess(mov->address, argc, argv, mov->name); //TODO: params
-                join(processId);
+                if(!isParallelProcess)
+                    join(processId);
                 return;
             }
             mov = mov->next;
@@ -178,6 +183,7 @@ static void printCommand(char* commandName, char* description){
 void shellShowHelp(int argc, char** argv){
     if(argc == 0){
         printf("To run a command, type: <command> [<parameters>]\n");
+        printf("To run a command as parallel process, type: &<command> [<parameters>]\n");
 
         Command* mov = commandsHead;
         while(mov){

@@ -16,7 +16,7 @@ typedef struct
 
 int shellMain();
 int parseArguments(char* strToParse, char** argv); //return: argc
-void runProgram(char* programName, char* programArg);
+void runProgram(char* programName, char* programArg, bool isParallelProcess);
 void shellShowHelp();
 void shellClear();
 void shellKillProcess(int argc, char** argv);

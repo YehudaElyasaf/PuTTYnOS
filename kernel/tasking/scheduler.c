@@ -79,6 +79,22 @@ bool blockTask(uint32_t pid){
     return true;
 }
 
+static void removeTask(int pid){
+    if(tasksHead->pid == pid){
+        //first task
+        tasksHead = tasksHead->next;
+        return;
+    }
+
+    Task* mov = tasksHead;
+    while(mov && mov->next){
+        if(((Task*)mov->next)->pid == pid)
+            //remove node
+            mov->next = ((Task*)mov->next)->next;
+
+        mov = mov->next;
+    }
+}
 bool killTask(uint32_t pid){
     Task* task = findTask(pid);
     
@@ -98,8 +114,8 @@ bool killTask(uint32_t pid){
         mov = mov->next;
     }
     
-    task->pid = 1000;//removeTask(pid);
-    task->isBlocked = true;
+    removeTask(pid);
+    killStack(task);
 
     //call irq 0 (isr 32) - timer interrupt
     //to push regiters and switch task

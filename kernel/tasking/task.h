@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "../memory/pagingHandler.h"
-#include "../../lib/linkedList.h"
 #include "../memory/pagingHandler.h"
 
 #define MAX_TASK 100
@@ -18,6 +17,7 @@ typedef struct
     //registers
     uint32_t esp;
     uint32_t ebp;
+    int stackID; //TODO: delete ?
 
     //when a task is created, 
     void(*startAddress)(void);
@@ -40,7 +40,8 @@ bool switchTask();
 //allocate task struct
 Task* allocateNewTask();
 //get the adress of the first reserved stack
-uint32_t createStack();
+void createStack(Task* task);
+void killStack(Task* task); //TODO: delete function
 bool hasTaskStarted(Task* task);
 
 void printProcessList();
