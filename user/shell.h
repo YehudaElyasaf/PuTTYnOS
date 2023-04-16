@@ -15,6 +15,7 @@ typedef struct
 #define BAD_USAGE_EXIT_CODE 0xbad
 
 int shellMain();
+void shellTimer();
 int parseArguments(char* strToParse, char** argv); //return: argc
 void runProgram(char* programName, char* programArg, bool isParallelProcess);
 void shellShowHelp();

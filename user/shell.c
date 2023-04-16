@@ -12,6 +12,7 @@
 //TODO: use syscall, it's user mode
 #include "../kernel/network/network.h"
 #include "../kernel/tasking/task.h"
+#include "../kernel/tasking/timer.h"
 
 static Command* commandsHead;
 
@@ -75,6 +76,7 @@ int shellMain(){
     addCommand("clear", "clear the screen", shellClear, "");
     addCommand("tasks", "show runnings tasks", printProcessList, "");
     addCommand("kill", "stop execution of a task", shellKillProcess, "<pid> [<pid>...]");
+    addCommand("timer", "run a timer in the bottom of the screen", shellTimer, "");
 
     clearScreen();
     printPuTTYnOS(0);
@@ -253,5 +255,19 @@ void shellKillProcess(int argc, char** argv){
             printf("%CProcess %s doesn't exist.\n\n", RED, DEFAULT_COLOR, pid);
             exit(2);
         }
+    }
+}
+
+void shellTimer(){
+    while(true){
+        cli();
+        int offsetSave = getCursorOffset();
+        setCursorCol(70);
+        setCursorRow(0);
+        printf("%C %d:%d:%d ", getBackgroundColor(), getColor(), getTime() / (60 * 60), getTime() / 60, getTime() % 60);
+        setCursorOffset(offsetSave);
+        sti();
+
+        for(int i=0; i<100000; i++);
     }
 }
