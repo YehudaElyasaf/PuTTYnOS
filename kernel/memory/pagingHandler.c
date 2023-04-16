@@ -11,11 +11,11 @@ uint32_t firstHole = KERNEL_END, headOfPages = KERNEL_END;
 int initPT(int size) {
     uint32_t pt = allocPage();
     int i = 0, cr0 = 0;
-    for (; i < PDT_SIZE && !(*(uint32_t*)(0xfffff000+i) & PRESENT); i++);
+    for (; i < PDT_SIZE && !(*(uint32_t*)(0xfffff000+i*4) & PRESENT); i++);
     if (i >= PDT_SIZE) // PDT full
         return NULL;
     
-    *(uint32_t*)(0xfffff000+i) = PRESENT | USER | READWRITE | pt;
+    *(uint32_t*)(0xfffff000+i*4) = PRESENT | USER | READWRITE | pt;
 
     size = size > 0 ? size : DEFAULT_PAGE_NUM;
     size *= PAGE_SIZE;
@@ -71,6 +71,7 @@ uint32_t allocPage() {
     return addr;
 }
 
+/*
 void deallocPage(uint32_t page) {
     int cr0 = 0, wasInPagingMode = 0;
 
@@ -117,6 +118,7 @@ void startVirtualMode(uint32_t address) {
 }
 
 void initPDT() {
+    /*
     PDEntry* table = allocPage();
     kernelPTAddr = allocPage();
 
@@ -128,12 +130,12 @@ void initPDT() {
     }
 
     // identity mapping stack physical address to virtual address
-    *(kernelPTAddr + 0x8f) = PRESENT | READWRITE | DIRTY | 0x8f000;
+    *(kernelPTAddr + 0x8f) = PRESENT | USER | READWRITE | DIRTY | 0x8f000;
 
     // identity mapping video memory 
     *(kernelPTAddr + 0xb8) = PRESENT | READWRITE | DIRTY | 0xb8000;
 
-    for (int i = 0; i <= getIDTR().idtSize/0x1000; i++) {
+    for (int i = 0; i <= getIDTR().idtSize/PAGE_SIZE + (getIDTR().idtSize%PAGE_SIZE !=0); i++) {
         *(kernelPTAddr + (uint32_t)getIDTR().idtAdress + i) = PRESENT | READWRITE | DIRTY |(uint32_t)getIDTR().idtAdress + i;
     }
 
@@ -145,8 +147,10 @@ void initPDT() {
 
     startVirtualMode((uint32_t)table);
 }
+*/
 
 void pagefault(IsrFrame regs) {
+    /*
     // A page fault has occurred.
    // The faulting address is stored in the CR2 register.
    uint32_t faulting_address;
@@ -170,4 +174,5 @@ void pagefault(IsrFrame regs) {
    kprinth(faulting_address);
    kprint("\n");
    setColor(WHITE);
+   */
 }

@@ -6,6 +6,8 @@
 *build/
 *.vscode*
 *__pycache__
+*.pcap
+*.pcapng
 
 #auto generated files
 kernel/cpu/isrs.asm

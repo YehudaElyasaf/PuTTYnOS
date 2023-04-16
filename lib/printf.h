@@ -10,15 +10,16 @@ int cputchar(char ch, uint8_t color, uint8_t backgroundColor);
 
 #define PRINTF_SPECIFIER '%'
 enum PrintfSpecifiers{
-    PRINTF_SPECIFIER_CPRINT      = 'C',
+    PRINTF_SPECIFIER_CPRINT      =                      'C',
 
-    PRINTF_SPECIFIER_CHAR        = 'c',
-    PRINTF_SPECIFIER_DECIMAL     = 'd',
-    PRINTF_SPECIFIER_HEXADECIMAL_LOWERCASE = 'h',
-    PRINTF_SPECIFIER_HEXADECIMAL_UPPERCASE = 'H',
-    PRINTF_SPECIFIER_HEXADECIMAL_LOWERCASE_NOPREFIX = 'x',
-    PRINTF_SPECIFIER_HEXADECIMAL_UPPERCASE_NOPREFIX = 'X',
-    PRINTF_SPECIFIER_STRING      = 's',
+    PRINTF_SPECIFIER_CHAR        =                      'c',
+    PRINTF_SPECIFIER_DECIMAL     =                      'd',
+    PRINTF_SPECIFIER_HEXADECIMAL_LOWERCASE =            'h',
+    PRINTF_SPECIFIER_HEXADECIMAL_UPPERCASE =            'H',
+    PRINTF_SPECIFIER_HEXADECIMAL_LOWERCASE_NOPREFIX =   'x',
+    PRINTF_SPECIFIER_HEXADECIMAL_UPPERCASE_NOPREFIX =   'X',
+    PRINTF_SPECIFIER_BINARY =                           'b',
+    PRINTF_SPECIFIER_STRING      =                      's',
 };
 /*
 to color print - start format string with "%C" (C is uppercase),

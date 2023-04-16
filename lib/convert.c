@@ -1,14 +1,25 @@
 #include "convert.h"
 #include "string.h"
+#include "../kernel/io/print.h"
+#include"memory.h"
 
 #define BASE10 10
+#define BASE2 2
 #define BASE16 0x10
 #define LAST_DIGIT 9
+#define OCTET_SIZE 8
 
 #define PRINTN(x) {putchar(x/100%10+'0'); putchar(x/10%10+'0'); putchar(x%10+'0');}
 
-void itoa(long n, char* buffer){
+static void basetoa(long n, char* buffer, int base){
     int start = 0;
+
+    //reset buffer
+    char* mov = buffer;
+    while(*mov != '\0'){
+        *mov = '\0';
+        mov++;
+    }
     
     if(n < 0){
         //the first char is '-'
@@ -17,10 +28,12 @@ void itoa(long n, char* buffer){
         n *= -1;
     }
     
-    for(int i = start; n != 0; i++){
-        buffer[i] = '0' + (n % BASE10);
-        n /= BASE10;
+    int i = start;
+    for(i; n != 0; i++){
+        buffer[i] = '0' + (n % base);
+        n /= base;
     }
+    buffer[i] = 0;
 
     if(buffer[start] == STRING_TERMINATOR){
         //n is zero
@@ -31,17 +44,13 @@ void itoa(long n, char* buffer){
     strrev(&buffer[start]);
 }
 
-#include "../kernel/io/print.h"
+void itoa(long n, char* buffer){
+    basetoa(n, buffer, BASE10);
+}
+
 void itoh(unsigned long n, char* buffer){
-    int start = 0;
-
-    //write 0x
-    buffer[start] = '0';
-    start++;
-    buffer[1] = 'x';
-    start++;
-
-    for(int i = start; n != 0; i++){
+    int i;
+    for(i = 0; n != 0; i++){
         int digit = n % BASE16;
 
         if(digit <= LAST_DIGIT)
@@ -54,12 +63,18 @@ void itoh(unsigned long n, char* buffer){
         n /= BASE16;
     }
 
-    if(buffer[start] == STRING_TERMINATOR){
-        buffer[start] = '0';
-        buffer[start + 1] = STRING_TERMINATOR;
+    buffer[i] = '\0';
+    if(buffer[0] == '\0'){
+        buffer[0] = '0';
+        buffer[1] = '\0';
     }
 
-    strrev(&buffer[start]); //reverse string from start
+
+    strrev(buffer); //reverse string from start
+}
+
+void itob(unsigned long n, char* buffer){
+    basetoa(n, buffer, BASE2);
 }
 
 char between(int i, int a, int b) {
@@ -97,3 +112,59 @@ int stoi(char* buffer) {
     }
     return out * sign;
 }
+
+void IPv4tos(uint8_t IPv4[IPv4_LENGTH], char* buffer){
+    int offset = 0;
+
+    for(int i = 0; i < IPv4_LENGTH; i++){
+        itoa(IPv4[i], buffer + offset);
+        offset = strlen(buffer);
+
+        if(i < IPv4_LENGTH - 1){
+            buffer[offset] = '.';
+            offset++;
+            buffer[offset] = '\0';
+        }
+    }
+}
+
+void MACtos(uint8_t MAC[MAC_LENGTH], char* buffer){
+    int offset = 0;
+
+    if(MAC[0] < 0x10){
+        //first field has only one digit
+        buffer[0] = '0';
+        offset++;
+    }
+
+    for(int i = 0; i < MAC_LENGTH; i++){
+        itoh(MAC[i], buffer + offset);
+        offset = strlen(buffer);
+
+        if(i < MAC_LENGTH - 1){
+            buffer[offset] = ':';
+            offset++;
+            buffer[offset] = '\0';
+            if(MAC[i + 1] < 0x10){
+                buffer[offset] = '0';
+                offset++;
+                buffer[offset] = '\0';
+            }
+        }
+    }
+}
+
+uint16_t switchEndian16bit(uint16_t n){
+    return
+    n >> OCTET_SIZE |
+    n << OCTET_SIZE;
+}
+
+uint32_t switchEndian32bit(uint32_t n){
+    return
+    (n & 0xff000000) >> (3 * OCTET_SIZE) |
+    (n & 0x00ff0000) >> (1 * OCTET_SIZE) |
+    (n & 0x0000ff00) << (1 * OCTET_SIZE) |
+    (n & 0x000000ff) << (3 * OCTET_SIZE);
+}
+

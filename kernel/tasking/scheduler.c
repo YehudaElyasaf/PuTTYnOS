@@ -26,6 +26,10 @@ Task* getCurrentTask(){
     return currentTask;
 }
 
+Task* getTasksHead(){
+    return tasksHead;
+}
+
 Task* getNextTask(){
     if(currentTask == NULL){
         currentTask = tasksHead;
@@ -75,15 +79,47 @@ bool blockTask(uint32_t pid){
     return true;
 }
 
+static void removeTask(int pid){
+    if(tasksHead->pid == pid){
+        //first task
+        tasksHead = tasksHead->next;
+        return;
+    }
+
+    Task* mov = tasksHead;
+    while(mov && mov->next){
+        if(((Task*)mov->next)->pid == pid)
+            //remove node
+            mov->next = ((Task*)mov->next)->next;
+
+        mov = mov->next;
+    }
+}
 bool killTask(uint32_t pid){
     Task* task = findTask(pid);
     
     if(task == NULL)
         return false;
     
-    //kill task
     //TODO: deallocate task
-    task->isBlocked = true; //delete this line
+    
+    //check if another task is joined to this task
+    Task* mov = tasksHead;
+    while(mov){
+        if(mov->joinedTo == pid){
+            mov->joinedTo = 0;
+            mov->isBlocked = false;
+            mov->sleepTimeMS = 0;
+        }
+        mov = mov->next;
+    }
+    
+    removeTask(pid);
+    killStack(task);
+
+    //call irq 0 (isr 32) - timer interrupt
+    //to push regiters and switch task
+    asm volatile("int $32");
 }
 
 void decreaseSleepTimes(){
@@ -102,6 +138,17 @@ void decreaseSleepTimes(){
 
         mov = mov->next;
     }
+}
+
+void joinTask(uint32_t pid){
+    if(findTask(pid)){
+        currentTask->joinedTo = pid;
+        currentTask->isBlocked = true;
+    }
+
+    //call irq 0 (isr 32) - timer interrupt
+    //to push regiters and switch task
+    asm volatile("int $32");
 }
 
 void delayCurrentTask(uint32_t ms){

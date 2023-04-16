@@ -1,7 +1,13 @@
 .PHONY: all clean run build debug
 
+#OS config
 OS_NAME=PuTTYnOS
 OS_VERSION=$(OS_NAME)-i386
+
+#network config
+MAC_ADDR=#'aa:bb:cc:dd:ee:ff'
+NIC_MODEL=rtl8139
+
 #32m = green
 #37m = white
 #35m = purple
@@ -13,11 +19,22 @@ DEBUG_COLOR=\033[0;31m
 
 GCC=/usr/local/i386elfgcc/bin/i386-elf-gcc
 GCCFLAGS=-c -ffreestanding -g
-GCCWARNINGS=-Wno-incompatible-pointer-types -Wno-int-conversion -Wno-int-to-pointer-cast
+GCCWARNINGS=-Wno-incompatible-pointer-types -Wno-int-conversion -Wno-int-to-pointer-cast -Wno-overflow -Wno-discarded-qualifiers \
+			-Wno-address-of-packed-member
 LD=/usr/local/i386elfgcc/bin/i386-elf-ld
 LDFLAGS= -Ttext 0x1000
-QEMU=qemu-system-i386 -fda 
-QEMUFLAGS=-boot c -nic model=rtl8139 -m 4G $(QAF) --no-reboot
+QEMU=qemu-system-i386
+#QEMU=/home/yehuda/YEHUDA/Desktop/OS/qemu/build/i386-softmmu/qemu-system-i386
+#TODO: sniff
+#QEMUFLAGS= -fda $(OS_VERSION).img \
+#	-net nic,model=$(NIC_MODEL),netdev=network0 -netdev user,id=network0 -nic mac=$(MAC_ADDR),model=$(NIC_MODEL) \
+#	-object filter-dump,id=id,netdev=network0,file=network-dump.pcap \
+#	-m 4G \
+#	$(QAF)
+QEMUFLAGS= -fda $(OS_VERSION).img \
+	-nic mac=$(MAC_ADDR),model=$(NIC_MODEL) \
+	-m 4G \
+	$(QAF)
 QEMUFLAGS_DEBUG=$(QEMUFLAGS) -s -S
 QUIET_RUN= > /dev/null 2>&1
 NASM=nasm
@@ -41,17 +58,17 @@ AUTO_GENERATED_H_FILES=kernel/cpu/isrs.h kernel/cpu/irqs.h
 all: build
 
 run: all
-	@echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
-	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS) $(QUIET_RUN)
+	@ echo "${SUCESS_COLOR}RUNNING $(OS_NAME)!${DEFAULT_COLOR}"
+	@ $(QEMU) $(QEMUFLAGS)
 
-	@echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
+	@ echo "${SUCESS_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 debug: build $(OS_VERSION)-symbols.elf
 	@ echo "${DEBUG_COLOR}RUNNING ${OS_NAME} IN DEBUG MODE!${DEFAULT_COLOR}"
-	@ $(QEMU) $(OS_VERSION).img $(QEMUFLAGS_DEBUG) $(QUIET_RUN) &
+	@ $(QEMU) $(QEMUFLAGS_DEBUG) &
 	@ ${GDB} $(GDBFLAGS) $(GDBCMDS)
 
-	@echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
+	@ echo "${DEBUG_COLOR}\nПока-пока!${DEFAULT_COLOR}"
 
 build: $(OS_VERSION).img
 
@@ -92,6 +109,7 @@ clean:
 	@rm -f -r $(shell find -name "*tempCodeRunnerFile.c") #VSCode's auto generated file
 	@rm -f -r $(shell find -name "*.vscode")
 	@rm -f -r $(shell find -name "*__pycache__")
+	@rm -f -r $(shell find -name "*.pcap")
 	@rm -f -r $(AUTO_GENERATED_ASM_FILES) $(AUTO_GENERATED_H_FILES)
 
 	@echo "${SUCESS_COLOR}\c"

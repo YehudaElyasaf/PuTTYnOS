@@ -32,8 +32,8 @@ enum COLORS{
 #define CURSOR_OFFSET_HIGH      14
 #define CURSOR_OFFSET_LENGTH    16
 
-#define NUMBER_OF_ROWS 25
-#define NUMBER_OF_COLS 80
+#define SCREEN_HEIGHT 25
+#define SCREEN_WIDTH 80
 #define ATTRIBUTE_SIZE 2
 
 //print string

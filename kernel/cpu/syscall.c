@@ -11,14 +11,18 @@ void initSyscalls(){
         syscallHandlers[syscallIndex] = notImplementedSyscallHandler;
 
     //Add handlers here:
-    syscallHandlers[SYSCALL_PUTCHAR]      = putcharSyscallHandler;
-    syscallHandlers[SYSCALL_GETCHAR]      = getcharSyscallHandler;
-    syscallHandlers[SYSCALL_SEEK]         = seekSyscallHandler;
-    
-    syscallHandlers[SYSCALL_CREATE_TASK]  = createTaskSyscallHandler;
-    syscallHandlers[SYSCALL_BLOCK_TASK]   = blockTaskSyscallHandler;
-    syscallHandlers[SYSCALL_KILL_TASK]    = killTaskSyscallHandler;
-    syscallHandlers[SYSCALL_SLEEP]        = sleepSyscallHandler;
+    syscallHandlers[SYSCALL_PUTCHAR]        = putcharSyscallHandler;
+    syscallHandlers[SYSCALL_GETCHAR]        = getcharSyscallHandler;
+    syscallHandlers[SYSCALL_SEEK]           = seekSyscallHandler;
+
+    syscallHandlers[SYSCALL_CREATE_TASK]    = createTaskSyscallHandler;
+    syscallHandlers[SYSCALL_EXIT]    =        exitSyscallHandler;
+    syscallHandlers[SYSCALL_KILL_TASK]      = killTaskSyscallHandler;
+    syscallHandlers[SYSCALL_SLEEP]          = sleepSyscallHandler;
+    syscallHandlers[SYSCALL_JOIN_TASK]          = joinTaskSyscallHandler;
+
+    syscallHandlers[SYSCALL_REBOOT]         = rebootSyscallHandler;
+    syscallHandlers[SYSCALL_SHUTDOWN]       = shutdownSyscallHandler;
 }
 
 void syscallIrqHandler(IrqFrame irqFrame){

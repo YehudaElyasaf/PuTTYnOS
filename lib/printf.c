@@ -56,12 +56,14 @@ __attribute__((__cdecl__)) int printf(char* format, /*uint8_t color, uint8_t bac
             case PRINTF_SPECIFIER_HEXADECIMAL_LOWERCASE:
                 itoh(*pArgumnet, conversionBuffer);
                 tolower(conversionBuffer);
+                printString("0x", color, backgroundColor);
                 printString(conversionBuffer, color, backgroundColor);
 
                 pArgumnet++;
                 break;
             case PRINTF_SPECIFIER_HEXADECIMAL_UPPERCASE:
                 itoh(*pArgumnet, conversionBuffer);
+                printString("0x", color, backgroundColor);
                 printString(conversionBuffer, color, backgroundColor);
 
                 pArgumnet++;
@@ -70,13 +72,20 @@ __attribute__((__cdecl__)) int printf(char* format, /*uint8_t color, uint8_t bac
             case PRINTF_SPECIFIER_HEXADECIMAL_LOWERCASE_NOPREFIX:
                 itoh(*pArgumnet, conversionBuffer);
                 tolower(conversionBuffer);
-                printString(conversionBuffer + strlen("0x"), color, backgroundColor);
+                printString(conversionBuffer, color, backgroundColor);
 
                 pArgumnet++;
                 break;
             case PRINTF_SPECIFIER_HEXADECIMAL_UPPERCASE_NOPREFIX:
                 itoh(*pArgumnet, conversionBuffer);
-                printString(conversionBuffer + strlen("0x"), color, backgroundColor);
+                printString(conversionBuffer, color, backgroundColor);
+
+                pArgumnet++;
+                break;
+                
+            case PRINTF_SPECIFIER_BINARY:
+                itob(*pArgumnet, conversionBuffer);
+                printString(conversionBuffer, color, backgroundColor);
 
                 pArgumnet++;
                 break;

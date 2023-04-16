@@ -10,7 +10,7 @@ _start:
     mov bp, KERNEL_STACK_START
     mov sp, bp
 
-    mov dh, 52 ;sectors to read
+    mov dh, 54 ;sectors to read
     mov dl, [BOOT_DRIVE]
     mov bx, KERNEL_START
     call loadKernelFromDisk

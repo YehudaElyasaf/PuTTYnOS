@@ -1,0 +1,146 @@
+#include "arp.h"
+#include "../nic/rtl8139.h"
+#include "../../memory/pagingHandler.h"
+#include "../../io/print.h"
+#include "../../../lib/string.h"
+#include "../../../lib/convert.h"
+#include "../../../lib/printf.h"
+#include "../../../lib/memory.h"
+#include "../../../lib/tasking.h"
+#include "../../../lib/heap.h"
+
+const uint8_t BROADCAST_MAC[MAC_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+const uint8_t BROADCAST_IP[IPv4_LENGTH] = {0xFF, 0xFF, 0xFF, 0xFF};
+
+#define ARP_TABLE_PRINT_OFFSET 4
+
+static ArpTableEntry* arpTable;
+
+void initARP(uint8_t MACAddr[MAC_LENGTH]){
+    arpTable = NULL;
+
+    addToArpTable(BROADCAST_IP, HW_TYPE_ETHERNET, BROADCAST_MAC);
+}
+
+void addToArpTable(uint8_t IPv4[IPv4_LENGTH], uint16_t HWType, uint8_t MACAdress[MAC_LENGTH]){
+    ArpTableEntry* newEntry = alloc(sizeof(ArpTableEntry));
+    memcpy(IPv4, newEntry->IPv4, IPv4_LENGTH);
+    newEntry->HWType = HWType;
+    memcpy(MACAdress, newEntry->MACAdress, MAC_LENGTH);
+    
+    newEntry->next = NULL;
+
+    if(!arpTable)
+        arpTable = newEntry;
+
+    else{
+        ArpTableEntry* mov = arpTable;
+        while(mov->next)
+            mov = mov->next;
+        mov->next = newEntry;
+    }
+}
+
+void static printARPEntry(char* IPAddress, char* hardwareType, char* hardwareAdress){
+    int offset = ARP_TABLE_PRINT_OFFSET;
+    setCursorCol(offset);
+    if(IPAddress && hardwareType && hardwareAdress){
+        printf("%c %s",186, IPAddress);
+        offset += strlen("| 255.255.255.255 ");
+        setCursorCol(offset);
+
+        printf("%c %s", 179, hardwareType);
+        offset += strlen("| Hardware Type ");
+        setCursorCol(offset);
+
+        printf("%c %s", 179, hardwareAdress);
+        offset += strlen("| FF:FF:FF:FF:FF:FF ");
+        setCursorCol(offset);
+        printf("%c\n", 186);
+    }
+    else{
+        for(int i = 0; i < 55; i++)
+            kprintc(196);
+        kprint("\n");
+    }
+}
+void printARPTable(){ 
+    printARPEntry(NULL, NULL, NULL);
+    printARPEntry("IPv4 Adsress", "Hardware Type", "MAC Address");
+    printARPEntry(NULL, NULL, NULL);
+    
+    ArpTableEntry* mov = arpTable;
+    while(mov){
+        char* IPAddress[20] = {0};
+        IPv4tos(mov->IPv4, IPAddress);
+        char* MACAdress[20] = {0};
+        MACtos(mov->MACAdress, MACAdress);
+        
+        if(mov->HWType == HW_TYPE_ETHERNET)
+            printARPEntry(IPAddress, "Ethernet", MACAdress);
+        else
+            printARPEntry(IPAddress, "Unknown", MACAdress);
+        
+        mov = mov->next;
+    }
+
+    printARPEntry(NULL, NULL, NULL);
+    exit(0);
+}
+
+uint8_t* findInArpTable(uint8_t IP[IPv4_LENGTH]){
+    ArpTableEntry* mov = arpTable;
+
+    while (mov)
+    {
+        if(mov->IPv4[0] == IP[0] && mov->IPv4[1] == IP[1] &&
+        mov->IPv4[2] == IP[2] && mov->IPv4[3] == IP[3])
+            return mov->MACAdress;
+
+        mov = mov->next;
+    }
+    
+    return NULL;
+}
+
+void ARPSend(uint8_t targetIP[IPv4_LENGTH]){
+    ArpPacket packet;
+
+    packet.HWType = switchEndian16bit(HW_TYPE_ETHERNET);
+    packet.protocolType = switchEndian16bit(ET_IPV4);
+    packet.HWAddrLen = MAC_LENGTH;
+    packet.protocolAddrLen = IPv4_LENGTH;
+
+    packet.opcode = switchEndian16bit(REQUEST_OPCODE);
+    
+    memcpy(getMac(), packet.srcMAC, MAC_LENGTH);
+    
+    memcpy(getIPv4(), packet.srcIP, IPv4_LENGTH);
+    memset(0, packet.targetMAC, MAC_LENGTH);
+    memcpy(targetIP, packet.targetIP, IPv4_LENGTH);
+
+    etherSend(&packet, sizeof(packet), BROADCAST_MAC, ET_ARP);
+}
+
+void ARPRecieve(ArpPacket* packet){
+    if(packet->HWType != HW_TYPE_ETHERNET){
+        printf("%CERROR!\nUnsupported hardware type received: %h\n", LIGHT_RED, DEFAULT_COLOR, packet->HWType);
+        return;
+    }
+    if(packet->protocolType != ET_IPV4){
+        printf("%CERROR!\nUnsupported protocol type received: %h\n", LIGHT_RED, DEFAULT_COLOR, packet->protocolType);
+        return;
+    }
+    if(packet->opcode != REPLY_OPCODE){
+        printf("%CERROR!\nUnsupported opcode received: %h\n", LIGHT_RED, DEFAULT_COLOR, packet->opcode);
+        return;
+    }
+
+    addToArpTable(packet->srcIP, packet->HWType, packet->srcMAC);
+    char newIP[20];
+    char newMAC[20];
+    IPv4tos(packet->srcIP, newIP);
+    MACtos(packet->srcMAC, newMAC);
+    printf("%CARP packet has been received!\n", LIGHT_GREEN, DEFAULT_COLOR);
+    printf("%C\tIP: %s, MAC: %s\n", LIGHT_GREEN, DEFAULT_COLOR, newIP, newMAC);
+}

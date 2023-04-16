@@ -71,7 +71,7 @@ void printChar(unsigned char ch, uint8_t attribute, uint16_t offset){
         incCursorOffset();
     }
 
-    if(getCursorRow() >= NUMBER_OF_ROWS - 1)
+    if(getCursorRow() >= SCREEN_HEIGHT - 1)
         //close to end of the screen
         scrollScreen(1);
 }
@@ -102,19 +102,19 @@ uint16_t incCursorOffset(){
 
 
 uint16_t getCursorCol(){
-    return getCursorOffset() % NUMBER_OF_COLS;
+    return getCursorOffset() % SCREEN_WIDTH;
 }
 
 uint16_t getCursorRow(){
-    return getCursorOffset() / NUMBER_OF_COLS;
+    return getCursorOffset() / SCREEN_WIDTH;
 }
 
 void setCursorCol(uint16_t col){
     uint16_t row = getCursorRow();
-    setCursorOffset(row * NUMBER_OF_COLS + col);
+    setCursorOffset(row * SCREEN_WIDTH + col);
 }
 
 void setCursorRow(uint16_t row){
     uint16_t col = getCursorCol();
-    setCursorOffset(row * NUMBER_OF_COLS + col);
+    setCursorOffset(row * SCREEN_WIDTH + col);
 }

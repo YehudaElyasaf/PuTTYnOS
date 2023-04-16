@@ -21,7 +21,7 @@ void insertNode(uint32_t* head, uint32_t ptr, uint32_t nextOffset) {
 }
 
 void removeNode(uint32_t* head, uint32_t ptr, uint32_t nextOffset) {
-    if (*head == LLEMPTY) {
+    if (!head || *head == LLEMPTY) {
         printf("ERROR! linked list is Empty\n");
         return;
     }

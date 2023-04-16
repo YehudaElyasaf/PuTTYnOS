@@ -1,113 +1,142 @@
 #include "rtl8139.h"
+
+#include "../network.h"
 #include "../../io/pci.h"
 #include "../../asm.h"
 #include "../../../lib/printf.h"
+#include "../../../lib/convert.h"
 #include "../../../lib/queue.h"
+#include "../../../lib/memory.h"
 
 #define VENDOR_ID  0x10EC
 #define DEVICE_ID  0x8139
 
-#define BUFFER_LEN 8192 + 16
+#define RX_BUFFER_LEN 0x10000
+#define TX_BUFFER_LEN 4096
 #define QUEUE_BUFFER_LEN 128
 #define SEND_MAX_SIZE   0x700
 
 const int RTL_TRANSMIT_COMMAND[] = {0x10, 0x14, 0x18, 0x1C};
 const int RTL_TRANSMIT_START[]   = {0x20, 0x24, 0x28, 0x2C};
 
-RTLPacket RTLQueueBuffer[QUEUE_BUFFER_LEN] = {0};
+NICPacket RTLQueueBuffer[QUEUE_BUFFER_LEN] = {0};
 
-char rx_buffer[BUFFER_LEN] = {0};
+char buffer[RX_BUFFER_LEN + TX_BUFFER_LEN];
+char *rx_buffer, *tx_buffer;
+Queue RTLQueue;
 
-Queue RTLQueue = {RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(RTLPacket)};
-
-uint8_t macAddr[6];
-
+uint8_t RTL8139IrqNumber = 0;
 uint32_t ioAddr = 0;
 
-uint8_t initRTL8139() {
-    kprint("\n\tScanning for NIC...\n");
-    int pciAddr = PCI_ScanForDevice(VENDOR_ID, DEVICE_ID);
+bool initRTL8139(NetwotkAdapter* nic){
+    kprint("\tScanning for NIC...\n");
+    uint32_t pciAddr = PCI_ScanForDevice(VENDOR_ID, DEVICE_ID);
+    
     if (pciAddr == -1){
         kprint("\tCouldn't find NIC address on PCI!");
-        return -1;
+        return false;
     }
 
-    ioAddr = in32bit(pciAddr + 0x10);
+    ioAddr = PCI_Read(pciAddr + 0x10);
+    //two last bits reperesent address type
+    ioAddr &= (~0x3);
+    RTL8139IrqNumber = PCI_Read(pciAddr + 0x3C);
 
-    if(ioAddr == 0xFFFFFFFF){
+    if(ioAddr == -1){
         kprint("\tCouldn't find NIC!");
-        return -1;
+        return false;
     }
     else{
-        printf("\tFound device: RTL8139\n");
+        kprint("\tFound device: RTL8139\n");
     }
+    uint32_t pciCommand = PCI_Read(pciAddr + 0x4);
+    pciCommand |= (1 << 2);
+    PCI_Write(pciAddr + 0x4, pciCommand);
+
+    #ifdef _DEBUG
+    printf("PCICMD: %x\n", pciCommand);
+    #endif
+
+    rx_buffer = buffer;
+    tx_buffer = buffer + RX_BUFFER_LEN;
 
     //power on
     out8bit(ioAddr + INIT_RTL_CONTROL_REGISTER, POWER_ON_CODE);
     //reset card
     out8bit( ioAddr + RTL_CONTROL_REGISTER, RESET_CODE);
-    while( (in8bit(ioAddr + RTL_CONTROL_REGISTER) & RESET_CODE) != 0) { }
+    while( (in8bit(ioAddr + RTL_CONTROL_REGISTER) & RESET_CODE));
 
-    out32bit(ioAddr + RBSTART, rx_buffer); // send uint32_t memory location to RBSTART (0x30)
+    memset(0, rx_buffer, RX_BUFFER_LEN);
     
-    out32bit(ioAddr + IMR_ISR_FLAGS, 0x0005); // Sets the TOK and ROK bits high
-
-    out8bit(ioAddr + RCR, 0xf); // accept all packets
-
-    irqInstallHandler(IRQ10_NETWORK_ADAPTER, RTLIrqHandler);   
 
     out8bit(ioAddr + RTL_CONTROL_REGISTER, 0x0C); // Sets the RE and TE bits high, start recieving packets
+    out32bit(ioAddr + TX_CONFIG, 0x03000700);
+    out32bit(ioAddr + RX_CONFIG, 0x01001e3e); //TODO: why?
 
-    // mac finding doesnt work for now.
-    for (int i = 0; i < 6; i++) {
-        macAddr[i] = in8bit(ioAddr+i);
-    }
+    irqInstallHandler(RTL8139IrqNumber, RTLIrqHandler);
+    out32bit(ioAddr + RBSTART, rx_buffer); // send uint32_t memory location to RBSTART (0x30)
+    out16bit(ioAddr + IMR_ISR_FLAGS, 0xFFFF); // Sets the TOK and ROK bits high
+
+    
+    for (int i = 0; i < 6; i++)
+        nic->MAC[i] = in8bit(ioAddr+i);
 
     //print MAC adress
-    printf("\tMAC: ", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
-    for(int i = 0; i < MAC_ADDRES_GROUPS; i++){
-        //print padding
-        if(macAddr[i] < 0xA)
-            printf("0");
+    char MACStr[20];
+    MACtos(nic->MAC, MACStr);
+    printf("\tMAC: %s\n", MACStr);
 
-        printf("%x", macAddr[i]);
-        if(i != MAC_ADDRES_GROUPS - 1)
-            //not last field
-            printf("-");
-    }
+    nic->IOBase = ioAddr;
+    //nic->send = RTLSendPacket; TODO: enable this line
+    nic->sendMaxLen = SEND_MAX_SIZE;
+
+    RTLQueue = (Queue){RTLQueueBuffer, 0, QUEUE_BUFFER_LEN, sizeof(NICPacket)};
+
+    return true;
 }
 
 void RTLIrqHandler(IsrFrame registers) {
-    printf("MSG: %s\n", rx_buffer);
+    /*
+    kcprint("I GOT A MESSAGE\n", GREEN, DEFAULT_COLOR);
+    //printPacket("MSG", rx_buffer, 100);
+    while(1)
+    printf("GOT!\n");
+    for(int i=0; i<RX_BUFFER_LEN; i++)
+        if(rx_buffer[i]!=0)
+            kprinti(i);
     out8bit(ioAddr + IMR_ISR_FLAGS + 2, 0);
     out8bit(ioAddr + IMR_ISR_FLAGS + 3, 0x5);
+    */
 }
+    /*
 
-void RTLSendPacket(RTLPacket packet) {
-    while (packet.size > SEND_MAX_SIZE) {
-        RTLPacket smallerPacket = {packet.address, SEND_MAX_SIZE};
-        queuePush(&RTLQueue, &smallerPacket);
-        packet.size -= SEND_MAX_SIZE;
-        packet.address += SEND_MAX_SIZE;
-    }
+void RTLSendPacket(NICPacket packet) {
+    // TODO: implement locking task switch (cli and sti?)
     queuePush(&RTLQueue, &packet);
+    NICPacket* packetAddr = queueHead(RTLQueue);
+    memcpy(packet.data, packetAddr->data, packet.size); // deep copy
+    RTLSendNextPacketInQueue();
 }
 
-uint8_t RTLSendNextPacketInQueue() {
+bool RTLSendNextPacketInQueue() {
     int i = 0;
-    for (; i < 4 && !(in16bit(ioAddr + RTL_TRANSMIT_COMMAND[i]) & 1 << 15); i++);
+    for (; i < 4 && in16bit(ioAddr + RTL_TRANSMIT_COMMAND[i]) & (1 << 15); i++);
     if (i == 4) // no pairs which arent used
-        return 0; // return false, it couldn't send the next packet.
+        return false; // return false, it couldn't send the next packet.
 
-    RTLPacket packet = {0};
-    queuePop(&RTLQueue, &packet);
-    if (!packet.address && !packet.size) // no packet in queues
-        return 0;
+    NICPacket *packet = queueHead(RTLQueue);
+    if (!packet) // no packet in queue
+        return false;
 
-    out16bit(ioAddr + RTL_TRANSMIT_COMMAND[i], packet.size | 1 << 13 | 1 << 15);
+    memcpy(packet->data, tx_buffer, packet->size);
 
-    out32bit(ioAddr + RTL_TRANSMIT_START[i], (uint32_t)packet.address);
+    printPacket("aaaaa", tx_buffer, packet->size);
 
-    out16bit(ioAddr + RTL_TRANSMIT_COMMAND[i], packet.size | 1 << 13); // clear 1 from send bit, it will start to send the packet
-    return 1;    
+    out32bit(ioAddr + RTL_TRANSMIT_START[i], tx_buffer);
+    out32bit(ioAddr + RTL_TRANSMIT_COMMAND[i], ((uint32_t)packet->size) | (48 << 16));
+    while(true) kprint("a");
+
+    queuePop(&RTLQueue, 0);
+    return true;
 }
+    */

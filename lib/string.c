@@ -51,3 +51,31 @@ int strcmp(char* str1, char* str2){
         str2++;
     }
 }
+
+void strcpy(char* dst, char* src){
+    int i = 0;
+    for(i; src[i] != STRING_TERMINATOR; i++){
+        dst[i] = src[i];
+    }
+    dst[i] = STRING_TERMINATOR;
+}
+
+bool isDigit(char ch){
+    return ch >= '0' && ch <= '9';
+}
+
+bool isInteger(char* str){
+    if(strlen(str) < 1)
+        return false;
+    if((!isDigit(str[0])) && str[0] != '-')
+        return false;
+    if(strlen(str) == 1 && str[0] == '-')
+        return false;
+
+    for(str++; *str != STRING_TERMINATOR; str++){
+        if(!isDigit(*str))
+            return false;
+    }
+
+    return true;
+}

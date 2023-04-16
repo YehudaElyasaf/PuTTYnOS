@@ -17,10 +17,8 @@
 #include "../lib/heap.h"
 #include "../lib/tasking.h"
 
-//#define _DEBUG
-
 static void printDone(){
-    setCursorCol(NUMBER_OF_COLS / 2);
+    setCursorCol(SCREEN_WIDTH / 2);
     kcprint("Done!\n", GREEN, getBackgroundColor());
 }
 
@@ -41,7 +39,7 @@ void initialize(){
     printDone();
 
     kprint("Initializing PDT...");
-    initPDT();
+    //initPDT();
     printDone();
 
     kprint("Initializing PIT...");
@@ -64,26 +62,32 @@ void initialize(){
 void main(){
     initialize();
     
-    createProcess(&shellMain);
+    printf("\n\n\t\tPuTTYnOS Booted Successfully. Press any key to continue...");
+    getchar();
 
-    killProcess(CURRENT_TASK);
+    createProcess(&shellMain, 0, NULL, "shell");
+    exit(0);
 }
 #else
 
-void t(){
+void t1(int a){
     while (true)
     {
-        printf("a");
-        for(long i=0;i<50000;i++);
+        printf("4");
+        for(long i=0;i<5000000;i++);
     }
 }
 void main(){
     initialize();
 
-    clearScreen();
-    createProcess(&shellMain);
+    //uint8_t IP[IPv4_LENGTH] = {69, 78, 68, 33};
+    //ARPSend(IP);
     
-    killProcess(CURRENT_TASK);
+    shellMain();
+    while(true)
+        nop();
+    
+    //killProcess(CURRENT_TASK);
 }
 
 #endif

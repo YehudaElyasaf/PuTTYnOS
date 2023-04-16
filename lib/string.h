@@ -1,6 +1,7 @@
 #pragma once
 
 #define STRING_TERMINATOR '\0'
+#include <stdbool.h>
 
 //reverse
 void strrev(char* str);
@@ -18,3 +19,6 @@ enum STRCMP{
     STRCMP_STR2_IS_BIGGER = -1
 };
 int strcmp(char* str1, char* str2);
+void strcpy(char* dst, char* src);
+bool isDigit(char ch);
+bool isInteger(char* str);
